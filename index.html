@@ -2,214 +2,222 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minecraft Store</title>
-  <!-- Minecraft Font (Pixel Style) -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Minecraft pixel font -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <!-- uiverse.io UI enhancements -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" />
 
   <style>
     :root {
-      --bg: #0d0d0d;
-      --card: rgba(255, 255, 255, 0.06);
+      --bg: #0f0f15;
+      --card: #1c1c2b;
       --accent: #00ff99;
-      --glow: 0 0 8px #00ff99;
+      --bar: #111;
+      --hover: #2a2a40;
+      --text: #e0e0e0;
+      --shadow: 0 4px 10px rgba(0, 255, 153, 0.2);
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
+      margin: 0;
       font-family: 'Press Start 2P', monospace;
       background-color: var(--bg);
-      color: #eee;
+      color: var(--text);
       display: flex;
-      min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    /* Sidebar */
     .sidebar {
-      width: 220px;
-      background-color: #111;
+      width: 240px;
+      background: var(--bar);
       padding: 2rem 1rem;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-      border-right: 2px solid var(--accent);
+      height: 100vh;
+      box-shadow: var(--shadow);
     }
 
     .sidebar h2 {
-      font-size: 0.8rem;
+      font-size: 1rem;
       color: var(--accent);
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
     }
 
     .sidebar a {
-      color: #ccc;
       text-decoration: none;
-      font-size: 0.7rem;
-      padding: 0.5rem;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      margin: 0.25rem 0;
       border-left: 4px solid transparent;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      border-radius: 4px;
     }
 
-    .sidebar a:hover {
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: var(--hover);
+      border-left-color: var(--accent);
       color: var(--accent);
-      border-left: 4px solid var(--accent);
-      background-color: rgba(0, 255, 153, 0.05);
     }
 
-    /* Main Content */
     .main {
-      flex: 1;
+      flex-grow: 1;
       padding: 2rem;
+      overflow-y: auto;
+      animation: fadeIn 1s ease;
     }
 
     .search-bar {
-      width: 100%;
       margin-bottom: 2rem;
     }
 
     .search-bar input {
       width: 100%;
       padding: 1rem;
-      background: #1a1a1a;
-      border: 2px solid var(--accent);
-      color: #fff;
       font-family: inherit;
-      font-size: 0.7rem;
-      border-radius: 6px;
-      outline: none;
-    }
-
-    h1 {
-      font-size: 1rem;
-      color: var(--accent);
-      margin-bottom: 1rem;
-      text-shadow: var(--glow);
-    }
-
-    /* Product Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .card {
+      border: 2px solid var(--accent);
       background: var(--card);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 255, 153, 0.3);
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 255, 153, 0.1);
+      color: var(--text);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
       transition: all 0.3s ease;
     }
 
-    .card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 15px var(--accent);
+    .search-bar input:focus {
+      outline: none;
+      border-color: #00ffaa;
+      background: #1d1d2e;
     }
 
-    .card img {
-      width: 100%;
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
+    .section {
+      margin-bottom: 4rem;
     }
 
-    .card h3 {
-      font-size: 0.65rem;
-      margin-bottom: 0.5rem;
+    .section h3 {
       color: var(--accent);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px dashed var(--accent);
+      padding-bottom: 0.5rem;
     }
 
-    .card p {
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .container.noselect {
+      position: relative;
+      width: 100%;
+      max-width: 350px;
+      margin: auto;
+    }
+
+    .canvas {
+      position: relative;
+      background: var(--card);
+      padding: 2rem;
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .tracker {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: rgba(0, 255, 153, 0.3);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .title {
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin: 1rem 0 0.5rem;
+    }
+
+    .subtitle {
       font-size: 0.6rem;
-      color: #ccc;
+      color: #aaa;
     }
 
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-      .sidebar {
-        flex-direction: row;
-        overflow-x: auto;
-        width: 100%;
-        border-right: none;
-        border-bottom: 2px solid var(--accent);
-      }
-      .main {
-        padding: 1rem;
-      }
+    #prompt {
+      font-size: 0.5rem;
+      color: var(--text);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.8); opacity: 0.7; }
+      50% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(0.8); opacity: 0.7; }
     }
   </style>
 </head>
-
 <body>
-  <div class="sidebar">
-    <h2>🛍️ STORE</h2>
-    <a href="#">Texture Packs</a>
-    <a href="#">Mod Folders</a>
-    <a href="#">In-Game Settings</a>
-    <a href="#">About</a>
-  </div>
+  <aside class="sidebar animate__animated animate__fadeInLeft">
+    <h2>Minecraft Store</h2>
+    <a href="#textures" class="active">Texture Packs</a>
+    <a href="#mods">Mod Folders</a>
+    <a href="#settings">In-Game Settings</a>
+  </aside>
 
-  <div class="main">
+  <main class="main">
     <div class="search-bar">
-      <input type="text" placeholder="Search Minecraft packs, mods, settings..." />
+      <input type="text" placeholder="Search items..." />
     </div>
 
-    <section>
-      <h1>🧱 Texture Packs</h1>
-      <div class="grid">
-        <div class="card">
-          <img src="https://via.placeholder.com/250x150.png?text=Texture+Pack+1" alt="Texture Pack 1">
-          <h3>Retro Pixel</h3>
-          <p>Classic 16-bit look for nostalgic worlds.</p>
-        </div>
-        <div class="card">
-          <img src="https://via.placeholder.com/250x150.png?text=Texture+Pack+2" alt="Texture Pack 2">
-          <h3>Dark PvP</h3>
-          <p>Optimized textures for fast PvP play.</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h1>📁 Pre-Made Mod Folders</h1>
-      <div class="grid">
-        <div class="card">
-          <img src="https://via.placeholder.com/250x150.png?text=Mod+Pack+1" alt="Mod Folder 1">
-          <h3>Explorer's Bundle</h3>
-          <p>Shaders + minimap + journey map mods.</p>
-        </div>
-        <div class="card">
-          <img src="https://via.placeholder.com/250x150.png?text=Mod+Pack+2" alt="Mod Folder 2">
-          <h3>Redstone Kit</h3>
-          <p>Pre-configured for advanced redstone builds.</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h1>⚙️ In-Game Settings</h1>
-      <div class="grid">
-        <div class="card">
-          <img src="https://via.placeholder.com/250x150.png?text=Settings+1" alt="Settings 1">
-          <h3>FPS Boost</h3>
-          <p>All graphics settings tuned for max FPS.</p>
-        </div>
-        <div class="card">
-          <img src="https://via.placeholder.com/250x150.png?text=Settings+2" alt="Settings 2">
-          <h3>Stream Mode</h3>
-          <p>Preset for shaders + quality streaming.</p>
+    <div class="section" id="textures">
+      <h3>Texture Packs</h3>
+      <div class="product-grid">
+        <!-- From Uiverse.io by kennyotsu --> 
+        <div class="container noselect">
+          <div class="canvas">
+            <div class="tracker tr-1"></div>
+            <div class="tracker tr-2"></div>
+            <div class="tracker tr-3"></div>
+            <div class="tracker tr-4"></div>
+            <div class="tracker tr-5"></div>
+            <div class="tracker tr-6"></div>
+            <div class="tracker tr-7"></div>
+            <div class="tracker tr-8"></div>
+            <div class="tracker tr-9"></div>
+            <div class="tracker tr-10"></div>
+            <div class="tracker tr-11"></div>
+            <div class="tracker tr-12"></div>
+            <div class="tracker tr-13"></div>
+            <div class="tracker tr-14"></div>
+            <div class="tracker tr-15"></div>
+            <div class="tracker tr-16"></div>
+            <div class="tracker tr-17"></div>
+            <div class="tracker tr-18"></div>
+            <div class="tracker tr-19"></div>
+            <div class="tracker tr-20"></div>
+            <div class="tracker tr-21"></div>
+            <div class="tracker tr-22"></div>
+            <div class="tracker tr-23"></div>
+            <div class="tracker tr-24"></div>
+            <div class="tracker tr-25"></div>
+            <div id="card">
+              <p id="prompt">HOVER OVER :D</p>
+              <div class="title">look mom,<br>no JS</div>
+              <div class="subtitle">
+                mouse hover tracker
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </main>
 </body>
 </html>
