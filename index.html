@@ -3,159 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>McIcons-style UI</title>
+  <title>Minecraft Store</title>
 
-  <!-- Minecraft pixel font (Press Start 2P from Google Fonts) -->
+  <!-- Minecraft pixel font -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
   <style>
     :root {
       --bg: #0f0f15;
-      --card: #1a1a28;
+      --card: #1c1c2b;
       --accent: #00ff99;
       --bar: #111;
-      --hover: #262635;
+      --hover: #2a2a40;
       --text: #e0e0e0;
     }
-    * {box-sizing: border-box;}
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: monospace, 'Press Start 2P', sans-serif;
+      font-family: 'Press Start 2P', monospace;
       background-color: var(--bg);
       color: var(--text);
-    }
-    header.topbar {
-      background: var(--bar);
-      padding: 1rem;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
     }
-    header.topbar .logo {
-      color: var(--accent);
-      font-size: 1.2rem;
-    }
-    header.topbar nav {
-      display: flex;
-      gap: 1rem;
-    }
-    header.topbar nav a {
-      color: var(--text);
-      text-decoration: none;
-      padding: 0.5rem;
-      border-bottom: 2px solid transparent;
-    }
-    header.topbar nav a.active,
-    header.topbar nav a:hover {
-      border-bottom: 2px solid var(--accent);
-      color: var(--accent);
-    }
+
     .sidebar {
-      width: 200px;
+      width: 220px;
       background: var(--bar);
       padding: 1rem;
-      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
-    .sidebar .tab {
-      display: block;
+
+    .sidebar h2 {
+      font-size: 1rem;
+      color: var(--accent);
       margin-bottom: 1rem;
-      color: var(--text);
+    }
+
+    .sidebar a {
       text-decoration: none;
-      padding: 0.5rem;
+      color: var(--text);
+      padding: 0.5rem 0;
       border-left: 4px solid transparent;
     }
-    .sidebar .tab.active,
-    .sidebar .tab:hover {
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      border-left: 4px solid var(--accent);
       color: var(--accent);
-      border-left-color: var(--accent);
     }
+
     .main {
       flex-grow: 1;
-      padding: 1rem;
+      padding: 2rem;
+      overflow-y: auto;
     }
+
     .search-bar {
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
+
     .search-bar input {
       width: 100%;
-      padding: 0.5rem;
-      background: var(--card);
-      border: 2px solid var(--accent);
-      color: var(--text);
+      padding: 0.75rem;
       font-family: inherit;
+      border: 2px solid var(--accent);
+      background: var(--card);
+      color: var(--text);
     }
-    .icon-grid {
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section h3 {
+      color: var(--accent);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
     }
-    .icon-card {
+
+    .product-card {
       background: var(--card);
       border: 2px solid var(--accent);
-      border-radius: 4px;
-      text-align: center;
       padding: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
+      border-radius: 8px;
+      text-align: center;
+      transition: background 0.3s;
     }
-    .icon-card:hover {
+
+    .product-card:hover {
       background: var(--hover);
     }
-    .icon-card i {
-      font-size: 2rem;
-      color: var(--accent);
+
+    .product-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
     }
-    .icon-card span {
-      display: block;
-      margin-top: 0.5rem;
-      color: var(--accent);
-      font-size: 0.8rem;
-    }
-    .layout {
-      display: flex;
+
+    .product-card p {
+      font-size: 0.6rem;
+      margin: 0.25rem 0;
     }
   </style>
-  <!-- MCicons CDN -->
-  <link rel="stylesheet" href="https://cdn.mcicons.dev/releases/v1.0.0/css/all.css" />
 </head>
 <body>
+  <aside class="sidebar">
+    <h2>Minecraft Store</h2>
+    <a href="#textures" class="active">Texture Packs</a>
+    <a href="#mods">Mod Folders</a>
+    <a href="#settings">In-Game Settings</a>
+  </aside>
 
-  <header class="topbar">
-    <div class="logo">MCICONS • ccLeaf</div>
-    <nav>
-      <a href="#" class="active">Icons</a>
-      <a href="#">Textures</a>
-      <a href="#">Generators</a>
-    </nav>
-  </header>
+  <main class="main">
+    <div class="search-bar">
+      <input type="text" placeholder="Search items..." />
+    </div>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <a href="#" class="tab active">All</a>
-      <a href="#" class="tab">Weapons</a>
-      <a href="#" class="tab">Blocks</a>
-      <a href="#" class="tab">Tools</a>
-      <a href="#" class="tab">Food</a>
-    </aside>
-
-    <main class="main">
-      <div class="search-bar">
-        <input type="text" placeholder="Search icons…" />
-      </div>
-
-      <div class="icon-grid">
-        <div class="icon-card">
-          <i class="mc mc-diamond-sword"></i>
-          <span>Diamond Sword</span>
+    <div class="section" id="textures">
+      <h3>Texture Packs</h3>
+      <div class="product-grid">
+        <div class="product-card">
+          <img src="texture1.jpg" alt="Texture 1" />
+          <p>Faithful 32x</p>
         </div>
-        <div class="icon-card">
-          <i class="mc mc-apple"></i>
-          <span>Apple</span>
+        <div class="product-card">
+          <img src="texture2.jpg" alt="Texture 2" />
+          <p>PureBDCraft</p>
         </div>
-        <!-- more icon cards... -->
       </div>
-    </main>
-  </div>
+    </div>
 
+    <div class="section" id="mods">
+      <h3>Pre-Made Mod Folders</h3>
+      <div class="product-grid">
+        <div class="product-card">
+          <img src="mods1.jpg" alt="Modpack 1" />
+          <p>Survival+ Mods</p>
+        </div>
+        <div class="product-card">
+          <img src="mods2.jpg" alt="Modpack 2" />
+          <p>Tech Mods</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="settings">
+      <h3>In-Game Settings</h3>
+      <div class="product-grid">
+        <div class="product-card">
+          <img src="settings1.jpg" alt="Settings 1" />
+          <p>FPS Boost</p>
+        </div>
+        <div class="product-card">
+          <img src="settings2.jpg" alt="Settings 2" />
+          <p>PvP Optimized</p>
+        </div>
+      </div>
+    </div>
+  </main>
 </body>
 </html>
