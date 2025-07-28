@@ -1,2 +1,83 @@
-
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="favicon.png"><title>McIcons - ccLeaf</title><meta name="title" content="McIcons - Powered by ccLeaf"><meta name="keywords" content="minecraft, icons, assets, pixel art, game assets, mcicons, 0willy, background generator, repeating background, background texture generator, avatar generator, skin generator, render generator, namemc, ccleaf"><meta name="description" content="Discover a diverse collection of Minecraft assets, including skin avatars, render generators, and a seamless background texture generator—all powered by ccLeaf!"><meta name="publisher" content="ccLeaf"><meta name="theme-color" content="#00ff00"><meta name="color-scheme" content="dark light"><meta property="og:title" content="McIcons - Powered by ccLeaf"><meta property="og:site_name" content="McIcons"><meta property="og:description" content="Discover a diverse collection of Minecraft assets, including skin avatars, render generators, and a seamless background texture generator—all powered by ccLeaf!"><meta property="og:type" content="website"><meta property="og:image" content="/social-preview.png"><meta property="og:url" content="https://mcicons.ccleaf.com/"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@ccLeafOfficial"><script defer="defer" src="static/js/chunk-vendors.62c5dace.js"></script><script defer="defer" src="static/js/index.435b185d.js"></script><link href="static/css/index.e16140ed.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but mc-icons-ccleaf doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF‑8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>McIcons‑style UI</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0f0f15;
+      color: #e0e0e0;
+    }
+    header {
+      background-color: #111;
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+    }
+    header h1 {
+      color: #00ff99;
+      font-size: 1.5rem;
+      margin: 0;
+    }
+    .container {
+      padding: 2rem;
+    }
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background-color: #1a1a28;
+      border: 2px solid #00ff99;
+      border-radius: 8px;
+      text-align: center;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .card:hover {
+      background-color: #262635;
+    }
+    .card img {
+      width: 60px;
+      height: 60px;
+    }
+    .card p {
+      margin: 0.5rem 0 0;
+      color: #00ff99;
+      font-size: 0.9rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MCICONS • ccLeaf</h1>
+  </header>
+  <div class="container">
+    <div class="icon-grid">
+      <div class="card">
+        <img src="icon1.png" alt="Icon 1">
+        <p>Icon One</p>
+      </div>
+      <div class="card">
+        <img src="icon2.png" alt="Icon 2">
+        <p>Icon Two</p>
+      </div>
+      <!-- Repeat more cards -->
+    </div>
+  </div>
+  <footer>
+    © 2025 ccLeaf — A massive library of Minecraft assets.
+  </footer>
+</body>
+</html>
