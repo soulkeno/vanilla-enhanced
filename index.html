@@ -1,83 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF‑8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>McIcons‑style UI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>McIcons-style UI</title>
+
+  <!-- Minecraft pixel font (Press Start 2P from Google Fonts) -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
   <style>
+    :root {
+      --bg: #0f0f15;
+      --card: #1a1a28;
+      --accent: #00ff99;
+      --bar: #111;
+      --hover: #262635;
+      --text: #e0e0e0;
+    }
+    * {box-sizing: border-box;}
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0f0f15;
-      color: #e0e0e0;
+      font-family: monospace, 'Press Start 2P', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
     }
-    header {
-      background-color: #111;
+    header.topbar {
+      background: var(--bar);
+      padding: 1rem;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+    }
+    header.topbar .logo {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    header.topbar nav {
+      display: flex;
+      gap: 1rem;
+    }
+    header.topbar nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.5rem;
+      border-bottom: 2px solid transparent;
+    }
+    header.topbar nav a.active,
+    header.topbar nav a:hover {
+      border-bottom: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .sidebar {
+      width: 200px;
+      background: var(--bar);
+      padding: 1rem;
+      flex-shrink: 0;
+    }
+    .sidebar .tab {
+      display: block;
+      margin-bottom: 1rem;
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.5rem;
+      border-left: 4px solid transparent;
+    }
+    .sidebar .tab.active,
+    .sidebar .tab:hover {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+    .main {
+      flex-grow: 1;
       padding: 1rem;
     }
-    header h1 {
-      color: #00ff99;
-      font-size: 1.5rem;
-      margin: 0;
+    .search-bar {
+      margin-bottom: 1.5rem;
     }
-    .container {
-      padding: 2rem;
+    .search-bar input {
+      width: 100%;
+      padding: 0.5rem;
+      background: var(--card);
+      border: 2px solid var(--accent);
+      color: var(--text);
+      font-family: inherit;
     }
     .icon-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 1rem;
     }
-    .card {
-      background-color: #1a1a28;
-      border: 2px solid #00ff99;
-      border-radius: 8px;
+    .icon-card {
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 4px;
       text-align: center;
       padding: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background 0.2s;
     }
-    .card:hover {
-      background-color: #262635;
+    .icon-card:hover {
+      background: var(--hover);
     }
-    .card img {
-      width: 60px;
-      height: 60px;
+    .icon-card i {
+      font-size: 2rem;
+      color: var(--accent);
     }
-    .card p {
-      margin: 0.5rem 0 0;
-      color: #00ff99;
-      font-size: 0.9rem;
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
+    .icon-card span {
+      display: block;
+      margin-top: 0.5rem;
+      color: var(--accent);
       font-size: 0.8rem;
-      color: #555;
+    }
+    .layout {
+      display: flex;
     }
   </style>
+  <!-- MCicons CDN -->
+  <link rel="stylesheet" href="https://cdn.mcicons.dev/releases/v1.0.0/css/all.css" />
 </head>
 <body>
-  <header>
-    <h1>MCICONS • ccLeaf</h1>
+
+  <header class="topbar">
+    <div class="logo">MCICONS • ccLeaf</div>
+    <nav>
+      <a href="#" class="active">Icons</a>
+      <a href="#">Textures</a>
+      <a href="#">Generators</a>
+    </nav>
   </header>
-  <div class="container">
-    <div class="icon-grid">
-      <div class="card">
-        <img src="icon1.png" alt="Icon 1">
-        <p>Icon One</p>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <a href="#" class="tab active">All</a>
+      <a href="#" class="tab">Weapons</a>
+      <a href="#" class="tab">Blocks</a>
+      <a href="#" class="tab">Tools</a>
+      <a href="#" class="tab">Food</a>
+    </aside>
+
+    <main class="main">
+      <div class="search-bar">
+        <input type="text" placeholder="Search icons…" />
       </div>
-      <div class="card">
-        <img src="icon2.png" alt="Icon 2">
-        <p>Icon Two</p>
+
+      <div class="icon-grid">
+        <div class="icon-card">
+          <i class="mc mc-diamond-sword"></i>
+          <span>Diamond Sword</span>
+        </div>
+        <div class="icon-card">
+          <i class="mc mc-apple"></i>
+          <span>Apple</span>
+        </div>
+        <!-- more icon cards... -->
       </div>
-      <!-- Repeat more cards -->
-    </div>
+    </main>
   </div>
-  <footer>
-    © 2025 ccLeaf — A massive library of Minecraft assets.
-  </footer>
+
 </body>
 </html>
