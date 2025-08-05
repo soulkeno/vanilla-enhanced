@@ -1,132 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Minecraft Launcher</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to bottom right, #0f0f0f, #000000);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Minecraft Launcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Minecraft&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Minecraft', sans-serif;
+            background: linear-gradient(45deg, #3a3a3a, #1c1c1c);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-    h1 {
-      font-size: 3rem;
-      text-align: center;
-      margin-bottom: 1rem;
-      color: #00f2ff;
-      text-shadow: 0 0 20px #00f2ff;
-      animation: glowFade 2s ease-in-out infinite alternate;
-    }
+        /* Main header */
+        .header {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            text-shadow: 0 0 10px #fff, 0 0 20px #ff0000, 0 0 30px #ff0000;
+        }
 
-    @keyframes glowFade {
-      from { text-shadow: 0 0 10px #00f2ff; }
-      to { text-shadow: 0 0 25px #00f2ff; }
-    }
+        .header h1 {
+            font-size: 80px;
+            font-family: 'Minecraft', sans-serif;
+            text-transform: uppercase;
+        }
 
-    p.description {
-      font-size: 1.2rem;
-      max-width: 600px;
-      text-align: center;
-      color: #ccc;
-      margin-bottom: 2rem;
-      animation: fadeInUp 1s ease forwards;
-    }
+        .header img {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 50px;
+            text-align: center;
+            color: white;
+        }
 
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeInUp 1.5s ease forwards;
-    }
+        .feature {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
 
-    .buttons a {
-      background-color: #1e90ff;
-      color: white;
-      padding: 1rem 2rem;
-      border-radius: 1rem;
-      text-decoration: none;
-      font-size: 1rem;
-      box-shadow: 0 0 15px rgba(30, 144, 255, 0.6);
-      transition: background-color 0.3s, transform 0.3s;
-    }
+        .feature:hover {
+            transform: translateY(-10px);
+        }
 
-    .buttons a.mac {
-      background-color: #2ecc71;
-      box-shadow: 0 0 15px rgba(46, 204, 113, 0.6);
-    }
+        .feature h3 {
+            font-size: 24px;
+            color: #ffcc00;
+        }
 
-    .buttons a:hover {
-      background-color: #005dc1;
-      transform: scale(1.05);
-    }
+        /* Animated background */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('water-animation.gif') no-repeat center center fixed;
+            animation: waterFlow 10s linear infinite;
+        }
 
-    .buttons a.mac:hover {
-      background-color: #27ae60;
-    }
+        @keyframes waterFlow {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
 
-    .footer {
-      margin-top: 4rem;
-      font-size: 0.9rem;
-      text-align: center;
-      color: #888;
-      animation: fadeIn 2s ease forwards;
-    }
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background-color: #00ff00;
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+        .btn:hover {
+            background-color: #00cc00;
+        }
 
-    .rocket {
-      position: absolute;
-      top: 2rem;
-      right: 2rem;
-      font-size: 2rem;
-      color: #ff00c8;
-      text-shadow: 0 0 10px #ff00c8;
-      animation: rocketEnter 2s ease forwards, pulse 1.5s infinite alternate;
-    }
-
-    @keyframes rocketEnter {
-      from { opacity: 0; transform: translateX(50px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.1); }
-    }
-  </style>
+    </style>
 </head>
 <body>
-  <div class="rocket">🚀</div>
-  <h1>⚡ My Epic Minecraft Launcher ⚡</h1>
-  <p class="description">
-    A sleek, fast, and customizable launcher built for Minecraft fans. Includes mod support, skins, and more.
-  </p>
-  <div class="buttons">
-    <a href="#" class="windows">⬇ Download for Windows</a>
-    <a href="#" class="mac">⬇ Download for Mac</a>
-  </div>
-  <div class="footer">
-    <p>Created with ❤️ by [Your Name]</p>
-    <p>Compatible with Minecraft 1.7 - 1.20+</p>
-  </div>
+    <div class="background-animation"></div>
+    <div class="header">
+        <img src="your-logo.png" alt="Minecraft Launcher Logo">
+        <h1>Your Minecraft Launcher</h1>
+        <p>Download and launch your Minecraft experience with style!</p>
+        <a href="#" class="btn">Download for Windows</a>
+        <a href="#" class="btn">Download for Mac</a>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <h3>Unique UI</h3>
+            <p>Custom-designed interface with smooth animations and glowing effects.</p>
+        </div>
+        <div class="feature">
+            <h3>Fast Load Time</h3>
+            <p>Optimized for super-fast load times, get into the game faster than ever.</p>
+        </div>
+        <div class="feature">
+            <h3>Mods Support</h3>
+            <p>Seamlessly integrates with your favorite mods and custom servers.</p>
+        </div>
+    </div>
 </body>
 </html>
