@@ -1,65 +1,132 @@
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { Download, Rocket } from "lucide-react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Minecraft Launcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to bottom right, #0f0f0f, #000000);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-export default function LauncherSite() {
-  useEffect(() => {
-    document.title = "My Minecraft Launcher";
-  }, []);
+    h1 {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #00f2ff;
+      text-shadow: 0 0 20px #00f2ff;
+      animation: glowFade 2s ease-in-out infinite alternate;
+    }
 
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center justify-center p-6">
-      <motion.h1
-        className="text-5xl md:text-6xl font-extrabold text-center mb-6 drop-shadow-[0_0_15px_#00f2ff]"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        ⚡ My Epic Minecraft Launcher ⚡
-      </motion.h1>
+    @keyframes glowFade {
+      from { text-shadow: 0 0 10px #00f2ff; }
+      to { text-shadow: 0 0 25px #00f2ff; }
+    }
 
-      <motion.p
-        className="text-lg md:text-xl text-center max-w-2xl mb-8 text-gray-300"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-      >
-        A sleek, fast, and customizable launcher built for Minecraft fans. Includes mod support, skins, and more.
-      </motion.p>
+    p.description {
+      font-size: 1.2rem;
+      max-width: 600px;
+      text-align: center;
+      color: #ccc;
+      margin-bottom: 2rem;
+      animation: fadeInUp 1s ease forwards;
+    }
 
-      <motion.div
-        className="flex gap-4 flex-wrap justify-center"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.7 }}
-      >
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-2xl text-lg shadow-lg shadow-blue-500/30">
-          <Download className="mr-2 h-5 w-5" /> Download for Windows
-        </Button>
-        <Button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl text-lg shadow-lg shadow-green-500/30">
-          <Download className="mr-2 h-5 w-5" /> Download for Mac
-        </Button>
-      </motion.div>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-      <motion.div
-        className="mt-16 text-center text-sm text-gray-400"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-      >
-        <p>Created with ❤️ by [Your Name]</p>
-        <p>Compatible with Minecraft 1.7 - 1.20+</p>
-      </motion.div>
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 1.5s ease forwards;
+    }
 
-      <motion.div
-        className="absolute top-10 right-10 animate-pulse"
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.4, duration: 0.8 }}
-      >
-        <Rocket className="text-pink-500 w-8 h-8 drop-shadow-[0_0_8px_#ff00c8]" />
-      </motion.div>
-    </main>
-  );
-}
+    .buttons a {
+      background-color: #1e90ff;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      text-decoration: none;
+      font-size: 1rem;
+      box-shadow: 0 0 15px rgba(30, 144, 255, 0.6);
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .buttons a.mac {
+      background-color: #2ecc71;
+      box-shadow: 0 0 15px rgba(46, 204, 113, 0.6);
+    }
+
+    .buttons a:hover {
+      background-color: #005dc1;
+      transform: scale(1.05);
+    }
+
+    .buttons a.mac:hover {
+      background-color: #27ae60;
+    }
+
+    .footer {
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      text-align: center;
+      color: #888;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .rocket {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      font-size: 2rem;
+      color: #ff00c8;
+      text-shadow: 0 0 10px #ff00c8;
+      animation: rocketEnter 2s ease forwards, pulse 1.5s infinite alternate;
+    }
+
+    @keyframes rocketEnter {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="rocket">🚀</div>
+  <h1>⚡ My Epic Minecraft Launcher ⚡</h1>
+  <p class="description">
+    A sleek, fast, and customizable launcher built for Minecraft fans. Includes mod support, skins, and more.
+  </p>
+  <div class="buttons">
+    <a href="#" class="windows">⬇ Download for Windows</a>
+    <a href="#" class="mac">⬇ Download for Mac</a>
+  </div>
+  <div class="footer">
+    <p>Created with ❤️ by [Your Name]</p>
+    <p>Compatible with Minecraft 1.7 - 1.20+</p>
+  </div>
+</body>
+</html>
