@@ -25,21 +25,44 @@
             text-align: center;
         }
 
-        input {
-            width: 80%;
-            padding: 10px;
+        .search-label {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
             margin: 10px 0;
+        }
+
+        .input {
+            width: 80%;
+            padding: 12px 20px;
             border: 1px solid #555;
             border-radius: 5px;
             background-color: #222;
             color: #fff;
+            font-size: 16px;
             transition: all 0.3s ease;
         }
 
-        input:focus {
+        .input:focus {
             border-color: #00aaff;
             background-color: #333;
             outline: none;
+        }
+
+        .slash-icon {
+            position: absolute;
+            left: 10px;
+            font-size: 20px;
+            color: #00aaff;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            fill: #00aaff;
         }
 
         button.btn {
@@ -98,55 +121,49 @@
         <!-- Register Page -->
         <div id="register-page">
             <h2>Register</h2>
-            <input type="text" id="username" placeholder="Username">
-            <input type="password" id="password" placeholder="Password">
-            <input type="password" id="confirm-password" placeholder="Confirm Password">
+            
+            <!-- Username Input -->
+            <label class="search-label">
+                <input type="text" name="text" id="username" class="input" required placeholder="Username">
+                <kbd class="slash-icon">/</kbd>
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                    <g>
+                        <path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="currentColor" data-original="#000000" class=""></path>
+                    </g>
+                </svg>
+            </label>
+
+            <!-- Password Input -->
+            <label class="search-label">
+                <input type="password" name="text" id="password" class="input" required placeholder="Password">
+                <kbd class="slash-icon">/</kbd>
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                    <g>
+                        <path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="currentColor" data-original="#000000" class=""></path>
+                    </g>
+                </svg>
+            </label>
+
+            <!-- Confirm Password Input -->
+            <label class="search-label">
+                <input type="password" name="text" id="confirm-password" class="input" required placeholder="Confirm Password">
+                <kbd class="slash-icon">/</kbd>
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                    <g>
+                        <path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z" fill="currentColor" data-original="#000000" class=""></path>
+                    </g>
+                </svg>
+            </label>
+
             <button class="btn" id="register-btn">Register</button>
         </div>
 
         <!-- Login Page -->
         <div id="login-page" style="display:none;">
             <h2>Login</h2>
-            <input type="text" id="login-username" placeholder="Username">
-            <input type="password" id="login-password" placeholder="Password">
-            <button class="btn" id="login-btn">Login</button>
-        </div>
-    </div>
-
-    <script>
-        // Registration button functionality
-        document.getElementById("register-btn").addEventListener("click", function() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirm-password").value;
-
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
-
-            // Save user data to localStorage
-            localStorage.setItem("username", username);
-            localStorage.setItem("password", password);
-
-            // Hide register page and show login page
-            document.getElementById("register-page").style.display = "none";
-            document.getElementById("login-page").style.display = "block";
-        });
-
-        // Login button functionality
-        document.getElementById("login-btn").addEventListener("click", function() {
-            const storedUsername = localStorage.getItem("username");
-            const storedPassword = localStorage.getItem("password");
-            const loginUsername = document.getElementById("login-username").value;
-            const loginPassword = document.getElementById("login-password").value;
-
-            if (loginUsername === storedUsername && loginPassword === storedPassword) {
-                window.location.href = "main-page.html";  // Redirect to main page
-            } else {
-                alert("Invalid credentials!");
-            }
-        });
-    </script>
-</body>
-</html>
+            
+            <!-- Username Input -->
+            <label class="search-label">
+                <input type="text" name="text" id="login-username" class="input" required placeholder="Username">
+                <kbd class="slash-icon">/</kbd>
+                <svg class="search-icon" xmlns="http://www.w3.org/
