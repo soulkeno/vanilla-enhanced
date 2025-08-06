@@ -3,170 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Glowing UI</title>
-    <link href="https://fonts.cdnfonts.com/css/minecraft" rel="stylesheet">
+    <title>Login Page</title>
     <style>
-        /* General reset and full screen */
+        /* Resetting margins and paddings */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body, html {
-            height: 100%;
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff7b00, #ffcc00);
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(45deg, #ff00cc, #00aaff, #ffcc00);
-            background-size: 300% 300%;
-            animation: gradientBackground 5s ease infinite;
-            font-family: 'Minecraft', sans-serif;
             overflow: hidden;
         }
 
-        /* Full screen background animation */
-        .container {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 40px;
-            width: 380px;
-            text-align: center;
+        .login-container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px 30px;
+            border-radius: 15px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            color: #fff;
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-
-        /* Glowing input fields */
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .input-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #fff;
-            border-radius: 0; /* Removed rounded corners */
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            font-size: 16px;
+            max-width: 400px;
             text-align: center;
-            outline: none;
-            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        .input-group input:focus {
+        h2 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .input-field {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #fff;
+            font-size: 18px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-field input:focus {
             border-color: #00aaff;
-            background-color: rgba(0, 170, 255, 0.2);
             box-shadow: 0 0 15px rgba(0, 170, 255, 1);
         }
 
-        .input-group::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            color: #00aaff;
-            font-size: 18px;
-            pointer-events: none;
+        .input-field input::placeholder {
+            color: #ccc;
+            font-style: italic;
         }
 
-        /* Glowing button */
-        .button {
+        .submit-btn {
+            padding: 15px;
             width: 100%;
-            padding: 14px;
-            background: #00aaff;
-            border-radius: 0; /* Removed rounded corners */
-            color: #fff;
-            font-size: 18px;
             border: none;
+            background: #00aaff;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
-        .button:hover {
-            background: #0077cc;
+        .submit-btn:hover {
+            background-color: #0077cc;
+            box-shadow: 0 0 15px rgba(0, 170, 255, 1);
+        }
+
+        .submit-btn:active {
+            background-color: #005999;
             box-shadow: 0 0 20px rgba(0, 170, 255, 1);
         }
 
-        .button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 0; /* Removed rounded corners */
-            background: linear-gradient(45deg, #ff00cc, #00aaff, #ffcc00);
-            animation: moveGradient 5s ease infinite;
-            z-index: -1;
-        }
-
-        /* Animation for gradient background */
-        @keyframes gradientBackground {
+        /* Animation for background gradient */
+        @keyframes move-gradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Moving gradient animation */
-        @keyframes moveGradient {
-            0% { background-position: 100% 100%; }
-            50% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
+        body {
+            animation: move-gradient 5s ease infinite;
+            background-size: 300% 300%;
         }
 
-        /* Responsive adjustments */
-        @media screen and (max-width: 500px) {
-            .container {
-                padding: 25px;
-                width: 90%;
+        /* Responsive Design */
+        @media screen and (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                max-width: 320px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .submit-btn {
+                font-size: 16px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Register Today</h1>
-        
-        <div class="input-group">
-            <input type="text" id="username" placeholder="Username">
+    <div class="login-container">
+        <h2>Login</h2>
+
+        <div class="input-field">
+            <input type="text" placeholder="Username" id="username">
         </div>
 
-        <div class="input-group">
-            <input type="password" id="password" placeholder="Password">
+        <div class="input-field">
+            <input type="password" placeholder="Password" id="password">
         </div>
 
-        <div class="input-group">
-            <input type="password" id="confirm-password" placeholder="Confirm Password">
-        </div>
-
-        <button class="button" onclick="registerUser()">Register</button>
+        <button class="submit-btn" onclick="login()">Login</button>
     </div>
 
     <script>
-        // Simulate registration flow
-        function registerUser() {
+        function login() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirm-password").value;
 
-            if (password !== confirmPassword) {
-                alert("Passwords do not match.");
+            if (username === "" || password === "") {
+                alert("Please fill in all fields");
                 return;
             }
 
-            alert("User registered successfully!");
-            // Add logic to handle registration flow here (save data, move to next page, etc.)
+            alert("Login Successful!");
+            // You can handle the actual login functionality here
         }
     </script>
 </body>
