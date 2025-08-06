@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login with GitHub</title>
+    <title>Login and Register</title>
     <style>
         * {
             margin: 0;
@@ -55,7 +55,31 @@
             margin-top: 20px;
         }
 
-        .signin-button {
+        .form-field {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-field input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .form-field label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-field .error-message {
+            color: red;
+            font-size: 12px;
+        }
+
+        .signin-button, .register-button {
             width: 100%;
             padding: 12px;
             font-size: 16px;
@@ -65,9 +89,10 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-top: 20px;
         }
 
-        .signin-button:hover {
+        .signin-button:hover, .register-button:hover {
             background-color: #444;
         }
 
@@ -75,8 +100,18 @@
             font-weight: bold;
         }
 
-        .logo {
-            margin-bottom: 10px;
+        .signup-prompt {
+            margin-top: 20px;
+        }
+
+        .signup-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -84,41 +119,135 @@
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <div class="logo">
-                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                        <circle cx="24" cy="24" r="24" fill="url(#gradient)"/>
-                        <path d="M18 30V18h12v12H18zm2-10v8h8v-8h-8z" fill="white"/>
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#FF6B6B"/>
-                                <stop offset="100%" stop-color="#4ECDC4"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <h1>Welcome Back</h1>
-                <p>Sign in with your GitHub account</p>
+                <h1>Login</h1>
+                <p>Enter your details to login or register</p>
             </div>
             
-            <div class="login-form">
-                <button type="button" class="signin-button" id="githubLoginButton">
-                    <span class="button-text">Sign in with GitHub</span>
+            <form class="login-form" id="loginForm" novalidate>
+                <div class="form-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                    <span class="error-message" id="usernameError"></span>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-field">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+
+                <button type="submit" class="signin-button">
+                    <span class="button-text">Login</span>
                 </button>
+
+                <button type="button" class="register-button" id="registerButton">
+                    <span class="button-text">Register</span>
+                </button>
+            </form>
+
+            <div class="signup-prompt">
+                <span>Don't have an account? </span>
+                <a href="#" class="signup-link" id="goToRegister">Create an account</a>
             </div>
         </div>
     </div>
 
     <script>
-        // Replace with your GitHub OAuth app details
-        const CLIENT_ID = 'your_github_client_id'; // GitHub OAuth Client ID
-        const REDIRECT_URI = 'http://localhost:3000/callback'; // Redirect URI
+        // Elements
+        const loginForm = document.getElementById('loginForm');
+        const registerButton = document.getElementById('registerButton');
+        const goToRegister = document.getElementById('goToRegister');
 
-        document.getElementById('githubLoginButton').addEventListener('click', () => {
-            // Redirect user to GitHub OAuth authorization page
-            const authUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
-            window.location.href = authUrl;
+        // Handle the login form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            let valid = true;
+
+            // Reset error messages
+            document.getElementById('usernameError').innerText = '';
+            document.getElementById('passwordError').innerText = '';
+            document.getElementById('confirmPasswordError').innerText = '';
+
+            // Validate username
+            if (username === '') {
+                valid = false;
+                document.getElementById('usernameError').innerText = 'Username is required';
+            }
+
+            // Validate password
+            if (password === '') {
+                valid = false;
+                document.getElementById('passwordError').innerText = 'Password is required';
+            }
+
+            // Validate confirm password
+            if (confirmPassword !== password) {
+                valid = false;
+                document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
+            }
+
+            if (valid) {
+                alert('Login successful!');
+                // Here, you would handle the form submission to the server
+            }
+        });
+
+        // Handle the register button
+        registerButton.addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            let valid = true;
+
+            // Reset error messages
+            document.getElementById('usernameError').innerText = '';
+            document.getElementById('passwordError').innerText = '';
+            document.getElementById('confirmPasswordError').innerText = '';
+
+            // Validate username
+            if (username === '') {
+                valid = false;
+                document.getElementById('usernameError').innerText = 'Username is required';
+            }
+
+            // Validate password
+            if (password === '') {
+                valid = false;
+                document.getElementById('passwordError').innerText = 'Password is required';
+            }
+
+            // Validate confirm password
+            if (confirmPassword !== password) {
+                valid = false;
+                document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
+            }
+
+            if (valid) {
+                alert('Registration successful!');
+                // Here, you would handle the form submission to the server
+            }
+        });
+
+        // Navigate to the registration page when the link is clicked
+        goToRegister.addEventListener('click', () => {
+            loginForm.reset();
+            document.querySelector('.login-header h1').innerText = 'Register';
+            document.getElementById('goToRegister').innerText = 'Already have an account? Login';
+            registerButton.style.display = 'inline-block';
+            document.querySelector('.signin-button').style.display = 'none';
         });
     </script>
-
 </body>
 </html>
