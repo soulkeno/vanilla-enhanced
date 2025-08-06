@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Glowing UI</title>
+    <link href="https://fonts.cdnfonts.com/css/minecraft" rel="stylesheet">
     <style>
         /* General reset and full screen */
         * {
@@ -20,15 +21,14 @@
             background: linear-gradient(45deg, #ff00cc, #00aaff, #ffcc00);
             background-size: 300% 300%;
             animation: gradientBackground 5s ease infinite;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Minecraft', sans-serif;
             overflow: hidden;
         }
 
-        /* Smooth transitions for the UI */
+        /* Full screen background animation */
         .container {
             background: rgba(0, 0, 0, 0.7);
             padding: 40px;
-            border-radius: 12px;
             width: 380px;
             text-align: center;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
@@ -40,7 +40,6 @@
             color: #fff;
             font-size: 32px;
             font-weight: bold;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(0, 170, 255, 1);
             margin-bottom: 30px;
         }
 
@@ -54,7 +53,7 @@
             width: 100%;
             padding: 12px;
             border: 2px solid #fff;
-            border-radius: 8px;
+            border-radius: 0; /* Removed rounded corners */
             background-color: rgba(255, 255, 255, 0.1);
             color: #fff;
             font-size: 16px;
@@ -85,7 +84,7 @@
             width: 100%;
             padding: 14px;
             background: #00aaff;
-            border-radius: 10px;
+            border-radius: 0; /* Removed rounded corners */
             color: #fff;
             font-size: 18px;
             border: none;
@@ -106,7 +105,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 10px;
+            border-radius: 0; /* Removed rounded corners */
             background: linear-gradient(45deg, #ff00cc, #00aaff, #ffcc00);
             animation: moveGradient 5s ease infinite;
             z-index: -1;
@@ -137,7 +136,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome Back!</h1>
+        <h1>Register Today</h1>
         
         <div class="input-group">
             <input type="text" id="username" placeholder="Username">
