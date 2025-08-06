@@ -4,141 +4,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
+    <link href="https://fonts.cdnfonts.com/css/minecraft" rel="stylesheet">
     <style>
-        /* Resetting margins and paddings */
+        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Full screen body setup */
         body {
-            font-family: Arial, sans-serif;
             height: 100vh;
-            background: linear-gradient(135deg, #ff7b00, #ffcc00);
+            background: linear-gradient(135deg, #ff00cc, #00aaff);
+            background-size: 300% 300%;
+            animation: gradient 5s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            font-family: 'Minecraft', sans-serif;
         }
 
+        /* Container for login form */
         .login-container {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(10vh);
         }
 
+        /* Header Styling */
         h2 {
-            color: white;
-            font-size: 28px;
-            margin-bottom: 20px;
-            font-weight: 700;
+            color: #fff;
+            font-size: 32px;
             text-transform: uppercase;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
         }
 
+        /* Input field setup */
         .input-field {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .input-field input {
             width: 100%;
             padding: 15px;
-            border: 2px solid #fff;
-            border-radius: 5px;
-            background-color: transparent;
-            color: #fff;
             font-size: 18px;
+            border: none;
+            border-radius: 5px;
             outline: none;
-            transition: 0.3s;
-        }
-
-        .input-field input:focus {
-            border-color: #00aaff;
-            box-shadow: 0 0 15px rgba(0, 170, 255, 1);
+            background: transparent;
+            color: white;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            transition: 0.4s ease;
         }
 
         .input-field input::placeholder {
-            color: #ccc;
+            color: #bbb;
             font-style: italic;
         }
 
-        .submit-btn {
-            padding: 15px;
-            width: 100%;
-            border: none;
-            background: #00aaff;
-            color: white;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .submit-btn:hover {
-            background-color: #0077cc;
+        .input-field input:focus {
+            border: 2px solid #00aaff;
             box-shadow: 0 0 15px rgba(0, 170, 255, 1);
         }
 
-        .submit-btn:active {
-            background-color: #005999;
-            box-shadow: 0 0 20px rgba(0, 170, 255, 1);
+        /* Button styling */
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #00aaff;
+            border: none;
+            color: white;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.4s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Animation for background gradient */
-        @keyframes move-gradient {
+        .submit-btn:hover {
+            background: #0077cc;
+            box-shadow: 0 0 25px rgba(0, 170, 255, 1);
+        }
+
+        .submit-btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff00cc, #ffcc00);
+            animation: slide 1.5s infinite;
+            z-index: -1;
+        }
+
+        /* Button Hover Animation */
+        @keyframes slide {
+            0% {
+                left: -100%;
+            }
+            50% {
+                left: 100%;
+            }
+            100% {
+                left: -100%;
+            }
+        }
+
+        /* Keyframe animation for background gradient */
+        @keyframes gradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        body {
-            animation: move-gradient 5s ease infinite;
-            background-size: 300% 300%;
-        }
-
         /* Responsive Design */
-        @media screen and (max-width: 480px) {
+        @media (max-width: 480px) {
             .login-container {
-                padding: 30px 20px;
-                max-width: 320px;
+                padding: 25px;
+                width: 90%;
             }
-
             h2 {
-                font-size: 24px;
-            }
-
-            .submit-btn {
-                font-size: 16px;
+                font-size: 28px;
             }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Login to Your Account</h2>
 
+        <!-- Username Input -->
         <div class="input-field">
-            <input type="text" placeholder="Username" id="username">
+            <input type="text" id="username" placeholder="Username" required>
         </div>
 
+        <!-- Password Input -->
         <div class="input-field">
-            <input type="password" placeholder="Password" id="password">
+            <input type="password" id="password" placeholder="Password" required>
         </div>
 
+        <!-- Submit Button -->
         <button class="submit-btn" onclick="login()">Login</button>
     </div>
 
     <script>
+        // Simulate login process
         function login() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
@@ -149,7 +176,7 @@
             }
 
             alert("Login Successful!");
-            // You can handle the actual login functionality here
+            // Add your login logic here
         }
     </script>
 </body>
