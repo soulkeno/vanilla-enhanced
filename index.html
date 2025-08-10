@@ -1,478 +1,1015 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Breeze Schematics — Index</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Breeze Schematics — Full Demo</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
 
-  <style>
-    :root{
-      --bg:#07111a;
-      --glass: rgba(255,255,255,0.06);
-      --glass-strong: rgba(255,255,255,0.09);
-      --muted: rgba(255,255,255,0.8);
-      --accent1: #9b59b6;
-      --accent2: #5eead4;
-      --success: #2ecc71;
-      --danger: #e74c3c;
-      --card: rgba(255,255,255,0.04);
+<style>
+  :root {
+    --bg: #07111a;
+    --glass: rgba(255, 255, 255, 0.06);
+    --glass-strong: rgba(255, 255, 255, 0.09);
+    --muted: rgba(255, 255, 255, 0.8);
+    --accent1: #9b59b6;
+    --accent2: #5eead4;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --card: rgba(255, 255, 255, 0.04);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #fff;
+    background: linear-gradient(180deg, #07111a 0%, #041018 100%);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-y: auto;
+  }
+
+  /* Aurora background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -10% -10%;
+    background: 
+      radial-gradient(800px 400px at 10% 20%, rgba(155, 89, 182, 0.22), transparent 20%), 
+      radial-gradient(700px 420px at 80% 70%, rgba(94, 234, 212, 0.12), transparent 20%), 
+      radial-gradient(600px 300px at 50% 40%, rgba(95, 173, 255, 0.08), transparent 25%);
+    filter: blur(60px) saturate(1.2);
+    z-index: -1;
+    animation: aurora 14s infinite alternate ease-in-out;
+    transform-origin: center;
+  }
+  @keyframes aurora {
+    0% {
+      transform: translate(0, 0) scale(1);
     }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      min-height:100%;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      color:#fff;
-      background: linear-gradient(180deg,#07111a 0%, #041018 100%);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-y:auto;
+    100% {
+      transform: translate(-60px, -30px) scale(1.02);
     }
+  }
 
-    /* Aurora-style blurred colorful orbs */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:-10% -10%;
-      background:
-        radial-gradient(800px 400px at 10% 20%, rgba(155,89,182,0.22), transparent 20%),
-        radial-gradient(700px 420px at 80% 70%, rgba(94,234,212,0.12), transparent 20%),
-        radial-gradient(600px 300px at 50% 40%, rgba(95,173,255,0.08), transparent 25%);
-      filter: blur(60px) saturate(1.2);
-      z-index:-1;
-      animation: aurora 14s infinite alternate ease-in-out;
-      transform-origin:center;
+  /* Topbar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 28px;
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    z-index: 10;
+  }
+  .brand-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) inset;
+  }
+  .title {
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.9;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    color: var(--muted);
+    font-weight: 600;
+    user-select: none;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .tab.active {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  }
+
+  .user-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    position: relative;
+  }
+  .user-pfp {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .user-pfp:hover {
+    border-color: var(--accent2);
+  }
+
+  /* Layout */
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  h2 {
+    margin: 6px 0 12px 0;
+  }
+
+  .tab-section {
+    display: none;
+  }
+  .tab-section.active {
+    display: block;
+  }
+
+  /* Cards grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 48px rgba(2, 6, 23, 0.7);
+  }
+  .card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+  }
+  .card-content {
+    padding: 12px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .card-title {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    opacity: 0.95;
+    white-space: pre-wrap;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.25);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+  }
+  .btn {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    user-select: none;
+    transition: background-color 0.2s;
+  }
+  .btn.download {
+    background: linear-gradient(90deg, var(--success), #16a085);
+    color: #042017;
+  }
+  .btn.download:hover {
+    background: linear-gradient(90deg, #27ae60, #149d87);
+  }
+  .btn.details {
+    background: linear-gradient(90deg, #3498db, #8e44ad);
+    color: white;
+  }
+  .btn.details:hover {
+    background: linear-gradient(90deg, #2980b9, #7d3c98);
+  }
+  .btn.primary {
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    color: white;
+    border: none;
+  }
+  .btn.primary:hover {
+    filter: brightness(1.1);
+  }
+  .btn.outline {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .btn.outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Upload form */
+  .upload-form {
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+  .upload-form input[type="text"],
+  .upload-form textarea,
+  .upload-form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: transparent;
+    color: inherit;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .upload-form label.file-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.12);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .upload-form label.file-row input {
+    cursor: pointer;
+  }
+
+  .row {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* Overlay / modal */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 40;
+  }
+  .overlay.hidden {
+    display: none;
+  }
+  .overlay .card {
+    max-width: 920px;
+    width: 100%;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 18px 48px rgba(2, 6, 23, 0.8);
+    color: #fff;
+  }
+  .modal {
+    padding: 14px;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-body {
+    padding: 10px 0;
+  }
+  .modal-footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  .close {
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .close:hover {
+    color: white;
+  }
+
+  /* Profile Modal */
+  #profileModal .card {
+    max-width: 400px;
+  }
+  #profileModal .profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin: 0 auto 12px auto;
+    border: 3px solid var(--accent2);
+    cursor: pointer;
+  }
+  #profileModal label.file-row {
+    cursor: pointer;
+  }
+  #profileModal textarea,
+  #profileModal input[type="text"] {
+    font-size: 14px;
+  }
+
+  /* Small screens */
+  @media (max-width: 600px) {
+    .card img {
+      height: 120px;
     }
-    @keyframes aurora{
-      0%{ transform: translate(0,0) scale(1); }
-      100%{ transform: translate(-60px,-30px) scale(1.02); }
+    .topbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
     }
-
-    /* Topbar */
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding:18px 28px;
-      position:sticky;
-      top:0;
-      backdrop-filter: blur(8px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-    }
-    .brand-left{ display:flex; gap:12px; align-items:center; }
-    .logo{ width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,var(--accent1),var(--accent2)); box-shadow: 0 6px 20px rgba(0,0,0,0.6) inset; }
-    .title{ font-weight:700; font-size:16px; }
-    .subtitle{ font-size:12px; color:var(--muted); opacity:0.9 }
-
-    .tabs{ display:flex; gap:8px; }
-    .tab{ padding:10px 14px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.05); cursor:pointer; color:var(--muted); font-weight:600 }
-    .tab.active{ background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); color:#fff; box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
-
-    .user-area{ color:var(--muted); font-size:13px }
-
-    /* Layout */
-    .container{ max-width:1200px; margin:20px auto; padding:0 20px; }
-    h2{ margin:6px 0 12px 0; }
-
-    .tab-section{ display:none }
-    .tab-section.active{ display:block }
-
-    /* Cards grid */
-    .card-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
-
-    .card{ background: var(--card); border-radius:12px; overflow:hidden; box-shadow: 0 8px 30px rgba(2,6,23,0.6); transition: transform .18s ease, box-shadow .18s ease; display:flex; flex-direction:column }
-    .card:hover{ transform: translateY(-6px); box-shadow: 0 18px 48px rgba(2,6,23,0.7); }
-    .card img{ width:100%; height:160px; object-fit:cover; display:block }
-    .card-content{ padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:8px }
-    .card-title{ font-weight:700; font-size:15px }
-    .card-desc{ font-size:13px; color:var(--muted); opacity:0.95 }
-
-    .tag{ display:inline-block; padding:6px 10px; border-radius:999px; background: rgba(0,0,0,0.25); font-size:12px; color:var(--muted); }
-    .card-row{ display:flex; align-items:center; justify-content:space-between; gap:8px }
-
-    .buttons{ display:flex; gap:8px; padding:12px; }
-    .btn{ flex:1; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700 }
-    .btn.download{ background: linear-gradient(90deg,var(--success), #16a085); color:#042017 }
-    .btn.details{ background: linear-gradient(90deg,#3498db,#8e44ad); color:white }
-
-    /* Upload form */
-    .upload-form{ margin-top:12px; padding:14px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03) }
-    .upload-form input[type=text], .upload-form textarea, .upload-form select{ width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit }
-    .upload-form label.file-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px; border-radius:8px; background: rgba(0,0,0,0.12); font-size:13px }
-
-    .row{ display:flex; gap:8px; }
-    .primary{ background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:white; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700 }
-    .outline{ background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.06); padding:10px 12px; border-radius:8px; cursor:pointer }
-
-    /* Overlay / modal */
-    .overlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(0,0,0,0.6); z-index:40 }
-    .overlay .card{ max-width:920px; width:100%; }
-    .login-box{ width:360px; padding:18px; text-align:center }
-    .login-box input{ width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent }
-
-    .modal{ padding:14px }
-    .modal-header{ display:flex; justify-content:space-between; align-items:center }
-    .modal-body{ padding:10px 0 }
-    .modal-footer{ display:flex; gap:8px; justify-content:flex-end }
-    .close{ background:transparent; border:none; font-size:18px; cursor:pointer; color:var(--muted) }
-
-    /* small screens */
-    @media (max-width:600px){ .card img{ height:120px } .topbar{ flex-direction:column; align-items:stretch; gap:12px } }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <!-- Login overlay (simple client-side gate) -->
-  <div id="loginScreen" class="overlay" aria-hidden="false">
-    <div class="card login-box">
-      <div style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:8px;">
-        <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2))"></div>
-      </div>
-      <h3 style="margin:0 0 6px 0;">Welcome to Breeze Schematics</h3>
-      <p style="margin:0 0 12px 0;color:var(--muted)">Log in to upload and download community schematics</p>
-      <input id="username" type="text" placeholder="Username" autocomplete="off" />
-      <input id="password" type="password" placeholder="Password" />
-      <div class="row" style="margin-top:10px;">
-        <button id="loginBtn" class="primary" style="flex:1">Login</button>
-        <button id="guestBtn" class="outline" style="flex:1">Guest</button>
-      </div>
-      <p style="margin-top:8px;color:var(--muted);font-size:12px">This demo uses a simple local login. Replace with real auth when ready.</p>
+  <!-- Login overlay -->
+  <div id="loginScreen" class="overlay">
+    <div class="card modal login-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <h3 id="loginTitle" style="text-align:center;margin-top:0;">Welcome to Breeze Schematics</h3>
+      <p style="text-align:center;color:var(--muted); margin-bottom: 16px;">Log in to upload and download community schematics</p>
+      <form id="loginForm" style="display:flex; flex-direction: column; gap: 12px;">
+        <input id="loginUsername" type="text" placeholder="Username" autocomplete="off" required />
+        <input id="loginPassword" type="password" placeholder="Password" required />
+        <button type="submit" class="btn primary" style="width:100%;">Login</button>
+        <button type="button" id="loginGuestBtn" class="btn outline" style="width:100%;">Continue as Guest</button>
+      </form>
+      <p style="text-align:center; color:var(--muted); font-size:12px; margin-top:12px;">* This demo uses local browser storage for authentication.</p>
     </div>
   </div>
 
   <!-- Topbar -->
-  <header class="topbar">
+  <header class="topbar" role="banner">
     <div class="brand-left">
       <div class="logo" aria-hidden="true"></div>
       <div>
         <div class="title">Breeze Schematics</div>
-        <div class="subtitle">Download, upload & share Minecraft builds</div>
+        <div class="subtitle">Download, upload &amp; share Minecraft builds</div>
       </div>
     </div>
 
-    <nav class="tabs" role="tablist">
-      <button class="tab active" data-target="main">Main Schematics</button>
-      <button class="tab" data-target="community">Community</button>
+    <nav class="tabs" role="tablist" aria-label="Main navigation tabs">
+      <button class="tab active" data-target="main" role="tab" aria-selected="true" tabindex="0">Main Schematics</button>
+      <button class="tab" data-target="community" role="tab" aria-selected="false" tabindex="-1">Community</button>
     </nav>
 
-    <div class="user-area">
-      <span id="loggedUser">Not logged in</span>
+    <div class="user-area" aria-label="User area">
+      <span id="loggedUserName" aria-live="polite" style="user-select:none;">Not logged in</span>
+      <div id="userPfp" class="user-pfp" title="Profile Settings" tabindex="0" aria-haspopup="dialog" aria-label="Open profile settings"></div>
     </div>
   </header>
 
   <main class="container">
     <!-- MAIN -->
-    <section id="main" class="tab-section active">
+    <section id="main" class="tab-section active" role="tabpanel" tabindex="0">
       <h2>Featured Schematics</h2>
-      <div id="mainSchematics" class="card-grid">Loading…</div>
+      <div id="mainSchematics" class="card-grid" aria-live="polite" aria-label="Featured schematics cards"></div>
     </section>
 
     <!-- COMMUNITY -->
-    <section id="community" class="tab-section" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;">
+    <section id="community" class="tab-section" role="tabpanel" tabindex="0" aria-hidden="true" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
         <h2 style="margin:0">Community Uploads</h2>
-        <div>
-          <button id="showUpload" class="primary">Upload your own</button>
-        </div>
+        <button id="showUpload" class="btn primary" aria-haspopup="form" aria-controls="uploadForm">Upload your own</button>
       </div>
 
-      <form id="uploadForm" class="upload-form" style="display:none;" enctype="multipart/form-data">
-        <h3 style="margin:0 0 8px 0">Upload schematic</h3>
-        <input name="name" type="text" placeholder="Enter schematic name" required />
-
+      <form id="uploadForm" class="upload-form" style="display:none;" enctype="multipart/form-data" aria-label="Upload schematic form">
+        <h3 style="margin:0 0 8px 0;">Upload schematic</h3>
+        <input name="name" type="text" placeholder="Enter schematic name" required autocomplete="off" />
         <label class="file-row" style="margin-top:8px;">
-          <span style="font-size:13px">Choose schematic (.schem)</span>
+          <span style="font-size:13px">Choose schematic file (.schem, .schematic, .nbt, .msch)</span>
           <input type="file" name="file" accept=".schem,.schematic,.nbt,.msch" required />
         </label>
-
         <label class="file-row" style="margin-top:8px;">
           <span style="font-size:13px">Optional preview image</span>
           <input type="file" name="image" accept="image/*" />
         </label>
-
-        <select name="tag" style="margin-top:8px">
+        <select name="tag" style="margin-top:8px" aria-label="Select schematic tag">
           <option value="Farm">Farm</option>
           <option value="Stash">Stash</option>
         </select>
-
         <textarea name="description" rows="3" placeholder="Short description (shown in details)" style="margin-top:8px"></textarea>
-
         <div class="row" style="margin-top:10px;">
-          <button type="submit" class="primary">Upload</button>
-          <button type="button" class="outline" id="cancelUpload">Cancel</button>
+          <button type="submit" class="btn primary" aria-label="Submit upload form">Upload</button>
+          <button type="button" class="btn outline" id="cancelUpload">Cancel</button>
         </div>
-
-        <div id="uploadStatus" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
+        <div id="uploadStatus" style="margin-top:8px; color: var(--muted); font-size: 13px;"></div>
       </form>
 
-      <div id="communitySchematics" class="card-grid" style="margin-top:18px;"></div>
+      <div id="communitySchematics" class="card-grid" aria-live="polite" aria-label="Community schematics cards" style="margin-top:18px;"></div>
     </section>
   </main>
 
   <!-- Details modal -->
-  <div id="detailsModal" class="overlay" style="display:none;">
-    <div class="card modal">
+  <div id="detailsModal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <div class="card modal" role="document">
       <div class="modal-header">
-        <h3 id="modalTitle" style="margin:0"></h3>
-        <button class="close" id="modalClose">✕</button>
+        <h3 id="modalTitle" style="margin:0;"></h3>
+        <button class="close" id="modalClose" aria-label="Close details modal">✕</button>
       </div>
       <div class="modal-body">
-        <img id="modalImage" alt="preview" style="width:100%;max-height:380px;object-fit:cover;border-radius:8px;margin-top:10px;" />
-        <p id="modalTag" style="margin:10px 0 0 0;color:var(--muted)"></p>
-        <p id="modalDescription" style="margin-top:6px;color:var(--muted)"></p>
+        <img id="modalImage" alt="Schematic preview" style="width:100%; max-height: 320px; object-fit: contain; border-radius: 10px; margin-bottom:12px; display:none;" />
+        <p id="modalDesc" style="white-space: pre-wrap; font-size:14px;"></p>
+        <p id="modalTag" style="font-size: 13px; font-weight: 600; margin-top: 12px; color: var(--accent1);"></p>
       </div>
-      <div class="modal-footer" style="margin-top:12px">
-        <a id="modalDownload" class="primary" href="#" download>Download schematic</a>
-        <button class="outline" id="modalClose2">Close</button>
+      <div class="modal-footer">
+        <a id="modalDownload" href="#" download class="btn download" aria-label="Download schematic">Download</a>
+        <button class="btn outline" id="modalCloseFooter">Close</button>
       </div>
     </div>
   </div>
 
-  <script>
-    // Single-file front-end logic. Works when served from the Node server provided earlier (visit http://localhost:3000)
-    document.addEventListener('DOMContentLoaded', () => {
-      const API_BASE = '/api';
-      const SCHEMATICS_URL = API_BASE + '/schematics';
-      const UPLOAD_URL = API_BASE + '/upload';
+  <!-- Profile Settings Modal -->
+  <div id="profileModal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="profileTitle" tabindex="-1">
+    <div class="card modal" role="document">
+      <div class="modal-header">
+        <h3 id="profileTitle" style="margin:0;">Profile Settings</h3>
+        <button class="close" id="profileClose" aria-label="Close profile settings">✕</button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <div id="profilePfp" class="profile-pic" tabindex="0" title="Click to change profile picture" aria-label="Change profile picture"></div>
+        <input id="pfpFileInput" type="file" accept="image/*" style="display:none;" />
+        <form id="profileForm" style="margin-top:12px; text-align:left;">
+          <label for="profileNameInput">Name</label>
+          <input id="profileNameInput" type="text" autocomplete="off" style="width:100%; margin-bottom: 12px;" required />
+          <label for="profileAboutInput">About Me</label>
+          <textarea id="profileAboutInput" rows="3" style="width:100%; resize:none;"></textarea>
+          <div style="text-align:right; margin-top: 10px;">
+            <button type="submit" class="btn primary">Save</button>
+            <button type="button" class="btn outline" id="profileCancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-      const loginScreen = document.getElementById('loginScreen');
-      const loginBtn = document.getElementById('loginBtn');
-      const guestBtn = document.getElementById('guestBtn');
-      const loggedUserEl = document.getElementById('loggedUser');
-      const showUploadBtn = document.getElementById('showUpload');
-      const uploadForm = document.getElementById('uploadForm');
-      const cancelUpload = document.getElementById('cancelUpload');
-      const uploadStatus = document.getElementById('uploadStatus');
+<script>
+(() => {
+  "use strict";
 
-      const mainGrid = document.getElementById('mainSchematics');
-      const communityGrid = document.getElementById('communitySchematics');
+  // ======== Storage Keys & Helpers ========
+  const STORAGE_USER = "breezeUser";
+  const STORAGE_SCHEMATICS = "breezeCommunitySchematics";
 
-      const detailsModal = document.getElementById('detailsModal');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalImage = document.getElementById('modalImage');
-      const modalTag = document.getElementById('modalTag');
-      const modalDescription = document.getElementById('modalDescription');
-      const modalDownload = document.getElementById('modalDownload');
-      const modalClose = document.getElementById('modalClose');
-      const modalClose2 = document.getElementById('modalClose2');
+  // Default avatar (simple pixel-art-ish)
+  const DEFAULT_PFP =
+    "data:image/svg+xml;base64," +
+    btoa(`
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="10" fill="#2c3e50" />
+  <circle cx="12" cy="10" r="3" fill="#9b59b6" />
+  <path d="M7 20c0-3 5-3 5-3s5 0 5 3" stroke="#9b59b6" stroke-width="1.7" fill="none" />
+</svg>
+`);
 
-      let currentUser = null;
-      let schematics = [];
+  // Save user data to localStorage
+  function saveUser(user) {
+    localStorage.setItem(STORAGE_USER, JSON.stringify(user));
+  }
+  // Load user data from localStorage
+  function loadUser() {
+    const data = localStorage.getItem(STORAGE_USER);
+    if (!data) return null;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return null;
+    }
+  }
 
-      // Tabs
-      document.querySelectorAll('.tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-          btn.classList.add('active');
-          const target = btn.dataset.target;
-          document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-          document.getElementById(target).classList.add('active');
-        });
-      });
+  // Save schematics array to localStorage
+  function saveSchematics(arr) {
+    localStorage.setItem(STORAGE_SCHEMATICS, JSON.stringify(arr));
+  }
+  // Load schematics array from localStorage
+  function loadSchematics() {
+    const data = localStorage.getItem(STORAGE_SCHEMATICS);
+    if (!data) return [];
+    try {
+      return JSON.parse(data);
+    } catch {
+      return [];
+    }
+  }
 
-      function showLogin(){ loginScreen.style.display = 'flex'; }
-      function hideLogin(){ loginScreen.style.display = 'none'; }
+  // ======== Global State ========
+  let currentUser = null;
+  let schematics = [];
+  let activeTab = "main";
 
-      guestBtn.addEventListener('click', () => {
-        currentUser = 'Guest';
-        onLogin();
-      });
-      loginBtn.addEventListener('click', () => {
-        const u = document.getElementById('username').value.trim();
-        const p = document.getElementById('password').value.trim();
-        if(!u || !p){ alert('Enter username and password (any values for demo)'); return; }
-        currentUser = u;
-        onLogin();
-      });
+  // ======== DOM Elements ========
+  const loginScreen = document.getElementById("loginScreen");
+  const loginForm = document.getElementById("loginForm");
+  const loginUsername = document.getElementById("loginUsername");
+  const loginPassword = document.getElementById("loginPassword");
+  const loginGuestBtn = document.getElementById("loginGuestBtn");
+  const loggedUserName = document.getElementById("loggedUserName");
+  const userPfp = document.getElementById("userPfp");
 
-      function onLogin(){
-        hideLogin();
-        loggedUserEl.textContent = currentUser;
-        loadSchematics();
-      }
+  const tabs = document.querySelectorAll(".tab");
+  const tabSections = document.querySelectorAll(".tab-section");
+  const mainSchematicsDiv = document.getElementById("mainSchematics");
+  const communitySchematicsDiv = document.getElementById("communitySchematics");
+  const showUploadBtn = document.getElementById("showUpload");
+  const uploadForm = document.getElementById("uploadForm");
+  const cancelUploadBtn = document.getElementById("cancelUpload");
+  const uploadStatus = document.getElementById("uploadStatus");
 
-      // Upload form toggle
-      showUploadBtn.addEventListener('click', () => toggleUploadForm(true));
-      cancelUpload.addEventListener('click', () => toggleUploadForm(false));
+  const detailsModal = document.getElementById("detailsModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalDesc = document.getElementById("modalDesc");
+  const modalTag = document.getElementById("modalTag");
+  const modalImage = document.getElementById("modalImage");
+  const modalDownload = document.getElementById("modalDownload");
+  const modalClose = document.getElementById("modalClose");
+  const modalCloseFooter = document.getElementById("modalCloseFooter");
 
-      function toggleUploadForm(show){
-        if(!currentUser){ alert('Please log in first'); return; }
-        uploadStatus.textContent = '';
-        uploadForm.style.display = show ? 'block' : 'none';
-        if(show) uploadForm.scrollIntoView({behavior:'smooth', block:'center'});
-      }
+  const profileModal = document.getElementById("profileModal");
+  const profileCloseBtn = document.getElementById("profileClose");
+  const profilePfpDiv = document.getElementById("profilePfp");
+  const pfpFileInput = document.getElementById("pfpFileInput");
+  const profileForm = document.getElementById("profileForm");
+  const profileNameInput = document.getElementById("profileNameInput");
+  const profileAboutInput = document.getElementById("profileAboutInput");
+  const profileCancelBtn = document.getElementById("profileCancel");
 
-      // Load schematics from server
-      async function loadSchematics(){
-        try{
-          mainGrid.innerHTML = 'Loading…';
-          communityGrid.innerHTML = 'Loading…';
-          const res = await fetch(SCHEMATICS_URL);
-          if(!res.ok) throw new Error('Failed to fetch schematics');
-          schematics = await res.json();
-          renderSchematics();
-        }catch(err){
-          mainGrid.innerHTML = '<div style="padding:12px;color:var(--muted)">Could not load schematics. Make sure the server is running (node server.js).</div>';
-          communityGrid.innerHTML = mainGrid.innerHTML;
-          console.error(err);
-        }
-      }
+  // ======== Util ========
+  function createCard(schematic, isCommunity = false) {
+    // Create card element
+    const card = document.createElement("article");
+    card.className = "card";
+    card.tabIndex = 0;
+    card.setAttribute("aria-label", `${schematic.name} schematic card`);
 
-      // Render cards
-      function renderSchematics(){
-        mainGrid.innerHTML = '';
-        communityGrid.innerHTML = '';
+    // Image
+    const img = document.createElement("img");
+    img.alt = schematic.image ? `${schematic.name} preview` : "No preview available";
+    img.src = schematic.image || "https://via.placeholder.com/400x160?text=No+Preview";
 
-        if(!Array.isArray(schematics) || schematics.length === 0){
-          mainGrid.innerHTML = '<div style="padding:12px;color:var(--muted)">No schematics yet.</div>';
-          communityGrid.innerHTML = mainGrid.innerHTML;
-          return;
-        }
+    // Content container
+    const content = document.createElement("div");
+    content.className = "card-content";
 
-        schematics.forEach(s => {
-          const card = document.createElement('div');
-          card.className = 'card';
+    // Title row + tag
+    const title = document.createElement("h3");
+    title.className = "card-title";
+    title.textContent = schematic.name;
 
-          const img = document.createElement('img');
-          img.alt = s.name || 'Schematic preview';
-          if(s.image){ img.src = '/uploads/' + s.image; }
-          else { img.src = makePlaceholderDataUrl(s.name || 'No image'); }
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = schematic.tag || "None";
 
-          const content = document.createElement('div');
-          content.className = 'card-content';
+    // Description snippet (first 80 chars)
+    const descSnippet = document.createElement("p");
+    descSnippet.className = "card-desc";
+    descSnippet.textContent =
+      schematic.description
+        ? schematic.description.length > 80
+          ? schematic.description.slice(0, 77) + "..."
+          : schematic.description
+        : "No description.";
 
-          const title = document.createElement('div');
-          title.className = 'card-title';
-          title.textContent = s.name || 'Untitled';
+    // Buttons row
+    const buttons = document.createElement("div");
+    buttons.className = "buttons";
 
-          const desc = document.createElement('div');
-          desc.className = 'card-desc';
-          desc.textContent = (s.description && s.description.length > 140) ? s.description.slice(0,140) + '…' : (s.description || 'No description');
+    const btnDownload = document.createElement("a");
+    btnDownload.className = "btn download";
+    btnDownload.href = schematic.fileUrl;
+    btnDownload.download = schematic.name + (schematic.fileNameExt || ".schem");
+    btnDownload.textContent = "Download";
+    btnDownload.setAttribute("aria-label", `Download ${schematic.name} schematic`);
 
-          const row = document.createElement('div');
-          row.className = 'card-row';
+    const btnDetails = document.createElement("button");
+    btnDetails.className = "btn details";
+    btnDetails.type = "button";
+    btnDetails.textContent = "Details";
+    btnDetails.setAttribute("aria-label", `Show details for ${schematic.name}`);
+    btnDetails.addEventListener("click", () => openDetailsModal(schematic));
 
-          const tag = document.createElement('div');
-          tag.className = 'tag';
-          tag.textContent = s.tag || 'Uncategorized';
+    // Assemble
+    content.appendChild(title);
+    content.appendChild(tag);
+    content.appendChild(descSnippet);
+    buttons.appendChild(btnDownload);
+    buttons.appendChild(btnDetails);
+    card.appendChild(img);
+    card.appendChild(content);
+    card.appendChild(buttons);
 
-          row.appendChild(tag);
+    return card;
+  }
 
-          const buttons = document.createElement('div');
-          buttons.className = 'buttons';
+  function openDetailsModal(schematic) {
+    modalTitle.textContent = schematic.name;
+    modalDesc.textContent = schematic.description || "No description.";
+    modalTag.textContent = "Tag: " + (schematic.tag || "None");
+    if (schematic.image) {
+      modalImage.src = schematic.image;
+      modalImage.style.display = "block";
+    } else {
+      modalImage.style.display = "none";
+    }
+    modalDownload.href = schematic.fileUrl;
+    modalDownload.download = schematic.name + (schematic.fileNameExt || ".schem");
+    detailsModal.classList.remove("hidden");
+    detailsModal.focus();
+  }
+  function closeDetailsModal() {
+    detailsModal.classList.add("hidden");
+  }
 
-          const dl = document.createElement('a');
-          dl.className = 'btn download';
-          dl.textContent = 'Download';
-          dl.href = '/uploads/' + s.file;
-          dl.setAttribute('download', s.originalFileName || s.file);
+  // Profile modal open/close
+  function openProfileModal() {
+    if (!currentUser) return;
+    profileNameInput.value = currentUser.name || "";
+    profileAboutInput.value = currentUser.about || "";
+    profilePfpDiv.style.backgroundImage = `url('${currentUser.pfp || DEFAULT_PFP}')`;
+    profileModal.classList.remove("hidden");
+    profileModal.focus();
+  }
+  function closeProfileModal() {
+    profileModal.classList.add("hidden");
+  }
 
-          const details = document.createElement('button');
-          details.className = 'btn details';
-          details.textContent = 'Details';
-          details.addEventListener('click', () => showDetails(s));
+  // ======== Authentication (fake, stored locally) ========
+  function fakeAuth(username, password) {
+    // This demo: any username + password length > 2 accepted, store to localStorage
+    if (!username || password.length < 3) return false;
 
-          buttons.appendChild(dl);
-          buttons.appendChild(details);
+    // Load previous or create new user data
+    let user = loadUser();
+    if (!user || user.username !== username) {
+      user = {
+        username,
+        name: username,
+        about: "",
+        pfp: DEFAULT_PFP,
+        password,
+      };
+      saveUser(user);
+    } else if (user.password !== password) {
+      return false;
+    }
+    return user;
+  }
 
-          content.appendChild(title);
-          content.appendChild(desc);
-          content.appendChild(row);
+  // Log in user, update UI
+  function loginUser(user) {
+    currentUser = user;
+    saveUser(user);
+    loginScreen.style.display = "none";
+    loggedUserName.textContent = user.name;
+    userPfp.style.backgroundImage = `url('${user.pfp || DEFAULT_PFP}')`;
+    userPfp.tabIndex = 0;
+    userPfp.setAttribute("aria-label", "Open profile settings");
 
-          card.appendChild(img);
-          card.appendChild(content);
-          card.appendChild(buttons);
+    renderSchematics();
+  }
+  // Log out (for demo)
+  function logoutUser() {
+    currentUser = null;
+    localStorage.removeItem(STORAGE_USER);
+    location.reload();
+  }
 
-          // Featured vs community placement: if tag is 'Farm' we put in main as an example
-          // But the server does not include isMain; for demo, place newest 3 as featured
+  // ======== Upload schematic ========
+  function getFileExtension(filename) {
+    return filename.split(".").pop().toLowerCase();
+  }
 
-          // we'll append all to community, and first 3 to main as featured
-          communityGrid.appendChild(card);
-        });
+  async function handleUploadFormSubmit(e) {
+    e.preventDefault();
+    uploadStatus.textContent = "";
 
-        // Put top 3 newest into main grid as featured (clone)
-        const sorted = schematics.slice().sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
-        mainGrid.innerHTML = '';
-        sorted.slice(0,3).forEach(s => {
-          const card = communityGrid.querySelector('.card');
-          // create a mini-card using same renderer
-          const mini = document.createElement('div');
-          mini.className = 'card';
-          const img = document.createElement('img');
-          img.alt = s.name || 'Schematic preview';
-          if(s.image) img.src = '/uploads/' + s.image; else img.src = makePlaceholderDataUrl(s.name || 'No image');
-          const content = document.createElement('div');
-          content.className = 'card-content';
-          const title = document.createElement('div'); title.className='card-title'; title.textContent = s.name || 'Untitled';
-          const desc = document.createElement('div'); desc.className='card-desc'; desc.textContent = s.description ? (s.description.length>120 ? s.description.slice(0,120)+'…':s.description) : 'No description';
-          const buttons = document.createElement('div'); buttons.className='buttons';
-          const dl = document.createElement('a'); dl.className='btn download'; dl.textContent='Download'; dl.href = '/uploads/'+s.file; dl.setAttribute('download', s.originalFileName || s.file);
-          const details = document.createElement('button'); details.className='btn details'; details.textContent='Details'; details.addEventListener('click', ()=>showDetails(s));
-          buttons.appendChild(dl); buttons.appendChild(details);
-          content.appendChild(title); content.appendChild(desc);
-          mini.appendChild(img); mini.appendChild(content); mini.appendChild(buttons);
-          mainGrid.appendChild(mini);
-        });
-      }
+    const form = e.target;
+    const name = form.name.value.trim();
+    const fileInput = form.file;
+    const imageInput = form.image;
+    const tag = form.tag.value;
+    const description = form.description.value.trim();
 
-      // Show details modal
-      function showDetails(s){
-        modalTitle.textContent = s.name || 'Untitled';
-        modalImage.src = s.image ? '/uploads/'+s.image : makePlaceholderDataUrl(s.name || 'No image');
-        modalTag.textContent = s.tag ? 'Tag: ' + s.tag : 'Tag: -';
-        modalDescription.textContent = s.description || 'No description';
-        modalDownload.href = '/uploads/' + s.file;
-        modalDownload.setAttribute('download', s.originalFileName || s.file);
-        detailsModal.style.display = 'flex';
-      }
+    if (!name || !fileInput.files.length) {
+      uploadStatus.textContent = "Please provide a name and schematic file.";
+      return;
+    }
 
-      function closeModal(){ detailsModal.style.display = 'none'; }
-      modalClose.addEventListener('click', closeModal); modalClose2.addEventListener('click', closeModal);
-      detailsModal.addEventListener('click', (e)=>{ if(e.target === detailsModal) closeModal(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+    // Read schematic file
+    const file = fileInput.files[0];
+    const ext = getFileExtension(file.name);
+    if (!["schem", "schematic", "nbt", "msch"].includes(ext)) {
+      uploadStatus.textContent = "Unsupported schematic file type.";
+      return;
+    }
+    const fileDataUrl = await fileToDataURL(file);
 
-      // Upload handler
-      uploadForm.addEventListener('submit', async (ev) => {
-        ev.preventDefault();
-        if(!currentUser){ alert('You must be logged in to upload'); return; }
-        uploadStatus.textContent = 'Uploading…';
-        const fd = new FormData(uploadForm);
-        try{
-          const res = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
-          if(!res.ok){ const err = await res.json().catch(()=>({error:'Upload failed'})); throw err; }
-          const data = await res.json();
-          uploadStatus.textContent = 'Upload successful!';
-          uploadForm.reset();
-          toggleUploadForm(false);
-          await loadSchematics();
-        }catch(err){
-          console.error('Upload error', err);
-          uploadStatus.textContent = (err && err.error) ? String(err.error) : 'Upload failed';
-        }
-      });
+    // Read optional image preview
+    let imageDataUrl = null;
+    if (imageInput.files.length) {
+      const imageFile = imageInput.files[0];
+      imageDataUrl = await fileToDataURL(imageFile);
+    }
 
-      // Helper: small SVG placeholder data URL
-      function makePlaceholderDataUrl(text){
-        const svg = `<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"720\"><defs><linearGradient id=\"g\" x1=\"0%\" x2=\"100%\"><stop offset=\"0%\" stop-color=\"#263238\"/><stop offset=\"100%\" stop-color=\"#37474f\"/></linearGradient></defs><rect width=\"100%\" height=\"100%\" fill=\"url(#g)\" /><text x=\"50%\" y=\"50%\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"#90caf9\" font-family=\"Inter, Arial, sans-serif\" font-size=\"40\">${escapeXml(text || 'No image')}</text></svg>`;
-        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-      }
+    // Store schematic
+    const newSchematic = {
+      id: crypto.randomUUID(),
+      uploader: currentUser.name,
+      name,
+      fileUrl: fileDataUrl,
+      fileNameExt: "." + ext,
+      image: imageDataUrl,
+      tag,
+      description,
+      uploadDate: new Date().toISOString(),
+    };
 
-      function escapeXml(unsafe){ return unsafe.replace(/[&<>\"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    schematics.push(newSchematic);
+    saveSchematics(schematics);
+    uploadStatus.style.color = "var(--success)";
+    uploadStatus.textContent = `Successfully uploaded "${name}".`;
+    form.reset();
+    form.style.display = "none";
+    showUploadBtn.style.display = "inline-block";
 
-      // Initial state: show login overlay — but if you want to allow viewing without login, uncomment loadSchematics();
-      showLogin();
+    renderSchematics();
+    activateTab("community");
+  }
 
-      // If running with server and want to auto-load in dev, you can call loadSchematics() here after login.
-      // Expose a debug function
-      window._loadSchematics = loadSchematics;
-
+  // Helper to convert File to base64 data URL
+  function fileToDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
-  </script>
+  }
+
+  // ======== Render schematics ========
+  // Main tab placeholders
+  const placeholderSchematics = [
+    {
+      id: "ph1",
+      name: "Compact Wheat Farm",
+      fileUrl: "#",
+      fileNameExt: ".schem",
+      image: "https://i.imgur.com/OJQHv0q.jpg",
+      tag: "Farm",
+      description: "A super compact automatic wheat farm with piston harvesters and water flow collection.",
+    },
+    {
+      id: "ph2",
+      name: "Hidden Storage Room",
+      fileUrl: "#",
+      fileNameExt: ".schem",
+      image: "https://i.imgur.com/0rhCwNl.jpg",
+      tag: "Stash",
+      description: "A hidden stash room beneath the mountain with secret piston door and item sorter.",
+    },
+    {
+      id: "ph3",
+      name: "Nether Gold Farm",
+      fileUrl: "#",
+      fileNameExt: ".schem",
+      image: "https://i.imgur.com/nFhJpUz.jpg",
+      tag: "Farm",
+      description: "Efficient nether gold farm design that maximizes piglin spawning and gold nuggets.",
+    },
+  ];
+
+  function renderSchematics() {
+    // Main tab = placeholders only
+    mainSchematicsDiv.innerHTML = "";
+    for (const schematic of placeholderSchematics) {
+      mainSchematicsDiv.appendChild(createCard(schematic));
+    }
+
+    // Community tab = schematics from storage
+    communitySchematicsDiv.innerHTML = "";
+    if (schematics.length === 0) {
+      communitySchematicsDiv.innerHTML = "<p style='color:var(--muted);'>No community uploads yet. Be the first!</p>";
+    } else {
+      for (const s of schematics) {
+        communitySchematicsDiv.appendChild(createCard(s, true));
+      }
+    }
+  }
+
+  // ======== Tabs ========
+  function activateTab(name) {
+    activeTab = name;
+    tabs.forEach((t) => {
+      if (t.dataset.target === name) {
+        t.classList.add("active");
+        t.setAttribute("aria-selected", "true");
+        t.tabIndex = 0;
+      } else {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+        t.tabIndex = -1;
+      }
+    });
+    tabSections.forEach((s) => {
+      if (s.id === name) {
+        s.classList.add("active");
+        s.style.display = "";
+        s.removeAttribute("aria-hidden");
+        s.tabIndex = 0;
+      } else {
+        s.classList.remove("active");
+        s.style.display = "none";
+        s.setAttribute("aria-hidden", "true");
+        s.tabIndex = -1;
+      }
+    });
+  }
+
+  // ======== Profile Settings ========
+  // Open file picker when clicking pfp in modal
+  profilePfpDiv.addEventListener("click", () => pfpFileInput.click());
+  profilePfpDiv.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      pfpFileInput.click();
+    }
+  });
+
+  // Load chosen image into profilePfpDiv preview
+  pfpFileInput.addEventListener("change", async (e) => {
+    if (e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    const url = await fileToDataURL(file);
+    profilePfpDiv.style.backgroundImage = `url('${url}')`;
+    currentUser.pfp = url;
+  });
+
+  profileForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newName = profileNameInput.value.trim();
+    const newAbout = profileAboutInput.value.trim();
+    if (!newName) return alert("Name cannot be empty.");
+    currentUser.name = newName;
+    currentUser.about = newAbout;
+    saveUser(currentUser);
+
+    // Update UI
+    loggedUserName.textContent = newName;
+    userPfp.style.backgroundImage = `url('${currentUser.pfp || DEFAULT_PFP}')`;
+    closeProfileModal();
+  });
+
+  profileCancelBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeProfileModal();
+  });
+
+  // ======== Event Listeners ========
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const user = fakeAuth(loginUsername.value.trim(), loginPassword.value);
+    if (!user) {
+      alert("Invalid username or password (for demo, password must be 3+ chars).");
+      return;
+    }
+    loginUser(user);
+  });
+  loginGuestBtn.addEventListener("click", () => {
+    loginUser({
+      username: "guest",
+      name: "Guest User",
+      about: "",
+      pfp: DEFAULT_PFP,
+      password: "",
+    });
+  });
+
+  userPfp.addEventListener("click", openProfileModal);
+  userPfp.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openProfileModal();
+    }
+  });
+
+  tabs.forEach((t) => {
+    t.addEventListener("click", () => activateTab(t.dataset.target));
+  });
+
+  // Upload button in community tab
+  showUploadBtn.addEventListener("click", () => {
+    uploadForm.style.display = "block";
+    showUploadBtn.style.display = "none";
+    uploadStatus.textContent = "";
+  });
+  cancelUploadBtn.addEventListener("click", () => {
+    uploadForm.style.display = "none";
+    showUploadBtn.style.display = "inline-block";
+    uploadForm.reset();
+    uploadStatus.textContent = "";
+  });
+
+  uploadForm.addEventListener("submit", handleUploadFormSubmit);
+
+  // Details modal close buttons
+  modalClose.addEventListener("click", closeDetailsModal);
+  modalCloseFooter.addEventListener("click", closeDetailsModal);
+  detailsModal.addEventListener("click", (e) => {
+    if (e.target === detailsModal) closeDetailsModal();
+  });
+
+  // Profile modal close
+  profileCloseBtn.addEventListener("click", closeProfileModal);
+  profileModal.addEventListener("click", (e) => {
+    if (e.target === profileModal) closeProfileModal();
+  });
+
+  // Accessibility: ESC closes modals
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (!detailsModal.classList.contains("hidden")) closeDetailsModal();
+      if (!profileModal.classList.contains("hidden")) closeProfileModal();
+    }
+  });
+
+  // ======== Init ========
+  function init() {
+    schematics = loadSchematics();
+    const user = loadUser();
+    if (!user) {
+      loginScreen.style.display = "flex";
+      loggedUserName.textContent = "Not logged in";
+      userPfp.style.backgroundImage = `url('${DEFAULT_PFP}')`;
+    } else {
+      loginUser(user);
+    }
+  }
+
+  init();
+})();
+</script>
 </body>
 </html>
