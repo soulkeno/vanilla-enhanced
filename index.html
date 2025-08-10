@@ -1,50 +1,168 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Minecraft Schematics</title>
+  <title>Breeze Schematics — Index</title>
 
-  <!-- Google font for Minecraft-ish pixel feel -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root{
+      --bg:#07111a;
+      --glass: rgba(255,255,255,0.06);
+      --glass-strong: rgba(255,255,255,0.09);
+      --muted: rgba(255,255,255,0.8);
+      --accent1: #9b59b6;
+      --accent2: #5eead4;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --card: rgba(255,255,255,0.04);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100%;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color:#fff;
+      background: linear-gradient(180deg,#07111a 0%, #041018 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-y:auto;
+    }
+
+    /* Aurora-style blurred colorful orbs */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:-10% -10%;
+      background:
+        radial-gradient(800px 400px at 10% 20%, rgba(155,89,182,0.22), transparent 20%),
+        radial-gradient(700px 420px at 80% 70%, rgba(94,234,212,0.12), transparent 20%),
+        radial-gradient(600px 300px at 50% 40%, rgba(95,173,255,0.08), transparent 25%);
+      filter: blur(60px) saturate(1.2);
+      z-index:-1;
+      animation: aurora 14s infinite alternate ease-in-out;
+      transform-origin:center;
+    }
+    @keyframes aurora{
+      0%{ transform: translate(0,0) scale(1); }
+      100%{ transform: translate(-60px,-30px) scale(1.02); }
+    }
+
+    /* Topbar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 28px;
+      position:sticky;
+      top:0;
+      backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .brand-left{ display:flex; gap:12px; align-items:center; }
+    .logo{ width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,var(--accent1),var(--accent2)); box-shadow: 0 6px 20px rgba(0,0,0,0.6) inset; }
+    .title{ font-weight:700; font-size:16px; }
+    .subtitle{ font-size:12px; color:var(--muted); opacity:0.9 }
+
+    .tabs{ display:flex; gap:8px; }
+    .tab{ padding:10px 14px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.05); cursor:pointer; color:var(--muted); font-weight:600 }
+    .tab.active{ background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); color:#fff; box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
+
+    .user-area{ color:var(--muted); font-size:13px }
+
+    /* Layout */
+    .container{ max-width:1200px; margin:20px auto; padding:0 20px; }
+    h2{ margin:6px 0 12px 0; }
+
+    .tab-section{ display:none }
+    .tab-section.active{ display:block }
+
+    /* Cards grid */
+    .card-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+
+    .card{ background: var(--card); border-radius:12px; overflow:hidden; box-shadow: 0 8px 30px rgba(2,6,23,0.6); transition: transform .18s ease, box-shadow .18s ease; display:flex; flex-direction:column }
+    .card:hover{ transform: translateY(-6px); box-shadow: 0 18px 48px rgba(2,6,23,0.7); }
+    .card img{ width:100%; height:160px; object-fit:cover; display:block }
+    .card-content{ padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:8px }
+    .card-title{ font-weight:700; font-size:15px }
+    .card-desc{ font-size:13px; color:var(--muted); opacity:0.95 }
+
+    .tag{ display:inline-block; padding:6px 10px; border-radius:999px; background: rgba(0,0,0,0.25); font-size:12px; color:var(--muted); }
+    .card-row{ display:flex; align-items:center; justify-content:space-between; gap:8px }
+
+    .buttons{ display:flex; gap:8px; padding:12px; }
+    .btn{ flex:1; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700 }
+    .btn.download{ background: linear-gradient(90deg,var(--success), #16a085); color:#042017 }
+    .btn.details{ background: linear-gradient(90deg,#3498db,#8e44ad); color:white }
+
+    /* Upload form */
+    .upload-form{ margin-top:12px; padding:14px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03) }
+    .upload-form input[type=text], .upload-form textarea, .upload-form select{ width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit }
+    .upload-form label.file-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px; border-radius:8px; background: rgba(0,0,0,0.12); font-size:13px }
+
+    .row{ display:flex; gap:8px; }
+    .primary{ background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:white; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700 }
+    .outline{ background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.06); padding:10px 12px; border-radius:8px; cursor:pointer }
+
+    /* Overlay / modal */
+    .overlay{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(0,0,0,0.6); z-index:40 }
+    .overlay .card{ max-width:920px; width:100%; }
+    .login-box{ width:360px; padding:18px; text-align:center }
+    .login-box input{ width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent }
+
+    .modal{ padding:14px }
+    .modal-header{ display:flex; justify-content:space-between; align-items:center }
+    .modal-body{ padding:10px 0 }
+    .modal-footer{ display:flex; gap:8px; justify-content:flex-end }
+    .close{ background:transparent; border:none; font-size:18px; cursor:pointer; color:var(--muted) }
+
+    /* small screens */
+    @media (max-width:600px){ .card img{ height:120px } .topbar{ flex-direction:column; align-items:stretch; gap:12px } }
+  </style>
 </head>
 <body>
-  <!-- Aurora background is in CSS -->
-
-  <!-- Login overlay -->
-  <div id="loginScreen" class="overlay active">
-    <div class="login-box card glass">
-      <h1 class="brand">Breeze Schematics</h1>
-      <p class="muted">Log in to access and upload schematics</p>
-      <input id="username" placeholder="Username" />
-      <input id="password" type="password" placeholder="Password" />
-      <div class="row">
-        <button id="loginBtn" class="primary" onclick="login()">Login</button>
-        <button onclick="demoLogin()" class="outline">Guest</button>
+  <!-- Login overlay (simple client-side gate) -->
+  <div id="loginScreen" class="overlay" aria-hidden="false">
+    <div class="card login-box">
+      <div style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:8px;">
+        <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2))"></div>
       </div>
-      <small class="muted">This demo uses a simple local login (no real auth). Replace with real auth later.</small>
+      <h3 style="margin:0 0 6px 0;">Welcome to Breeze Schematics</h3>
+      <p style="margin:0 0 12px 0;color:var(--muted)">Log in to upload and download community schematics</p>
+      <input id="username" type="text" placeholder="Username" autocomplete="off" />
+      <input id="password" type="password" placeholder="Password" />
+      <div class="row" style="margin-top:10px;">
+        <button id="loginBtn" class="primary" style="flex:1">Login</button>
+        <button id="guestBtn" class="outline" style="flex:1">Guest</button>
+      </div>
+      <p style="margin-top:8px;color:var(--muted);font-size:12px">This demo uses a simple local login. Replace with real auth when ready.</p>
     </div>
   </div>
 
-  <!-- Page header -->
+  <!-- Topbar -->
   <header class="topbar">
     <div class="brand-left">
-      <div class="logo"></div>
+      <div class="logo" aria-hidden="true"></div>
       <div>
-        <div class="title">Minecraft Schematics</div>
-        <div class="subtitle">Download, upload and share builds</div>
+        <div class="title">Breeze Schematics</div>
+        <div class="subtitle">Download, upload & share Minecraft builds</div>
       </div>
     </div>
 
-    <nav class="tabs">
-      <button class="tab active" data-target="main" onclick="switchTab('main', this)">Main Schematics</button>
-      <button class="tab" data-target="community" onclick="switchTab('community', this)">Community</button>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-target="main">Main Schematics</button>
+      <button class="tab" data-target="community">Community</button>
     </nav>
 
     <div class="user-area">
-      <span id="loggedUser" class="muted">Not logged in</span>
+      <span id="loggedUser">Not logged in</span>
     </div>
   </header>
 
@@ -52,42 +170,45 @@
     <!-- MAIN -->
     <section id="main" class="tab-section active">
       <h2>Featured Schematics</h2>
-      <div id="mainSchematics" class="card-grid"></div>
+      <div id="mainSchematics" class="card-grid">Loading…</div>
     </section>
 
     <!-- COMMUNITY -->
-    <section id="community" class="tab-section">
-      <div class="community-header">
-        <h2>Community Uploads</h2>
+    <section id="community" class="tab-section" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;">
+        <h2 style="margin:0">Community Uploads</h2>
         <div>
-          <button class="primary" id="showUpload" onclick="toggleUploadForm(true)">Upload your own</button>
+          <button id="showUpload" class="primary">Upload your own</button>
         </div>
       </div>
 
-      <form id="uploadForm" class="upload-form card glass" style="display:none;" enctype="multipart/form-data">
-        <h3>Upload schematic</h3>
-        <input name="name" placeholder="Enter schematic name" required />
-        <label class="file-row">
-          <span>Choose schematic (.schem)</span>
+      <form id="uploadForm" class="upload-form" style="display:none;" enctype="multipart/form-data">
+        <h3 style="margin:0 0 8px 0">Upload schematic</h3>
+        <input name="name" type="text" placeholder="Enter schematic name" required />
+
+        <label class="file-row" style="margin-top:8px;">
+          <span style="font-size:13px">Choose schematic (.schem)</span>
           <input type="file" name="file" accept=".schem,.schematic,.nbt,.msch" required />
         </label>
-        <label class="file-row">
-          <span>Optional preview image</span>
+
+        <label class="file-row" style="margin-top:8px;">
+          <span style="font-size:13px">Optional preview image</span>
           <input type="file" name="image" accept="image/*" />
         </label>
 
-        <select name="tag">
+        <select name="tag" style="margin-top:8px">
           <option value="Farm">Farm</option>
           <option value="Stash">Stash</option>
         </select>
 
-        <textarea name="description" rows="4" placeholder="Short description (shown in details)"></textarea>
+        <textarea name="description" rows="3" placeholder="Short description (shown in details)" style="margin-top:8px"></textarea>
 
-        <div class="row">
+        <div class="row" style="margin-top:10px;">
           <button type="submit" class="primary">Upload</button>
-          <button type="button" class="outline" onclick="toggleUploadForm(false)">Cancel</button>
+          <button type="button" class="outline" id="cancelUpload">Cancel</button>
         </div>
-        <div id="uploadStatus" class="muted"></div>
+
+        <div id="uploadStatus" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
       </form>
 
       <div id="communitySchematics" class="card-grid" style="margin-top:18px;"></div>
@@ -96,23 +217,262 @@
 
   <!-- Details modal -->
   <div id="detailsModal" class="overlay" style="display:none;">
-    <div class="modal card glass">
+    <div class="card modal">
       <div class="modal-header">
-        <h3 id="modalTitle"></h3>
-        <button onclick="closeModal()" class="close">✕</button>
+        <h3 id="modalTitle" style="margin:0"></h3>
+        <button class="close" id="modalClose">✕</button>
       </div>
       <div class="modal-body">
-        <img id="modalImage" alt="preview" style="max-width:100%;border-radius:8px;margin-bottom:10px;" />
-        <p id="modalTag" class="muted"></p>
-        <p id="modalDescription"></p>
+        <img id="modalImage" alt="preview" style="width:100%;max-height:380px;object-fit:cover;border-radius:8px;margin-top:10px;" />
+        <p id="modalTag" style="margin:10px 0 0 0;color:var(--muted)"></p>
+        <p id="modalDescription" style="margin-top:6px;color:var(--muted)"></p>
       </div>
-      <div class="modal-footer">
-        <a id="modalDownload" class="primary" download>Download schematic</a>
-        <button onclick="closeModal()" class="outline">Close</button>
+      <div class="modal-footer" style="margin-top:12px">
+        <a id="modalDownload" class="primary" href="#" download>Download schematic</a>
+        <button class="outline" id="modalClose2">Close</button>
       </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // Single-file front-end logic. Works when served from the Node server provided earlier (visit http://localhost:3000)
+    document.addEventListener('DOMContentLoaded', () => {
+      const API_BASE = '/api';
+      const SCHEMATICS_URL = API_BASE + '/schematics';
+      const UPLOAD_URL = API_BASE + '/upload';
+
+      const loginScreen = document.getElementById('loginScreen');
+      const loginBtn = document.getElementById('loginBtn');
+      const guestBtn = document.getElementById('guestBtn');
+      const loggedUserEl = document.getElementById('loggedUser');
+      const showUploadBtn = document.getElementById('showUpload');
+      const uploadForm = document.getElementById('uploadForm');
+      const cancelUpload = document.getElementById('cancelUpload');
+      const uploadStatus = document.getElementById('uploadStatus');
+
+      const mainGrid = document.getElementById('mainSchematics');
+      const communityGrid = document.getElementById('communitySchematics');
+
+      const detailsModal = document.getElementById('detailsModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalImage = document.getElementById('modalImage');
+      const modalTag = document.getElementById('modalTag');
+      const modalDescription = document.getElementById('modalDescription');
+      const modalDownload = document.getElementById('modalDownload');
+      const modalClose = document.getElementById('modalClose');
+      const modalClose2 = document.getElementById('modalClose2');
+
+      let currentUser = null;
+      let schematics = [];
+
+      // Tabs
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          btn.classList.add('active');
+          const target = btn.dataset.target;
+          document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+          document.getElementById(target).classList.add('active');
+        });
+      });
+
+      function showLogin(){ loginScreen.style.display = 'flex'; }
+      function hideLogin(){ loginScreen.style.display = 'none'; }
+
+      guestBtn.addEventListener('click', () => {
+        currentUser = 'Guest';
+        onLogin();
+      });
+      loginBtn.addEventListener('click', () => {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value.trim();
+        if(!u || !p){ alert('Enter username and password (any values for demo)'); return; }
+        currentUser = u;
+        onLogin();
+      });
+
+      function onLogin(){
+        hideLogin();
+        loggedUserEl.textContent = currentUser;
+        loadSchematics();
+      }
+
+      // Upload form toggle
+      showUploadBtn.addEventListener('click', () => toggleUploadForm(true));
+      cancelUpload.addEventListener('click', () => toggleUploadForm(false));
+
+      function toggleUploadForm(show){
+        if(!currentUser){ alert('Please log in first'); return; }
+        uploadStatus.textContent = '';
+        uploadForm.style.display = show ? 'block' : 'none';
+        if(show) uploadForm.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+
+      // Load schematics from server
+      async function loadSchematics(){
+        try{
+          mainGrid.innerHTML = 'Loading…';
+          communityGrid.innerHTML = 'Loading…';
+          const res = await fetch(SCHEMATICS_URL);
+          if(!res.ok) throw new Error('Failed to fetch schematics');
+          schematics = await res.json();
+          renderSchematics();
+        }catch(err){
+          mainGrid.innerHTML = '<div style="padding:12px;color:var(--muted)">Could not load schematics. Make sure the server is running (node server.js).</div>';
+          communityGrid.innerHTML = mainGrid.innerHTML;
+          console.error(err);
+        }
+      }
+
+      // Render cards
+      function renderSchematics(){
+        mainGrid.innerHTML = '';
+        communityGrid.innerHTML = '';
+
+        if(!Array.isArray(schematics) || schematics.length === 0){
+          mainGrid.innerHTML = '<div style="padding:12px;color:var(--muted)">No schematics yet.</div>';
+          communityGrid.innerHTML = mainGrid.innerHTML;
+          return;
+        }
+
+        schematics.forEach(s => {
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const img = document.createElement('img');
+          img.alt = s.name || 'Schematic preview';
+          if(s.image){ img.src = '/uploads/' + s.image; }
+          else { img.src = makePlaceholderDataUrl(s.name || 'No image'); }
+
+          const content = document.createElement('div');
+          content.className = 'card-content';
+
+          const title = document.createElement('div');
+          title.className = 'card-title';
+          title.textContent = s.name || 'Untitled';
+
+          const desc = document.createElement('div');
+          desc.className = 'card-desc';
+          desc.textContent = (s.description && s.description.length > 140) ? s.description.slice(0,140) + '…' : (s.description || 'No description');
+
+          const row = document.createElement('div');
+          row.className = 'card-row';
+
+          const tag = document.createElement('div');
+          tag.className = 'tag';
+          tag.textContent = s.tag || 'Uncategorized';
+
+          row.appendChild(tag);
+
+          const buttons = document.createElement('div');
+          buttons.className = 'buttons';
+
+          const dl = document.createElement('a');
+          dl.className = 'btn download';
+          dl.textContent = 'Download';
+          dl.href = '/uploads/' + s.file;
+          dl.setAttribute('download', s.originalFileName || s.file);
+
+          const details = document.createElement('button');
+          details.className = 'btn details';
+          details.textContent = 'Details';
+          details.addEventListener('click', () => showDetails(s));
+
+          buttons.appendChild(dl);
+          buttons.appendChild(details);
+
+          content.appendChild(title);
+          content.appendChild(desc);
+          content.appendChild(row);
+
+          card.appendChild(img);
+          card.appendChild(content);
+          card.appendChild(buttons);
+
+          // Featured vs community placement: if tag is 'Farm' we put in main as an example
+          // But the server does not include isMain; for demo, place newest 3 as featured
+
+          // we'll append all to community, and first 3 to main as featured
+          communityGrid.appendChild(card);
+        });
+
+        // Put top 3 newest into main grid as featured (clone)
+        const sorted = schematics.slice().sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+        mainGrid.innerHTML = '';
+        sorted.slice(0,3).forEach(s => {
+          const card = communityGrid.querySelector('.card');
+          // create a mini-card using same renderer
+          const mini = document.createElement('div');
+          mini.className = 'card';
+          const img = document.createElement('img');
+          img.alt = s.name || 'Schematic preview';
+          if(s.image) img.src = '/uploads/' + s.image; else img.src = makePlaceholderDataUrl(s.name || 'No image');
+          const content = document.createElement('div');
+          content.className = 'card-content';
+          const title = document.createElement('div'); title.className='card-title'; title.textContent = s.name || 'Untitled';
+          const desc = document.createElement('div'); desc.className='card-desc'; desc.textContent = s.description ? (s.description.length>120 ? s.description.slice(0,120)+'…':s.description) : 'No description';
+          const buttons = document.createElement('div'); buttons.className='buttons';
+          const dl = document.createElement('a'); dl.className='btn download'; dl.textContent='Download'; dl.href = '/uploads/'+s.file; dl.setAttribute('download', s.originalFileName || s.file);
+          const details = document.createElement('button'); details.className='btn details'; details.textContent='Details'; details.addEventListener('click', ()=>showDetails(s));
+          buttons.appendChild(dl); buttons.appendChild(details);
+          content.appendChild(title); content.appendChild(desc);
+          mini.appendChild(img); mini.appendChild(content); mini.appendChild(buttons);
+          mainGrid.appendChild(mini);
+        });
+      }
+
+      // Show details modal
+      function showDetails(s){
+        modalTitle.textContent = s.name || 'Untitled';
+        modalImage.src = s.image ? '/uploads/'+s.image : makePlaceholderDataUrl(s.name || 'No image');
+        modalTag.textContent = s.tag ? 'Tag: ' + s.tag : 'Tag: -';
+        modalDescription.textContent = s.description || 'No description';
+        modalDownload.href = '/uploads/' + s.file;
+        modalDownload.setAttribute('download', s.originalFileName || s.file);
+        detailsModal.style.display = 'flex';
+      }
+
+      function closeModal(){ detailsModal.style.display = 'none'; }
+      modalClose.addEventListener('click', closeModal); modalClose2.addEventListener('click', closeModal);
+      detailsModal.addEventListener('click', (e)=>{ if(e.target === detailsModal) closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+      // Upload handler
+      uploadForm.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        if(!currentUser){ alert('You must be logged in to upload'); return; }
+        uploadStatus.textContent = 'Uploading…';
+        const fd = new FormData(uploadForm);
+        try{
+          const res = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+          if(!res.ok){ const err = await res.json().catch(()=>({error:'Upload failed'})); throw err; }
+          const data = await res.json();
+          uploadStatus.textContent = 'Upload successful!';
+          uploadForm.reset();
+          toggleUploadForm(false);
+          await loadSchematics();
+        }catch(err){
+          console.error('Upload error', err);
+          uploadStatus.textContent = (err && err.error) ? String(err.error) : 'Upload failed';
+        }
+      });
+
+      // Helper: small SVG placeholder data URL
+      function makePlaceholderDataUrl(text){
+        const svg = `<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"720\"><defs><linearGradient id=\"g\" x1=\"0%\" x2=\"100%\"><stop offset=\"0%\" stop-color=\"#263238\"/><stop offset=\"100%\" stop-color=\"#37474f\"/></linearGradient></defs><rect width=\"100%\" height=\"100%\" fill=\"url(#g)\" /><text x=\"50%\" y=\"50%\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"#90caf9\" font-family=\"Inter, Arial, sans-serif\" font-size=\"40\">${escapeXml(text || 'No image')}</text></svg>`;
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+      }
+
+      function escapeXml(unsafe){ return unsafe.replace(/[&<>\"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+      // Initial state: show login overlay — but if you want to allow viewing without login, uncomment loadSchematics();
+      showLogin();
+
+      // If running with server and want to auto-load in dev, you can call loadSchematics() here after login.
+      // Expose a debug function
+      window._loadSchematics = loadSchematics;
+
+    });
+  </script>
 </body>
 </html>
