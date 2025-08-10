@@ -1,254 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Shematics - Registration</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Schematics</title>
+<style>
+  /* Aurora-like background */
+  body {
+    margin: 0;
+    font-family: 'Minecraftia', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    color: white;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 20%, #5df, transparent 60%),
+                radial-gradient(circle at 80% 80%, #f5f, transparent 60%),
+                radial-gradient(circle at 50% 50%, #0ff, transparent 80%);
+    filter: blur(80px);
+    animation: aurora 10s infinite alternate;
+    z-index: -1;
+  }
+  @keyframes aurora {
+    0% { transform: translateY(0px) translateX(0px); }
+    100% { transform: translateY(-50px) translateX(50px); }
+  }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+  /* UI container */
+  .container {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+  }
 
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .tab {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .tab:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .tab.active {
+    background: rgba(255, 255, 255, 0.3);
+  }
 
-        .login-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-            text-align: center;
-        }
+  /* Sections */
+  .section {
+    display: none;
+  }
+  .section.active {
+    display: block;
+  }
 
-        .login-header {
-            margin-bottom: 20px;
-        }
+  /* Buttons */
+  button {
+    padding: 10px 20px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+  }
+  button:hover {
+    background: #27ae60;
+  }
 
-        .login-header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+  /* Schematic cards */
+  .schematic-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-        .login-header p {
-            font-size: 14px;
-            color: #555;
-        }
+  /* Upload form */
+  .upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+  }
+  input, select, textarea {
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+  }
+  textarea {
+    resize: none;
+  }
 
-        .login-form {
-            margin-top: 20px;
-        }
-
-        .form-field {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .form-field input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-top: 5px;
-        }
-
-        .form-field label {
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .form-field .error-message {
-            color: red;
-            font-size: 12px;
-        }
-
-        .signin-button, .register-button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 20px;
-        }
-
-        .signin-button:hover, .register-button:hover {
-            background-color: #444;
-        }
-
-        .button-text {
-            font-weight: bold;
-        }
-
-        .signup-prompt {
-            margin-top: 20px;
-        }
-
-        .signup-link {
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .signup-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+  /* Login screen */
+  #loginScreen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+  }
+  #loginBox {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+</style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <h1>Login</h1>
-                <p>Enter your details to login or register</p>
-            </div>
-            
-            <form class="login-form" id="loginForm" novalidate>
-                <div class="form-field">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                    <span class="error-message" id="usernameError"></span>
-                </div>
 
-                <div class="form-field">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                    <span class="error-message" id="passwordError"></span>
-                </div>
+<div id="loginScreen">
+  <div id="loginBox">
+    <h2>Login to Minecraft Schematics</h2>
+    <input type="text" id="username" placeholder="Enter username">
+    <br><br>
+    <input type="password" id="password" placeholder="Enter password">
+    <br><br>
+    <button onclick="login()">Login</button>
+  </div>
+</div>
 
-                <div class="form-field">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
-                    <span class="error-message" id="confirmPasswordError"></span>
-                </div>
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('main')">Main Schematics</div>
+    <div class="tab" onclick="switchTab('community')">Community</div>
+  </div>
 
-                <button type="submit" class="signin-button">
-                    <span class="button-text">Login</span>
-                </button>
-
-                <button type="button" class="register-button" id="registerButton">
-                    <span class="button-text">Register</span>
-                </button>
-            </form>
-
-            <div class="signup-prompt">
-                <span>Don't have an account? </span>
-                <a href="#" class="signup-link" id="goToRegister">Create an account</a>
-            </div>
-        </div>
+  <!-- Main Schematics -->
+  <div id="main" class="section active">
+    <h2>Main Schematics</h2>
+    <div class="schematic-card">
+      <span>Cool Farm Build</span>
+      <button onclick="alert('Downloading farm.schem')">Download</button>
     </div>
+    <div class="schematic-card">
+      <span>Secret Base</span>
+      <button onclick="alert('Downloading base.schem')">Download</button>
+    </div>
+  </div>
 
-    <script>
-        // Elements
-        const loginForm = document.getElementById('loginForm');
-        const registerButton = document.getElementById('registerButton');
-        const goToRegister = document.getElementById('goToRegister');
+  <!-- Community -->
+  <div id="community" class="section">
+    <h2>Community Schematics</h2>
+    <button onclick="document.getElementById('uploadForm').style.display='block'">
+      Upload your own
+    </button>
 
-        // Handle the login form submission
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+    <form id="uploadForm" class="upload-form" style="display:none;">
+      <input type="text" placeholder="Enter schematic name" required>
+      <input type="file" accept=".schem" required>
+      <select>
+        <option value="Farm">Farm</option>
+        <option value="Stash">Stash</option>
+      </select>
+      <textarea placeholder="Description" rows="3"></textarea>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+</div>
 
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(tab).classList.add('active');
+}
 
-            let valid = true;
-
-            // Reset error messages
-            document.getElementById('usernameError').innerText = '';
-            document.getElementById('passwordError').innerText = '';
-            document.getElementById('confirmPasswordError').innerText = '';
-
-            // Validate username
-            if (username === '') {
-                valid = false;
-                document.getElementById('usernameError').innerText = 'Username is required';
-            }
-
-            // Validate password
-            if (password === '') {
-                valid = false;
-                document.getElementById('passwordError').innerText = 'Password is required';
-            }
-
-            // Validate confirm password
-            if (confirmPassword !== password) {
-                valid = false;
-                document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
-            }
-
-            if (valid) {
-                alert('Login successful!');
-                // Here, you would handle the form submission to the server
-            }
-        });
-
-        // Handle the register button
-        registerButton.addEventListener('click', () => {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            let valid = true;
-
-            // Reset error messages
-            document.getElementById('usernameError').innerText = '';
-            document.getElementById('passwordError').innerText = '';
-            document.getElementById('confirmPasswordError').innerText = '';
-
-            // Validate username
-            if (username === '') {
-                valid = false;
-                document.getElementById('usernameError').innerText = 'Username is required';
-            }
-
-            // Validate password
-            if (password === '') {
-                valid = false;
-                document.getElementById('passwordError').innerText = 'Password is required';
-            }
-
-            // Validate confirm password
-            if (confirmPassword !== password) {
-                valid = false;
-                document.getElementById('confirmPasswordError').innerText = 'Passwords do not match';
-            }
-
-            if (valid) {
-                alert('Registration successful!');
-                // Here, you would handle the form submission to the server
-            }
-        });
-
-        // Navigate to the registration page when the link is clicked
-        goToRegister.addEventListener('click', () => {
-            loginForm.reset();
-            document.querySelector('.login-header h1').innerText = 'Register';
-            document.getElementById('goToRegister').innerText = 'Already have an account? Login';
-            registerButton.style.display = 'inline-block';
-            document.querySelector('.signin-button').style.display = 'none';
-        });
-    </script>
+function login() {
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  if (user && pass) {
+    document.getElementById('loginScreen').style.display = 'none';
+  } else {
+    alert('Enter username & password!');
+  }
+}
+</script>
 </body>
 </html>
-
