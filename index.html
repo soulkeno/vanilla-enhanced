@@ -1,26 +1,18 @@
-// === README.md ===
 /*
-Minecraft Schematic Share
+README - Minecraft Schematic Share
 React + Tailwind + Framer Motion + Firebase (Auth, Firestore, Storage)
 
-Overview
-- Full front-end React app that uses Firebase for real authentication, file uploads (schematic .schem/.schematic/.nbt), images, and Firestore for metadata.
-- Username-based sign-up/login: we use a username field and create a synthetic email `${username}@schem.local` behind the scenes so Firebase Auth can be used while enforcing unique usernames in Firestore.
-- "Keno" is reserved as owner: when a user has username exactly "Keno" they get owner badge and glowing effect. The app prevents duplicates.
+This canvas contains a ready-to-copy file listing for a Vite + React front-end that uses
+Firebase Auth / Firestore / Storage for a real, working prototype.
 
-Requirements
-- Node >= 16
-- npm or yarn
+Important: copy each file's contents into the matching file path in your project. Do NOT paste the entire
+canvas into one file — each section below is a separate file.
 
-Installation
-1. Create Firebase project, enable Authentication (Email/Password), Firestore, and Storage.
-2. In Firestore create a 'users' collection and allow read/write rules according to your security plan (example rules included later).
-3. Copy your firebase config into src/firebase.js
-4. Install dependencies:
-   npm install
-   npm run dev
+Quick checklist if you see syntax errors:
+- Ensure files are split exactly as listed (e.g. src/App.jsx, src/components/AuthModal.jsx, etc.).
+- Use Node 18+ for building with Vite.
+- Replace the placeholders in `src/firebase.js` with your Firebase config.
 
-Files included below for easy copy-paste into a React project (Vite recommended).
 */
 
 // === package.json ===
@@ -49,18 +41,27 @@ Files included below for easy copy-paste into a React project (Vite recommended)
   }
 }
 
-// === tailwind.config.cjs ===
+/* === tailwind.config.cjs === */
 module.exports = {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {},
   },
   plugins: [],
-}
+};
 
-// === index.html ===
+/* === vite.config.js === */
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  base: './'
+});
+
+/* === index.html === */
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -68,16 +69,17 @@ module.exports = {
   </head>
   <body>
     <div id="root"></div>
+    <!-- Vite will serve this module in dev; the leading slash is fine for Vite dev server -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
 
-// === src/firebase.js ===
-// Replace the firebaseConfig object with your project's config
-import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+/* === src/firebase.js === */
+// IMPORTANT: Replace placeholders with your Firebase project's config values.
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: "REPLACE_ME",
@@ -86,26 +88,27 @@ const firebaseConfig = {
   storageBucket: "REPLACE_ME",
   messagingSenderId: "REPLACE_ME",
   appId: "REPLACE_ME"
-}
+};
 
-const app = initializeApp(firebaseConfig)
-export const auth = getAuth(app)
-export const db = getFirestore(app)
-export const storage = getStorage(app)
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
-// === src/main.jsx ===
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App'
-import './index.css'
+/* === src/main.jsx === */
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './index.css';
 
-createRoot(document.getElementById('root')).render(
+const root = createRoot(document.getElementById('root'));
+root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-)
+);
 
-// === src/index.css ===
+/* === src/index.css === */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -122,241 +125,292 @@ html, body, #root { height: 100%; }
   100% { text-shadow: 0 0 6px rgba(255,223,0,0.8); }
 }
 
-// === src/App.jsx ===
-import React, { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { auth, db, storage } from './firebase'
-import AuthModal from './components/AuthModal'
-import Community from './components/Community'
-import ProfileMenu from './components/ProfileMenu'
-import Home from './components/Home'
-import { onAuthStateChanged } from 'firebase/auth'
+/* === src/App.jsx === */
+import React, { useEffect, useState } from 'react';
+import { auth } from './firebase';
+import AuthModal from './components/AuthModal';
+import Community from './components/Community';
+import ProfileMenu from './components/ProfileMenu';
+import Home from './components/Home';
+import { onAuthStateChanged } from 'firebase/auth';
 
-export default function App(){
-  const [user, setUser] = useState(null)
-  const [showAuth, setShowAuth] = useState(false)
-
-  useEffect(()=>{
-    const unsub = onAuthStateChanged(auth, (u)=>{
-      setUser(u)
-    })
-    return unsub
-  },[])
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-900 to-gray-800 text-white">
-      <nav className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="text-2xl font-bold">SchemShare</div>
-          <div className="hidden md:flex gap-2">
-            <a className="px-3 py-2 rounded hover:bg-white/5" href="#home">Home</a>
-            <a className="px-3 py-2 rounded hover:bg-white/5" href="#community">Community</a>
-          </div>
+// Small ErrorBoundary to surface render errors during dev
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+  componentDidCatch(error, info) {
+    // eslint-disable-next-line no-console
+    console.error('ErrorBoundary caught:', error, info);
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="p-6 text-red-300 bg-slate-900 min-h-screen">
+          <h2 className="text-2xl font-bold">An error occurred</h2>
+          <pre className="whitespace-pre-wrap mt-4">{String(this.state.error)}</pre>
         </div>
-
-        <div className="flex items-center gap-4">
-          {!user ? (
-            <button className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" onClick={()=>setShowAuth(true)}>Login / Sign Up</button>
-          ) : (
-            <ProfileMenu user={user} />
-          )}
-        </div>
-      </nav>
-
-      <main className="px-6 pb-20">
-        <section id="home" className="mt-6">
-          <Home user={user} />
-        </section>
-
-        <section id="community" className="mt-12">
-          <Community user={user} />
-        </section>
-      </main>
-
-      {showAuth && <AuthModal onClose={()=>setShowAuth(false)} />}
-    </div>
-  )
+      );
+    }
+    return this.props.children;
+  }
 }
 
-// === src/components/AuthModal.jsx ===
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { auth, db } from '../firebase'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
 
-export default function AuthModal({ onClose }){
-  const [mode, setMode] = useState('login')
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [err, setErr] = useState('')
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+    return unsub;
+  }, []);
 
-  const syntheticEmail = (u) => `${u}@schem.local` // used so Firebase auth works with username
+  return (
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-900 to-gray-800 text-white">
+        <nav className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="text-2xl font-bold">SchemShare</div>
+            <div className="hidden md:flex gap-2">
+              <a className="px-3 py-2 rounded hover:bg-white/5" href="#home">Home</a>
+              <a className="px-3 py-2 rounded hover:bg-white/5" href="#community">Community</a>
+            </div>
+          </div>
 
-  async function handleSignup(e){
-    e.preventDefault()
-    setErr('')
-    if(password !== confirm) return setErr('Passwords do not match')
-    if(!username.match(/^[a-zA-Z0-9_\-]{3,20}$/)) return setErr('Username must be 3-20 chars, letters/numbers/_/-')
+          <div className="flex items-center gap-4">
+            {!user ? (
+              <button className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" onClick={() => setShowAuth(true)}>Login / Sign Up</button>
+            ) : (
+              <ProfileMenu user={user} />
+            )}
+          </div>
+        </nav>
 
-    setLoading(true)
-    try{
-      // check username uniqueness
-      const userDoc = await getDoc(doc(db,'usernames', username.toLowerCase()))
-      if(userDoc.exists()){
-        setErr('Username already taken')
-        setLoading(false)
-        return
+        <main className="px-6 pb-20">
+          <section id="home" className="mt-6">
+            <Home user={user} />
+          </section>
+
+          <section id="community" className="mt-12">
+            <Community user={user} />
+          </section>
+        </main>
+
+        {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+      </div>
+    </ErrorBoundary>
+  );
+}
+
+/* === src/components/AuthModal.jsx === */
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { auth, db } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+
+export default function AuthModal({ onClose }) {
+  const [mode, setMode] = useState('login');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState('');
+
+  const syntheticEmail = (u) => `${u}@schem.local`;
+
+  async function handleSignup(e) {
+    e.preventDefault();
+    setErr('');
+    if (password !== confirm) return setErr('Passwords do not match');
+    if (!username.match(/^[a-zA-Z0-9_\-]{3,20}$/)) return setErr('Username must be 3-20 chars, letters/numbers/_/-');
+
+    setLoading(true);
+    try {
+      const key = username.toLowerCase();
+      const userDoc = await getDoc(doc(db, 'usernames', key));
+      if (userDoc.exists()) {
+        setErr('Username already taken');
+        setLoading(false);
+        return;
       }
 
-      // create auth user with synthetic email
-      await createUserWithEmailAndPassword(auth, syntheticEmail(username), password)
+      await createUserWithEmailAndPassword(auth, syntheticEmail(username), password);
 
-      // save user profile in firestore
-      await setDoc(doc(db,'users', username.toLowerCase()), {
+      await setDoc(doc(db, 'users', key), {
         username: username,
         bio: '',
         pfp: null,
         banner: null,
         createdAt: Date.now()
-      })
+      });
 
-      // store reserved username pointer
-      await setDoc(doc(db,'usernames', username.toLowerCase()), {uid: username.toLowerCase()})
+      await setDoc(doc(db, 'usernames', key), { uid: key });
 
-      onClose()
-    }catch(e){
-      console.error(e)
-      setErr(e.message)
-    }finally{setLoading(false)}
+      onClose();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      setErr(e.message || 'Signup failed');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  async function handleLogin(e){
-    e.preventDefault()
-    setErr('')
-    setLoading(true)
-    try{
-      await signInWithEmailAndPassword(auth, syntheticEmail(username), password)
-      onClose()
-    }catch(e){ setErr(e.message) }
-    finally{ setLoading(false) }
+  async function handleLogin(e) {
+    e.preventDefault();
+    setErr('');
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, syntheticEmail(username), password);
+      onClose();
+    } catch (e) {
+      setErr(e.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60">
-      <motion.div initial={{y:20, opacity:0}} animate={{y:0, opacity:1}} exit={{y:20, opacity:0}} className="w-96 bg-slate-800 rounded-lg p-6">
+      <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="w-96 bg-slate-800 rounded-lg p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">{mode === 'login' ? 'Login' : 'Create Account'}</h3>
           <button onClick={onClose} className="text-gray-300">✕</button>
         </div>
 
-        <form onSubmit={mode==='login'?handleLogin:handleSignup} className="space-y-3">
+        <form onSubmit={mode === 'login' ? handleLogin : handleSignup} className="space-y-3">
           <div>
             <label className="block text-sm">Username</label>
-            <input required value={username} onChange={(e)=>setUsername(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
+            <input required value={username} onChange={(e) => setUsername(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
           </div>
+
           <div>
             <label className="block text-sm">Password</label>
-            <input required type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
+            <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
           </div>
-          {mode==='signup' && (
+
+          {mode === 'signup' && (
             <div>
               <label className="block text-sm">Confirm Password</label>
-              <input required type="password" value={confirm} onChange={(e)=>setConfirm(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
+              <input required type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
             </div>
           )}
 
           {err && <div className="text-red-400">{err}</div>}
 
           <div className="flex gap-2">
-            <button disabled={loading} className="flex-1 px-3 py-2 bg-green-600 rounded hover:bg-green-500">{mode==='login'? 'Login' : 'Sign Up'}</button>
-            <button type="button" onClick={()=>setMode(mode==='login'?'signup':'login')} className="px-3 py-2 bg-gray-600 rounded">{mode==='login'? 'Create' : 'Have an account?'}</button>
+            <button disabled={loading} className="flex-1 px-3 py-2 bg-green-600 rounded hover:bg-green-500">{mode === 'login' ? 'Login' : 'Sign Up'}</button>
+            <button type="button" onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} className="px-3 py-2 bg-gray-600 rounded">{mode === 'login' ? 'Create' : 'Have an account?'}</button>
           </div>
         </form>
       </motion.div>
     </div>
-  )
+  );
 }
 
-// === src/components/ProfileMenu.jsx ===
-import React, { useEffect, useState } from 'react'
-import { auth, db, storage } from '../firebase'
-import { signOut } from 'firebase/auth'
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { motion } from 'framer-motion'
+/* === src/components/ProfileMenu.jsx === */
+import React, { useEffect, useState } from 'react';
+import { auth, db, storage } from '../firebase';
+import { signOut } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { motion } from 'framer-motion';
 
-export default function ProfileMenu({ user }){
-  const [open, setOpen] = useState(false)
-  const [profile, setProfile] = useState(null)
-  const uidUsername = user?.email?.split('@')[0]
+export default function ProfileMenu({ user }) {
+  const [open, setOpen] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const uidUsername = user && user.email ? user.email.split('@')[0] : null;
 
-  useEffect(()=>{
-    if(!uidUsername) return
-    const load = async ()=>{
-      const p = await getDoc(doc(db,'users', uidUsername))
-      if(p.exists()) setProfile(p.data())
+  useEffect(() => {
+    if (!uidUsername) return undefined;
+    let mounted = true;
+    const load = async () => {
+      try {
+        const p = await getDoc(doc(db, 'users', uidUsername));
+        if (p.exists() && mounted) setProfile(p.data());
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [uidUsername]);
+
+  async function handleLogout() {
+    await signOut(auth);
+  }
+
+  async function uploadFileToStorage(path, file) {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  }
+
+  async function handlePfpChange(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file || !uidUsername) return;
+    const path = `pfps/${uidUsername}/${Date.now()}_${file.name}`;
+    try {
+      const url = await uploadFileToStorage(path, file);
+      await updateDoc(doc(db, 'users', uidUsername), { pfp: url });
+      setProfile((prev) => ({ ...prev, pfp: url }));
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
     }
-    load()
-  },[user])
-
-  async function handleLogout(){
-    await signOut(auth)
   }
 
-  async function handlePfpChange(e){
-    const file = e.target.files[0]
-    if(!file) return
-    const path = `pfps/${uidUsername}/${file.name}`
-    const storageRef = ref(storage, path)
-    const task = uploadBytesResumable(storageRef, file)
-    task.on('state_changed', ()=>{}, console.error, async ()=>{
-      const url = await getDownloadURL(task.snapshot.ref)
-      await updateDoc(doc(db,'users', uidUsername), { pfp: url })
-      setProfile(prev=>({...prev, pfp: url}))
-    })
+  async function handleBannerChange(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file || !uidUsername) return;
+    const path = `banners/${uidUsername}/${Date.now()}_${file.name}`;
+    try {
+      const url = await uploadFileToStorage(path, file);
+      await updateDoc(doc(db, 'users', uidUsername), { banner: url });
+      setProfile((prev) => ({ ...prev, banner: url }));
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   }
 
-  async function handleBannerChange(e){
-    const file = e.target.files[0]
-    if(!file) return
-    const path = `banners/${uidUsername}/${file.name}`
-    const storageRef = ref(storage, path)
-    const task = uploadBytesResumable(storageRef, file)
-    task.on('state_changed', ()=>{}, console.error, async ()=>{
-      const url = await getDownloadURL(task.snapshot.ref)
-      await updateDoc(doc(db,'users', uidUsername), { banner: url })
-      setProfile(prev=>({...prev, banner: url}))
-    })
-  }
-
-  async function handleUsernameChange(){
-    alert('Username change is not supported in this demo. To change username, contact admin.')
+  function handleUsernameChange() {
+    alert('Username change is not supported in this demo. To change username, contact admin.');
   }
 
   return (
     <div className="relative">
-      <button onClick={()=>setOpen(!open)} className="flex items-center gap-2">
-        <img src={profile?.pfp || '/default-pfp.png'} alt="pfp" className="w-10 h-10 rounded-full border-2 border-white/10" />
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-2">
+        <img src={(profile && profile.pfp) || '/default-pfp.png'} alt="pfp" className="w-10 h-10 rounded-full border-2 border-white/10" />
         <div className="hidden md:block">
-          <div className={`text-sm font-semibold ${uidUsername === 'Keno' ? 'owner-glow' : ''}`}>{profile?.username || uidUsername}</div>
+          <div className={`text-sm font-semibold ${uidUsername === 'Keno' ? 'owner-glow' : ''}`}>{(profile && profile.username) || uidUsername}</div>
         </div>
       </button>
 
       {open && (
-        <motion.div initial={{opacity:0, y:-8}} animate={{opacity:1, y:0}} className="absolute right-0 mt-2 w-72 bg-slate-800 rounded shadow p-3">
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="absolute right-0 mt-2 w-72 bg-slate-800 rounded shadow p-3">
           <div className="flex flex-col items-center gap-2">
             <div className="w-full h-20 bg-gray-700 rounded overflow-hidden">
-              {profile?.banner ? <img src={profile.banner} alt="banner" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center">No banner</div>}
+              {profile && profile.banner ? (
+                <img src={profile.banner} alt="banner" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">No banner</div>
+              )}
             </div>
 
             <div className="flex items-center gap-3 w-full">
-              <img src={profile?.pfp || '/default-pfp.png'} className="w-12 h-12 rounded-full" />
+              <img src={(profile && profile.pfp) || '/default-pfp.png'} className="w-12 h-12 rounded-full" alt="pfp" />
               <div className="flex-1 text-left">
-                <div className={`font-bold ${uidUsername==='Keno'?'owner-glow':''}`}>{profile?.username}</div>
-                <div className="text-xs text-gray-300">{profile?.bio || 'No bio yet'}</div>
+                <div className={`font-bold ${uidUsername === 'Keno' ? 'owner-glow' : ''}`}>{profile && profile.username}</div>
+                <div className="text-xs text-gray-300">{(profile && profile.bio) || 'No bio yet'}</div>
               </div>
             </div>
 
@@ -377,14 +431,14 @@ export default function ProfileMenu({ user }){
         </motion.div>
       )}
     </div>
-  )
+  );
 }
 
-// === src/components/Home.jsx ===
-import React from 'react'
-import { motion } from 'framer-motion'
+/* === src/components/Home.jsx === */
+import React from 'react';
+import { motion } from 'framer-motion';
 
-export default function Home({ user }){
+export default function Home({ user }) {
   return (
     <div className="rounded-lg bg-slate-800/40 p-6">
       <div className="flex items-center justify-between">
@@ -392,7 +446,7 @@ export default function Home({ user }){
           <h1 className="text-3xl font-bold">Welcome to SchemShare</h1>
           <p className="text-gray-300">Download schematics or share your builds with one click.</p>
         </div>
-        <motion.div whileHover={{scale:1.05}} className="p-3 rounded bg-gradient-to-r from-purple-600 to-pink-500">Get Started</motion.div>
+        <motion.div whileHover={{ scale: 1.05 }} className="p-3 rounded bg-gradient-to-r from-purple-600 to-pink-500">Get Started</motion.div>
       </div>
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -401,81 +455,87 @@ export default function Home({ user }){
         <Card title="Featured" desc="Hand-picked by admin" />
       </div>
     </div>
-  )
+  );
 }
 
-function Card({title, desc}){
+function Card({ title, desc }) {
   return (
-    <motion.div whileHover={{y:-6}} className="p-4 bg-slate-700 rounded">
+    <motion.div whileHover={{ y: -6 }} className="p-4 bg-slate-700 rounded">
       <div className="font-semibold">{title}</div>
       <div className="text-sm text-gray-300">{desc}</div>
       <div className="mt-3">
         <button className="px-3 py-2 rounded bg-green-600">Browse</button>
       </div>
     </motion.div>
-  )
+  );
 }
 
-// === src/components/Community.jsx ===
-import React, { useEffect, useState } from 'react'
-import { db, storage, auth } from '../firebase'
-import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore'
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { motion } from 'framer-motion'
+/* === src/components/Community.jsx === */
+import React, { useEffect, useState } from 'react';
+import { db, storage } from '../firebase';
+import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { motion } from 'framer-motion';
 
-export default function Community({ user }){
-  const [uploads, setUploads] = useState([])
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [imageFile, setImageFile] = useState(null)
-  const [schemFile, setSchemFile] = useState(null)
-  const [loading, setLoading] = useState(false)
+export default function Community({ user }) {
+  const [uploads, setUploads] = useState([]);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [schemFile, setSchemFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
-    const q = query(collection(db,'schematics'), orderBy('createdAt','desc'))
-    const unsub = onSnapshot(q, (snap)=>{
-      setUploads(snap.docs.map(d=>({id:d.id, ...d.data()})))
-    })
-    return unsub
-  },[])
+  useEffect(() => {
+    const q = query(collection(db, 'schematics'), orderBy('createdAt', 'desc'));
+    const unsub = onSnapshot(q, (snap) => {
+      setUploads(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    });
+    return unsub;
+  }, []);
 
-  async function handleUpload(e){
-    e.preventDefault()
-    if(!user) return alert('You must log in to upload')
-    if(!title || !schemFile) return alert('Title and schematic file required')
+  async function uploadFileToStorage(path, file) {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  }
 
-    setLoading(true)
-    try{
-      const uname = user.email.split('@')[0]
-      // upload image
-      let imgUrl = null
-      if(imageFile){
-        const imgPath = `schem_previews/${uname}/${Date.now()}_${imageFile.name}`
-        const imgRef = ref(storage, imgPath)
-        const task = uploadBytesResumable(imgRef, imageFile)
-        await new Promise((res,rej)=> task.on('state_changed', ()=>{}, rej, res))
-        imgUrl = await getDownloadURL(task.snapshot.ref)
+  async function handleUpload(e) {
+    e.preventDefault();
+    if (!user) return alert('You must log in to upload');
+    if (!title || !schemFile) return alert('Title and schematic file required');
+
+    setLoading(true);
+    try {
+      const uname = user.email.split('@')[0];
+      let imgUrl = null;
+      if (imageFile) {
+        const imgPath = `schem_previews/${uname}/${Date.now()}_${imageFile.name}`;
+        imgUrl = await uploadFileToStorage(imgPath, imageFile);
       }
 
-      // upload schem file
-      const schemPath = `schematics/${uname}/${Date.now()}_${schemFile.name}`
-      const schemRef = ref(storage, schemPath)
-      const task2 = uploadBytesResumable(schemRef, schemFile)
-      await new Promise((res, rej)=> task2.on('state_changed', ()=>{}, rej, res))
-      const schemUrl = await getDownloadURL(task2.snapshot.ref)
+      const schemPath = `schematics/${uname}/${Date.now()}_${schemFile.name}`;
+      const schemUrl = await uploadFileToStorage(schemPath, schemFile);
 
-      await addDoc(collection(db,'schematics'), {
+      await addDoc(collection(db, 'schematics'), {
         title,
         description,
         preview: imgUrl,
         fileUrl: schemUrl,
         author: uname,
         createdAt: Date.now()
-      })
+      });
 
-      setTitle(''); setDescription(''); setImageFile(null); setSchemFile(null)
-    }catch(e){ console.error(e); alert('Upload failed') }
-    finally{ setLoading(false) }
+      setTitle('');
+      setDescription('');
+      setImageFile(null);
+      setSchemFile(null);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      alert('Upload failed');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -488,10 +548,10 @@ export default function Community({ user }){
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-1 md:col-span-1 p-4 bg-slate-700 rounded">
           <form onSubmit={handleUpload} className="space-y-3">
-            <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Schematic Name" className="w-full p-2 bg-slate-600 rounded" />
-            <textarea value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Description" className="w-full p-2 bg-slate-600 rounded h-24" />
-            <label className="block">Preview Image <input onChange={(e)=>setImageFile(e.target.files[0])} type="file" accept="image/*" /></label>
-            <label className="block">Schematic File <input onChange={(e)=>setSchemFile(e.target.files[0])} type="file" accept=".schem,.schematic,.nbt" required /></label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Schematic Name" className="w-full p-2 bg-slate-600 rounded" />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="w-full p-2 bg-slate-600 rounded h-24" />
+            <label className="block">Preview Image <input onChange={(e) => setImageFile(e.target.files && e.target.files[0])} type="file" accept="image/*" /></label>
+            <label className="block">Schematic File <input onChange={(e) => setSchemFile(e.target.files && e.target.files[0])} type="file" accept=".schem,.schematic,.nbt" required /></label>
             <div className="flex gap-2">
               <button type="submit" disabled={loading} className="flex-1 py-2 bg-green-600 rounded">Upload</button>
             </div>
@@ -500,43 +560,48 @@ export default function Community({ user }){
 
         <div className="col-span-1 md:col-span-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {uploads.map(u=> (
+            {uploads.map((u) => (
               <UploadCard key={u.id} item={u} />
             ))}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-function UploadCard({ item }){
-  async function handleDownload(){
-    // navigate user to file url - browser will download
-    window.open(item.fileUrl, '_blank')
+function UploadCard({ item }) {
+  async function handleDownload() {
+    if (!item || !item.fileUrl) return alert('No file URL');
+    window.open(item.fileUrl, '_blank');
   }
 
   return (
-    <motion.div whileHover={{scale:1.02}} className="p-3 bg-slate-700 rounded flex gap-3">
+    <motion.div whileHover={{ scale: 1.02 }} className="p-3 bg-slate-700 rounded flex gap-3">
       <div className="w-28 h-20 bg-gray-600 rounded overflow-hidden">
-        {item.preview ? <img src={item.preview} className="w-full h-full object-cover"/> : <div className="w-full h-full flex items-center justify-center text-gray-300">No Preview</div>}
+        {item && item.preview ? (
+          <img src={item.preview} className="w-full h-full object-cover" alt="preview" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-300">No Preview</div>
+        )}
       </div>
+
       <div className="flex-1">
-        <div className="font-semibold">{item.title}</div>
-        <div className="text-xs text-gray-300">By {item.author}</div>
-        <div className="text-sm mt-2">{item.description}</div>
+        <div className="font-semibold">{item && item.title}</div>
+        <div className="text-xs text-gray-300">By {item && item.author}</div>
+        <div className="text-sm mt-2">{item && item.description}</div>
         <div className="mt-3 flex gap-2">
           <button onClick={handleDownload} className="px-3 py-2 bg-blue-600 rounded">Download</button>
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
 
-// === public/default-pfp.png ===
-// (Add a small default avatar image in your public folder named default-pfp.png)
+/* === public/default-pfp.png === */
+/* Add a small default avatar image in your public folder named default-pfp.png */
 
-// === Firestore security notes ===
+/* === Firestore security notes === */
 /*
 This demo uses simple Firestore writes. For production, update security rules to require auth and proper ownership checks.
 Example simple rules:
@@ -550,14 +615,14 @@ service cloud.firestore {
     match /schematics/{doc} {
       allow read: if true;
       allow create: if request.auth != null;
-      allow update, delete: if false; // add ownership checks when needed
+      allow update, delete: if false;
     }
     match /usernames/{id} {
       allow read: if true;
-      allow write: if false; // handle via Cloud Function or server to reserve username securely
+      allow write: if false;
     }
   }
 }
 */
 
-// === End of file list ===
+/* === End of file list === */
