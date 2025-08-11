@@ -1,1037 +1,563 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Minecraft Schematics</title>
-<style>
-  /* Reset */
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #4c00ff, #00bfff, #4cff00);
-    background-size: 400% 400%;
-    animation: aurora 15s ease infinite;
-    color: #eee;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  @keyframes aurora {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
-  }
-
-  /* Container */
-  .container {
-    max-width: 960px;
-    margin: 1.5rem auto;
-    background: rgba(20, 20, 30, 0.85);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 25px rgb(20 20 30 / 0.7);
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Header */
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  header h1 {
-    margin: 0;
-    font-weight: 700;
-    font-size: 1.8rem;
-    letter-spacing: 1.2px;
-  }
-
-  /* User profile on top right */
-  #userPfp {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background-color: #6c56d6;
-    background-position: center;
-    background-size: cover;
-    cursor: pointer;
-    border: 2px solid #a78cff;
-  }
-  #loggedUserName {
-    margin-left: 12px;
-    font-weight: 600;
-    user-select: none;
-    align-self: center;
-    color: #ccc;
-  }
-  #userContainer {
-    display: flex;
-    align-items: center;
-  }
-
-  /* Tabs */
-  .tabs {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 1rem;
-  }
-  .tab {
-    cursor: pointer;
-    padding: 8px 20px;
-    border-radius: 25px;
-    background: #392f71cc;
-    color: #ddd;
-    font-weight: 600;
-    user-select: none;
-    transition: background-color 0.25s ease, color 0.25s ease;
-  }
-  .tab:hover {
-    background: #6a5ad6;
-    color: #fff;
-  }
-  .tab.active {
-    background: #9579e1;
-    color: #fff;
-    box-shadow: 0 0 12px #9579e1aa;
-  }
-
-  /* Sections */
-  .tab-section {
-    display: none;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .tab-section.active {
-    display: flex;
-  }
-
-  /* Cards */
-  .card {
-    background: rgba(255 255 255 / 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s ease;
-    cursor: default;
-  }
-  .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 0 25px #9579e1cc;
-  }
-  .card img {
-    width: 100%;
-    max-height: 180px;
-    object-fit: cover;
-    user-select: none;
-  }
-  .card-content {
-    padding: 12px 16px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .card-title {
-    margin: 0 0 6px 0;
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: #ddd;
-  }
-  .tag {
-    background: #6a5ad6;
-    color: white;
-    font-weight: 600;
-    font-size: 0.75rem;
-    padding: 2px 8px;
-    border-radius: 16px;
-    width: fit-content;
-    user-select: none;
-    margin-bottom: 6px;
-  }
-  .card-desc {
-    color: #bbb;
-    font-size: 0.9rem;
-    flex-grow: 1;
-  }
-
-  /* Buttons container in card */
-  .buttons {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-start;
-    margin-top: 12px;
-  }
-  /* Buttons style */
-  .buttons a.btn,
-  .buttons button.btn {
-    flex: 0 0 auto;
-    min-width: 110px;
-    max-width: 140px;
-    padding: 8px 18px;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.25s ease, color 0.25s ease;
-    text-align: center;
-    text-decoration: none;
-    user-select: none;
-    display: inline-block;
-  }
-  .buttons a.btn.download {
-    background-color: #6a5ad6;
-    color: white;
-    box-shadow: 0 0 8px #6a5ad6bb;
-  }
-  .buttons a.btn.download:hover {
-    background-color: #7c69e3;
-    box-shadow: 0 0 12px #9579e1cc;
-  }
-  .buttons button.btn.details {
-    background-color: transparent;
-    color: #aaa;
-    border: 2px solid #6a5ad6;
-  }
-  .buttons button.btn.details:hover {
-    background-color: #6a5ad6;
-    color: white;
-  }
-
-  /* Login screen */
-  #loginScreen {
-    position: fixed;
-    inset: 0;
-    background: rgba(20, 20, 30, 0.95);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-  }
-  #loginForm {
-    background: #372f71;
-    padding: 24px 32px;
-    border-radius: 16px;
-    box-shadow: 0 0 35px #9579e1aa;
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  #loginForm label {
-    font-weight: 600;
-    color: #eee;
-  }
-  #loginForm input {
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: none;
-    font-size: 1rem;
-    outline-offset: 2px;
-  }
-  #loginForm button, #loginGuestBtn {
-    margin-top: 12px;
-    background-color: #6a5ad6;
-    border: none;
-    color: white;
-    padding: 10px 0;
-    font-weight: 700;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    user-select: none;
-  }
-  #loginForm button:hover, #loginGuestBtn:hover {
-    background-color: #7c69e3;
-  }
-  #loginGuestBtn {
-    background-color: #4a3f8e;
-    margin-top: 8px;
-  }
-  #loginGuestBtn:hover {
-    background-color: #5d50b1;
-  }
-
-  /* Upload form */
-  #uploadForm {
-    background: #372f71cc;
-    padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 0 15px #9579e1aa;
-    max-width: 480px;
-    display: none;
-    flex-direction: column;
-  }
-  #uploadForm label {
-    margin-top: 8px;
-    font-weight: 600;
-  }
-  #uploadForm input[type="text"],
-  #uploadForm textarea,
-  #uploadForm select,
-  #uploadForm input[type="file"] {
-    width: 100%;
-    margin-top: 4px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: none;
-    font-size: 1rem;
-    outline-offset: 2px;
-  }
-  #uploadForm textarea {
-    resize: vertical;
-  }
-  #uploadStatus {
-    margin-top: 8px;
-    font-weight: 600;
-    color: #e07c7c;
-  }
-  #uploadForm button {
-    margin-top: 12px;
-    padding: 10px 0;
-    border: none;
-    border-radius: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    user-select: none;
-  }
-  #uploadForm button.primary {
-    background-color: #6a5ad6;
-    color: white;
-  }
-  #uploadForm button.primary:hover {
-    background-color: #7c69e3;
-  }
-  #uploadForm button.outline {
-    background-color: transparent;
-    border: 2px solid #6a5ad6;
-    color: #6a5ad6;
-  }
-  #uploadForm button.outline:hover {
-    background-color: #6a5ad6;
-    color: white;
-  }
-
-  /* Details modal */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 10, 15, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 20;
-  }
-  .hidden {
-    display: none !important;
-  }
-  .modal {
-    background: #2a2157;
-    border-radius: 16px;
-    padding: 20px 24px;
-    max-width: 420px;
-    max-height: 90vh;
-    overflow-y: auto;
-    color: #eee;
-    box-shadow: 0 0 25px #9579e1cc;
-    display: flex;
-    flex-direction: column;
-  }
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-  .modal-header h3 {
-    margin: 0;
-    font-weight: 700;
-    font-size: 1.5rem;
-  }
-  .modal-header button.close {
-    background: transparent;
-    border: none;
-    color: #aaa;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  .modal-body img {
-    width: 100%;
-    max-height: 320px;
-    object-fit: contain;
-    border-radius: 10px;
-    margin-bottom: 12px;
-  }
-  .modal-footer {
-    margin-top: 16px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-  .modal-footer a.btn.download {
-    padding: 10px 26px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    background-color: #6a5ad6;
-    border-radius: 12px;
-    box-shadow: 0 0 18px #9579e1cc;
-    color: white;
-    text-decoration: none;
-    user-select: none;
-    transition: background-color 0.25s ease;
-  }
-  .modal-footer a.btn.download:hover {
-    background-color: #7c69e3;
-    box-shadow: 0 0 28px #b1a7ffcc;
-  }
-  .modal-footer button.btn.outline {
-    background-color: transparent;
-    border: 2px solid #6a5ad6;
-    color: #6a5ad6;
-    font-weight: 700;
-    padding: 8px 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-  }
-  .modal-footer button.btn.outline:hover {
-    background-color: #6a5ad6;
-    color: white;
-  }
-
-  /* Profile modal */
-  #profileModal .modal-body {
-    text-align: center;
-  }
-  .profile-pic {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 12px;
-    border-radius: 50%;
-    background-color: #6c56d6;
-    background-position: center;
-    background-size: cover;
-    cursor: pointer;
-    border: 2px solid #a78cff;
-  }
-  #profileForm label {
-    display: block;
-    margin-top: 8px;
-    font-weight: 600;
-    text-align: left;
-  }
-  #profileForm input,
-  #profileForm textarea {
-    margin-top: 4px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: none;
-    width: 100%;
-    font-size: 1rem;
-    outline-offset: 2px;
-    resize: none;
-  }
-  #profileForm textarea {
-    resize: vertical;
-  }
-</style>
-</head>
-<body>
-
-<!-- Login Screen -->
-<div id="loginScreen" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-  <form id="loginForm" aria-describedby="loginDesc">
-    <h2 id="loginTitle" style="color:#eee; text-align:center;">Login to Minecraft Schematics</h2>
-    <p id="loginDesc" style="color:#ccc; font-size:0.9rem; margin-bottom:12px; text-align:center;">
-      Enter username and password (min 3 chars) or continue as guest.
-    </p>
-    <label for="loginUsername">Username</label>
-    <input type="text" id="loginUsername" name="loginUsername" required autocomplete="off" />
-    <label for="loginPassword">Password</label>
-    <input type="password" id="loginPassword" name="loginPassword" required autocomplete="off" />
-    <button type="submit">Login</button>
-    <button type="button" id="loginGuestBtn">Continue as Guest</button>
-  </form>
-</div>
-
-<div class="container" role="main" aria-live="polite">
-
-  <header>
-    <h1>Minecraft Schematics</h1>
-    <div id="userContainer" tabindex="-1">
-      <div id="userPfp" title="Open profile settings" aria-label="Open profile settings" tabindex="0"></div>
-      <span id="loggedUserName">Not logged in</span>
-    </div>
-  </header>
-
-  <nav class="tabs" role="tablist" aria-label="Main navigation">
-    <button class="tab active" data-target="main" role="tab" aria-selected="true" tabindex="0">Main Schematics</button>
-    <button class="tab" data-target="community" role="tab" aria-selected="false" tabindex="-1">Community</button>
-  </nav>
-
-  <section id="main" class="tab-section active" role="tabpanel" tabindex="0" aria-labelledby="mainTab">
-    <div id="mainSchematics" class="schematics-grid" aria-live="polite"></div>
-  </section>
-
-  <section id="community" class="tab-section" role="tabpanel" tabindex="0" aria-labelledby="communityTab">
-    <button id="showUpload" class="btn primary" style="margin-bottom:12px; max-width:180px;">Upload your own</button>
-
-    <form id="uploadForm" aria-label="Upload your schematic">
-      <label for="name">Schematic Name</label>
-      <input type="text" id="name" name="name" required autocomplete="off" />
-      
-      <label for="file">Schematic File (.schem, .schematic, .nbt, .msch)</label>
-      <input type="file" id="file" name="file" accept=".schem,.schematic,.nbt,.msch" required />
-
-      <label for="image">Preview Image (optional)</label>
-      <input type="file" id="image" name="image" accept="image/*" />
-
-      <label for="tag">Tag</label>
-      <select id="tag" name="tag" required>
-        <option value="" disabled selected>Select tag</option>
-        <option value="Farm">Farm</option>
-        <option value="Stash">Stash</option>
-      </select>
-
-      <label for="description">Description</label>
-      <textarea id="description" name="description" rows="4" placeholder="Describe your schematic"></textarea>
-
-      <div id="uploadStatus" aria-live="assertive" style="color: #e07c7c;"></div>
-
-      <button type="submit" class="primary">Upload</button>
-      <button type="button" class="outline" id="cancelUpload">Cancel</button>
-    </form>
-
-    <div id="communitySchematics" class="schematics-grid" aria-live="polite"></div>
-  </section>
-
-</div>
-
-<!-- Details Modal -->
-<div id="detailsModal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
-  <div class="card modal" role="document">
-    <div class="modal-header">
-      <h3 id="modalTitle">Details</h3>
-      <button class="close" id="modalClose" aria-label="Close details modal">✕</button>
-    </div>
-    <div class="modal-body">
-      <img id="modalImage" alt="" />
-      <p id="modalDesc" style="white-space: pre-wrap; font-size:14px;"></p>
-      <p id="modalTag" style="font-size: 13px; font-weight: 600; margin-top: 6px; color: #bbb;"></p>
-    </div>
-    <div class="modal-footer">
-      <a id="modalDownload" class="btn download" href="#" download>Download</a>
-      <button class="btn outline" id="modalCloseFooter">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- Profile Modal -->
-<div id="profileModal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="profileTitle" tabindex="-1">
-  <div class="modal" role="document">
-    <div class="modal-header">
-      <h3 id="profileTitle">Profile Settings</h3>
-      <button class="close" id="profileCloseBtn" aria-label="Close profile settings">✕</button>
-    </div>
-    <div class="modal-body">
-      <div id="profilePfp" class="profile-pic" tabindex="0" title="Click to change profile picture"></div>
-      <form id="profileForm">
-        <label for="profileName">Display Name</label>
-        <input type="text" id="profileName" name="profileName" maxlength="20" />
-        <label for="profileAbout">About Me</label>
-        <textarea id="profileAbout" name="profileAbout" rows="4" maxlength="160" placeholder="Tell others about yourself..."></textarea>
-        <input type="file" id="profilePfpFile" name="profilePfpFile" accept="image/*" style="display:none;" />
-        <button type="submit" class="primary" style="margin-top:12px;">Save Changes</button>
-      </form>
-    </div>
-  </div>
-</div>
-
-<script>
-(() => {
-  const DEFAULT_PFP = 'https://i.imgur.com/ypu8ZcJ.png'; // Default pfp image (purple circle)
-  let schematics = [];
-  let user = null;
-
-  // Elements
-  const loginScreen = document.getElementById('loginScreen');
-  const loginForm = document.getElementById('loginForm');
-  const loginGuestBtn = document.getElementById('loginGuestBtn');
-  const loggedUserName = document.getElementById('loggedUserName');
-  const userPfp = document.getElementById('userPfp');
-  const userContainer = document.getElementById('userContainer');
-
-  const tabs = document.querySelectorAll('.tab');
-  const tabSections = document.querySelectorAll('.tab-section');
-
-  const mainSchematicsDiv = document.getElementById('mainSchematics');
-  const communitySchematicsDiv = document.getElementById('communitySchematics');
-  const showUploadBtn = document.getElementById('showUpload');
-  const uploadForm = document.getElementById('uploadForm');
-  const cancelUploadBtn = document.getElementById('cancelUpload');
-  const uploadStatus = document.getElementById('uploadStatus');
-
-  // Details modal
-  const detailsModal = document.getElementById('detailsModal');
-  const modalClose = document.getElementById('modalClose');
-  const modalCloseFooter = document.getElementById('modalCloseFooter');
-  const modalImage = document.getElementById('modalImage');
-  const modalDesc = document.getElementById('modalDesc');
-  const modalTag = document.getElementById('modalTag');
-  const modalDownload = document.getElementById('modalDownload');
-
-  // Profile modal
-  const profileModal = document.getElementById('profileModal');
-  const profileCloseBtn = document.getElementById('profileCloseBtn');
-  const profilePfp = document.getElementById('profilePfp');
-  const profileForm = document.getElementById('profileForm');
-  const profileNameInput = document.getElementById('profileName');
-  const profileAboutInput = document.getElementById('profileAbout');
-  const profilePfpFileInput = document.getElementById('profilePfpFile');
-
-  // Utility to load from localStorage
-  function loadSchematics() {
-    try {
-      const data = localStorage.getItem('schematics');
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
-  }
-  function saveSchematics() {
-    localStorage.setItem('schematics', JSON.stringify(schematics));
-  }
-  function loadUser() {
-    try {
-      const data = localStorage.getItem('user');
-      return data ? JSON.parse(data) : null;
-    } catch {
-      return null;
-    }
-  }
-  function saveUser() {
-    if (user) localStorage.setItem('user', JSON.stringify(user));
-  }
-  function clearUser() {
-    localStorage.removeItem('user');
-  }
-
-  // Rendering schematic cards
-  function createSchematicCard(schematic, isCommunity = false) {
-    const card = document.createElement('article');
-    card.classList.add('card');
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', `${schematic.name} schematic card`);
-
-    // Image
-    const img = document.createElement('img');
-    img.alt = schematic.name + ' preview';
-    img.src = schematic.image || 'https://i.imgur.com/IyZkZqP.png'; // placeholder image
-    card.appendChild(img);
-
-    const content = document.createElement('div');
-    content.className = 'card-content';
-
-    const title = document.createElement('h2');
-    title.className = 'card-title';
-    title.textContent = schematic.name;
-    content.appendChild(title);
-
-    const tag = document.createElement('div');
-    tag.className = 'tag';
-    tag.textContent = schematic.tag;
-    content.appendChild(tag);
-
-    const desc = document.createElement('p');
-    desc.className = 'card-desc';
-    desc.textContent = schematic.description || '';
-    content.appendChild(desc);
-
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.className = 'buttons';
-
-    // Download button
-    const downloadBtn = document.createElement('a');
-    downloadBtn.className = 'btn download';
-    downloadBtn.textContent = 'Download';
-
-    // If community schematic: download file from base64
-    if (isCommunity && schematic.fileData) {
-      downloadBtn.href = schematic.fileData;
-      downloadBtn.download = schematic.name.replace(/\s+/g, '_') + '.schem';
-      downloadBtn.setAttribute('role', 'button');
-      downloadBtn.setAttribute('aria-label', 'Download ' + schematic.name);
-    } else {
-      // Placeholder download links for main schematics
-      downloadBtn.href = schematic.downloadLink || '#';
-      downloadBtn.target = '_blank';
-      downloadBtn.rel = 'noopener noreferrer';
-      downloadBtn.setAttribute('role', 'button');
-      downloadBtn.setAttribute('aria-label', 'Download ' + schematic.name);
-    }
-
-    buttonsDiv.appendChild(downloadBtn);
-
-    // Details button
-    const detailsBtn = document.createElement('button');
-    detailsBtn.className = 'btn details';
-    detailsBtn.textContent = 'Details';
-    detailsBtn.addEventListener('click', () => openDetailsModal(schematic));
-    buttonsDiv.appendChild(detailsBtn);
-
-    content.appendChild(buttonsDiv);
-
-    card.appendChild(content);
-
-    return card;
-  }
-
-  // Render all main schematics (placeholders)
-  function renderMainSchematics() {
-    mainSchematicsDiv.innerHTML = '';
-    const placeholders = [
-      {
-        name: 'Automatic Wheat Farm',
-        tag: 'Farm',
-        description: 'Efficient wheat farm with pistons and water streams.',
-        image: 'https://i.imgur.com/dyMpTpR.jpg',
-        downloadLink: '#',
-      },
-      {
-        name: 'Secret Underground Stash',
-        tag: 'Stash',
-        description: 'Hidden stash with TNT traps and secret doors.',
-        image: 'https://i.imgur.com/7ntQg9a.jpg',
-        downloadLink: '#',
-      },
-      {
-        name: 'Compact Animal Farm',
-        tag: 'Farm',
-        description: 'Small but effective animal breeding pen.',
-        image: 'https://i.imgur.com/0P1KptN.jpg',
-        downloadLink: '#',
-      },
-    ];
-    placeholders.forEach(s => {
-      const card = createSchematicCard(s, false);
-      mainSchematicsDiv.appendChild(card);
-    });
-  }
-
-  // Render community schematics
-  function renderCommunitySchematics() {
-    communitySchematicsDiv.innerHTML = '';
-    if (schematics.length === 0) {
-      communitySchematicsDiv.textContent = 'No community schematics uploaded yet.';
-      return;
-    }
-    schematics.forEach(s => {
-      const card = createSchematicCard(s, true);
-      communitySchematicsDiv.appendChild(card);
-    });
-  }
-
-  // Modal open/close handlers
-  function openDetailsModal(schematic) {
-    modalImage.src = schematic.image || 'https://i.imgur.com/IyZkZqP.png';
-    modalImage.alt = schematic.name + ' preview';
-    modalDesc.textContent = schematic.description || 'No description.';
-    modalTag.textContent = 'Tag: ' + (schematic.tag || 'None');
-
-    if (schematic.fileData) {
-      modalDownload.href = schematic.fileData;
-      modalDownload.download = schematic.name.replace(/\s+/g, '_') + '.schem';
-      modalDownload.style.display = 'inline-block';
-    } else if (schematic.downloadLink) {
-      modalDownload.href = schematic.downloadLink;
-      modalDownload.target = '_blank';
-      modalDownload.rel = 'noopener noreferrer';
-      modalDownload.style.display = 'inline-block';
-    } else {
-      modalDownload.style.display = 'none';
-    }
-
-    detailsModal.classList.remove('hidden');
-    detailsModal.focus();
-  }
-  function closeDetailsModal() {
-    detailsModal.classList.add('hidden');
-  }
-
-  function openProfileModal() {
-    profileNameInput.value = user.displayName || user.username;
-    profileAboutInput.value = user.about || '';
-    profilePfp.style.backgroundImage = `url(${user.pfp || DEFAULT_PFP})`;
-    profileModal.classList.remove('hidden');
-    profileModal.focus();
-  }
-  function closeProfileModal() {
-    profileModal.classList.add('hidden');
-  }
-
-  // Login handling
-  function loginUser(u) {
-    user = u;
-    loggedUserName.textContent = user.displayName || user.username;
-    userPfp.style.backgroundImage = `url(${user.pfp || DEFAULT_PFP})`;
-    loginScreen.style.display = 'none';
-    renderMainSchematics();
-    renderCommunitySchematics();
-  }
-
-  // Form handlers
-  loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = loginForm.loginUsername.value.trim();
-    const password = loginForm.loginPassword.value.trim();
-    if (username.length < 3 || password.length < 3) {
-      alert('Username and password must be at least 3 characters.');
-      return;
-    }
-    // Save user in localStorage as logged in
-    user = {
-      username,
-      displayName: username,
-      pfp: DEFAULT_PFP,
-      about: '',
-    };
-    saveUser();
-    loginUser(user);
-  });
-  loginGuestBtn.addEventListener('click', () => {
-    user = {
-      username: 'Guest',
-      displayName: 'Guest',
-      pfp: DEFAULT_PFP,
-      about: '',
-    };
-    saveUser();
-    loginUser(user);
-  });
-
-  // Load user and schematics from localStorage on startup
-  function init() {
-    schematics = loadSchematics();
-    const storedUser = loadUser();
-    if (!storedUser) {
-      loginScreen.style.display = 'flex';
-      loggedUserName.textContent = 'Not logged in';
-      userPfp.style.backgroundImage = `url('${DEFAULT_PFP}')`;
-    } else {
-      user = storedUser;
-      loginUser(user);
-    }
-  }
-
-  // Tab switching
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-        t.tabIndex = -1;
-      });
-      tab.classList.add('active');
-      tab.setAttribute('aria-selected', 'true');
-      tab.tabIndex = 0;
-      const target = tab.getAttribute('data-target');
-      tabSections.forEach(section => {
-        if (section.id === target) {
-          section.classList.add('active');
-          section.focus();
-        } else {
-          section.classList.remove('active');
-        }
-      });
-      // Hide upload form when switching tabs
-      if (target === 'community') {
-        showUploadBtn.style.display = 'inline-block';
-        uploadForm.style.display = 'none';
-        uploadForm.reset();
-        uploadStatus.textContent = '';
-      } else {
-        showUploadBtn.style.display = 'none';
-        uploadForm.style.display = 'none';
-      }
-    });
-  });
-
-  // Upload form handling
-  showUploadBtn.addEventListener('click', () => {
-    uploadForm.style.display = 'flex';
-    showUploadBtn.style.display = 'none';
-    uploadStatus.textContent = '';
-  });
-  cancelUploadBtn.addEventListener('click', () => {
-    uploadForm.style.display = 'none';
-    showUploadBtn.style.display = 'inline-block';
-    uploadForm.reset();
-    uploadStatus.textContent = '';
-  });
-
-  uploadForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name = uploadForm.name.value.trim();
-    const tag = uploadForm.tag.value;
-    const description = uploadForm.description.value.trim();
-
-    if (!name || !tag) {
-      uploadStatus.textContent = 'Please enter a name and select a tag.';
-      return;
-    }
-
-    const fileInput = uploadForm.file;
-    const imageInput = uploadForm.image;
-
-    if (!fileInput.files.length) {
-      uploadStatus.textContent = 'Please upload your schematic file.';
-      return;
-    }
-    const file = fileInput.files[0];
-    // Validate extension
-    const allowedExtensions = ['schem', 'schematic', 'nbt', 'msch'];
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (!allowedExtensions.includes(ext)) {
-      uploadStatus.textContent = 'Invalid file type. Allowed: .schem, .schematic, .nbt, .msch';
-      return;
-    }
-
-    // Read file as base64
-    const fileData = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsDataURL(file);
-    });
-
-    // Read image as base64 if provided
-    let imageData = null;
-    if (imageInput.files.length) {
-      imageData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error('Failed to read image'));
-        reader.readAsDataURL(imageInput.files[0]);
-      });
-    }
-
-    // Save schematic
-    const newSchematic = {
-      id: Date.now(),
-      name,
-      tag,
-      description,
-      image: imageData,
-      fileData,
-      uploader: user.username,
-    };
-
-    schematics.push(newSchematic);
-    saveSchematics();
-    renderCommunitySchematics();
-
-    uploadStatus.style.color = '#7ff2a8';
-    uploadStatus.textContent = 'Schematic uploaded successfully!';
-
-    // Reset form and hide it
-    setTimeout(() => {
-      uploadForm.style.display = 'none';
-      showUploadBtn.style.display = 'inline-block';
-      uploadForm.reset();
-      uploadStatus.textContent = '';
-    }, 1400);
-  });
-
-  // Details modal close buttons
-  modalClose.addEventListener('click', closeDetailsModal);
-  modalCloseFooter.addEventListener('click', closeDetailsModal);
-  detailsModal.addEventListener('click', e => {
-    if (e.target === detailsModal) closeDetailsModal();
-  });
-
-  // Profile modal close
-  profileCloseBtn.addEventListener('click', closeProfileModal);
-  profileModal.addEventListener('click', e => {
-    if (e.target === profileModal) closeProfileModal();
-  });
-
-  // Open profile modal on userPfp click or keyboard enter
-  userPfp.addEventListener('click', () => {
-    if (user) openProfileModal();
-  });
-  userPfp.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (user) openProfileModal();
-    }
-  });
-
-  // Profile form save
-  profileForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const displayName = profileNameInput.value.trim();
-    const about = profileAboutInput.value.trim();
-    if (displayName.length < 1) {
-      alert('Display name cannot be empty.');
-      return;
-    }
-    user.displayName = displayName;
-    user.about = about;
-
-    // Save profile pic if changed
-    if (profilePfpFileInput.files.length) {
-      const imgData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error('Failed to read image'));
-        reader.readAsDataURL(profilePfpFileInput.files[0]);
-      });
-      user.pfp = imgData;
-    }
-
-    saveUser();
-    loginUser(user);
-    closeProfileModal();
-  });
-
-  // Change profile pic preview on clicking profile pic div
-  profilePfp.addEventListener('click', () => {
-    profilePfpFileInput.click();
-  });
-  profilePfpFileInput.addEventListener('change', () => {
-    if (profilePfpFileInput.files.length) {
-      const file = profilePfpFileInput.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        profilePfp.style.backgroundImage = `url(${reader.result})`;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  // Accessibility: ESC closes modals
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (!detailsModal.classList.contains('hidden')) closeDetailsModal();
-      if (!profileModal.classList.contains('hidden')) closeProfileModal();
-    }
-  });
-
-  init();
-})();
-</script>
-
-</body>
+// === README.md ===
+/*
+Minecraft Schematic Share
+React + Tailwind + Framer Motion + Firebase (Auth, Firestore, Storage)
+
+Overview
+- Full front-end React app that uses Firebase for real authentication, file uploads (schematic .schem/.schematic/.nbt), images, and Firestore for metadata.
+- Username-based sign-up/login: we use a username field and create a synthetic email `${username}@schem.local` behind the scenes so Firebase Auth can be used while enforcing unique usernames in Firestore.
+- "Keno" is reserved as owner: when a user has username exactly "Keno" they get owner badge and glowing effect. The app prevents duplicates.
+
+Requirements
+- Node >= 16
+- npm or yarn
+
+Installation
+1. Create Firebase project, enable Authentication (Email/Password), Firestore, and Storage.
+2. In Firestore create a 'users' collection and allow read/write rules according to your security plan (example rules included later).
+3. Copy your firebase config into src/firebase.js
+4. Install dependencies:
+   npm install
+   npm run dev
+
+Files included below for easy copy-paste into a React project (Vite recommended).
+*/
+
+// === package.json ===
+{
+  "name": "schem-share",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "firebase": "^9.22.0",
+    "framer-motion": "^10.12.16",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.1.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.5.3",
+    "vite": "^5.1.7"
+  }
+}
+
+// === tailwind.config.cjs ===
+module.exports = {
+  content: ['./index.html', './src/**/*.{js,jsx}'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+// === index.html ===
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schematic Share</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
+
+// === src/firebase.js ===
+// Replace the firebaseConfig object with your project's config
+import { initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
+
+const firebaseConfig = {
+  apiKey: "REPLACE_ME",
+  authDomain: "REPLACE_ME",
+  projectId: "REPLACE_ME",
+  storageBucket: "REPLACE_ME",
+  messagingSenderId: "REPLACE_ME",
+  appId: "REPLACE_ME"
+}
+
+const app = initializeApp(firebaseConfig)
+export const auth = getAuth(app)
+export const db = getFirestore(app)
+export const storage = getStorage(app)
+
+// === src/main.jsx ===
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import './index.css'
+
+createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
+
+// === src/index.css ===
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+
+/* small helper glow for owner Keno */
+.owner-glow {
+  animation: glow 2s infinite;
+}
+@keyframes glow {
+  0% { text-shadow: 0 0 6px rgba(255,223,0,0.8); }
+  50% { text-shadow: 0 0 18px rgba(255,80,80,0.9); }
+  100% { text-shadow: 0 0 6px rgba(255,223,0,0.8); }
+}
+
+// === src/App.jsx ===
+import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { auth, db, storage } from './firebase'
+import AuthModal from './components/AuthModal'
+import Community from './components/Community'
+import ProfileMenu from './components/ProfileMenu'
+import Home from './components/Home'
+import { onAuthStateChanged } from 'firebase/auth'
+
+export default function App(){
+  const [user, setUser] = useState(null)
+  const [showAuth, setShowAuth] = useState(false)
+
+  useEffect(()=>{
+    const unsub = onAuthStateChanged(auth, (u)=>{
+      setUser(u)
+    })
+    return unsub
+  },[])
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-900 to-gray-800 text-white">
+      <nav className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center gap-3">
+          <div className="text-2xl font-bold">SchemShare</div>
+          <div className="hidden md:flex gap-2">
+            <a className="px-3 py-2 rounded hover:bg-white/5" href="#home">Home</a>
+            <a className="px-3 py-2 rounded hover:bg-white/5" href="#community">Community</a>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          {!user ? (
+            <button className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" onClick={()=>setShowAuth(true)}>Login / Sign Up</button>
+          ) : (
+            <ProfileMenu user={user} />
+          )}
+        </div>
+      </nav>
+
+      <main className="px-6 pb-20">
+        <section id="home" className="mt-6">
+          <Home user={user} />
+        </section>
+
+        <section id="community" className="mt-12">
+          <Community user={user} />
+        </section>
+      </main>
+
+      {showAuth && <AuthModal onClose={()=>setShowAuth(false)} />}
+    </div>
+  )
+}
+
+// === src/components/AuthModal.jsx ===
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { auth, db } from '../firebase'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, setDoc, getDoc } from 'firebase/firestore'
+
+export default function AuthModal({ onClose }){
+  const [mode, setMode] = useState('login')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [err, setErr] = useState('')
+
+  const syntheticEmail = (u) => `${u}@schem.local` // used so Firebase auth works with username
+
+  async function handleSignup(e){
+    e.preventDefault()
+    setErr('')
+    if(password !== confirm) return setErr('Passwords do not match')
+    if(!username.match(/^[a-zA-Z0-9_\-]{3,20}$/)) return setErr('Username must be 3-20 chars, letters/numbers/_/-')
+
+    setLoading(true)
+    try{
+      // check username uniqueness
+      const userDoc = await getDoc(doc(db,'usernames', username.toLowerCase()))
+      if(userDoc.exists()){
+        setErr('Username already taken')
+        setLoading(false)
+        return
+      }
+
+      // create auth user with synthetic email
+      await createUserWithEmailAndPassword(auth, syntheticEmail(username), password)
+
+      // save user profile in firestore
+      await setDoc(doc(db,'users', username.toLowerCase()), {
+        username: username,
+        bio: '',
+        pfp: null,
+        banner: null,
+        createdAt: Date.now()
+      })
+
+      // store reserved username pointer
+      await setDoc(doc(db,'usernames', username.toLowerCase()), {uid: username.toLowerCase()})
+
+      onClose()
+    }catch(e){
+      console.error(e)
+      setErr(e.message)
+    }finally{setLoading(false)}
+  }
+
+  async function handleLogin(e){
+    e.preventDefault()
+    setErr('')
+    setLoading(true)
+    try{
+      await signInWithEmailAndPassword(auth, syntheticEmail(username), password)
+      onClose()
+    }catch(e){ setErr(e.message) }
+    finally{ setLoading(false) }
+  }
+
+  return (
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60">
+      <motion.div initial={{y:20, opacity:0}} animate={{y:0, opacity:1}} exit={{y:20, opacity:0}} className="w-96 bg-slate-800 rounded-lg p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold">{mode === 'login' ? 'Login' : 'Create Account'}</h3>
+          <button onClick={onClose} className="text-gray-300">✕</button>
+        </div>
+
+        <form onSubmit={mode==='login'?handleLogin:handleSignup} className="space-y-3">
+          <div>
+            <label className="block text-sm">Username</label>
+            <input required value={username} onChange={(e)=>setUsername(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
+          </div>
+          <div>
+            <label className="block text-sm">Password</label>
+            <input required type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
+          </div>
+          {mode==='signup' && (
+            <div>
+              <label className="block text-sm">Confirm Password</label>
+              <input required type="password" value={confirm} onChange={(e)=>setConfirm(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
+            </div>
+          )}
+
+          {err && <div className="text-red-400">{err}</div>}
+
+          <div className="flex gap-2">
+            <button disabled={loading} className="flex-1 px-3 py-2 bg-green-600 rounded hover:bg-green-500">{mode==='login'? 'Login' : 'Sign Up'}</button>
+            <button type="button" onClick={()=>setMode(mode==='login'?'signup':'login')} className="px-3 py-2 bg-gray-600 rounded">{mode==='login'? 'Create' : 'Have an account?'}</button>
+          </div>
+        </form>
+      </motion.div>
+    </div>
+  )
+}
+
+// === src/components/ProfileMenu.jsx ===
+import React, { useEffect, useState } from 'react'
+import { auth, db, storage } from '../firebase'
+import { signOut } from 'firebase/auth'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { motion } from 'framer-motion'
+
+export default function ProfileMenu({ user }){
+  const [open, setOpen] = useState(false)
+  const [profile, setProfile] = useState(null)
+  const uidUsername = user?.email?.split('@')[0]
+
+  useEffect(()=>{
+    if(!uidUsername) return
+    const load = async ()=>{
+      const p = await getDoc(doc(db,'users', uidUsername))
+      if(p.exists()) setProfile(p.data())
+    }
+    load()
+  },[user])
+
+  async function handleLogout(){
+    await signOut(auth)
+  }
+
+  async function handlePfpChange(e){
+    const file = e.target.files[0]
+    if(!file) return
+    const path = `pfps/${uidUsername}/${file.name}`
+    const storageRef = ref(storage, path)
+    const task = uploadBytesResumable(storageRef, file)
+    task.on('state_changed', ()=>{}, console.error, async ()=>{
+      const url = await getDownloadURL(task.snapshot.ref)
+      await updateDoc(doc(db,'users', uidUsername), { pfp: url })
+      setProfile(prev=>({...prev, pfp: url}))
+    })
+  }
+
+  async function handleBannerChange(e){
+    const file = e.target.files[0]
+    if(!file) return
+    const path = `banners/${uidUsername}/${file.name}`
+    const storageRef = ref(storage, path)
+    const task = uploadBytesResumable(storageRef, file)
+    task.on('state_changed', ()=>{}, console.error, async ()=>{
+      const url = await getDownloadURL(task.snapshot.ref)
+      await updateDoc(doc(db,'users', uidUsername), { banner: url })
+      setProfile(prev=>({...prev, banner: url}))
+    })
+  }
+
+  async function handleUsernameChange(){
+    alert('Username change is not supported in this demo. To change username, contact admin.')
+  }
+
+  return (
+    <div className="relative">
+      <button onClick={()=>setOpen(!open)} className="flex items-center gap-2">
+        <img src={profile?.pfp || '/default-pfp.png'} alt="pfp" className="w-10 h-10 rounded-full border-2 border-white/10" />
+        <div className="hidden md:block">
+          <div className={`text-sm font-semibold ${uidUsername === 'Keno' ? 'owner-glow' : ''}`}>{profile?.username || uidUsername}</div>
+        </div>
+      </button>
+
+      {open && (
+        <motion.div initial={{opacity:0, y:-8}} animate={{opacity:1, y:0}} className="absolute right-0 mt-2 w-72 bg-slate-800 rounded shadow p-3">
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-full h-20 bg-gray-700 rounded overflow-hidden">
+              {profile?.banner ? <img src={profile.banner} alt="banner" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center">No banner</div>}
+            </div>
+
+            <div className="flex items-center gap-3 w-full">
+              <img src={profile?.pfp || '/default-pfp.png'} className="w-12 h-12 rounded-full" />
+              <div className="flex-1 text-left">
+                <div className={`font-bold ${uidUsername==='Keno'?'owner-glow':''}`}>{profile?.username}</div>
+                <div className="text-xs text-gray-300">{profile?.bio || 'No bio yet'}</div>
+              </div>
+            </div>
+
+            <div className="w-full flex gap-2">
+              <label className="flex-1 text-center py-2 bg-slate-700 rounded cursor-pointer">Change PFP
+                <input onChange={handlePfpChange} type="file" accept="image/*" className="hidden" />
+              </label>
+              <label className="flex-1 text-center py-2 bg-slate-700 rounded cursor-pointer">Change Banner
+                <input onChange={handleBannerChange} type="file" accept="image/*" className="hidden" />
+              </label>
+            </div>
+
+            <div className="w-full flex gap-2">
+              <button onClick={handleUsernameChange} className="flex-1 py-2 bg-blue-600 rounded">Change Username</button>
+              <button onClick={handleLogout} className="flex-1 py-2 bg-red-600 rounded">Logout</button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  )
+}
+
+// === src/components/Home.jsx ===
+import React from 'react'
+import { motion } from 'framer-motion'
+
+export default function Home({ user }){
+  return (
+    <div className="rounded-lg bg-slate-800/40 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Welcome to SchemShare</h1>
+          <p className="text-gray-300">Download schematics or share your builds with one click.</p>
+        </div>
+        <motion.div whileHover={{scale:1.05}} className="p-3 rounded bg-gradient-to-r from-purple-600 to-pink-500">Get Started</motion.div>
+      </div>
+
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card title="Popular" desc="Top picks from the community" />
+        <Card title="New" desc="Recently uploaded schematics" />
+        <Card title="Featured" desc="Hand-picked by admin" />
+      </div>
+    </div>
+  )
+}
+
+function Card({title, desc}){
+  return (
+    <motion.div whileHover={{y:-6}} className="p-4 bg-slate-700 rounded">
+      <div className="font-semibold">{title}</div>
+      <div className="text-sm text-gray-300">{desc}</div>
+      <div className="mt-3">
+        <button className="px-3 py-2 rounded bg-green-600">Browse</button>
+      </div>
+    </motion.div>
+  )
+}
+
+// === src/components/Community.jsx ===
+import React, { useEffect, useState } from 'react'
+import { db, storage, auth } from '../firebase'
+import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore'
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { motion } from 'framer-motion'
+
+export default function Community({ user }){
+  const [uploads, setUploads] = useState([])
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [imageFile, setImageFile] = useState(null)
+  const [schemFile, setSchemFile] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(()=>{
+    const q = query(collection(db,'schematics'), orderBy('createdAt','desc'))
+    const unsub = onSnapshot(q, (snap)=>{
+      setUploads(snap.docs.map(d=>({id:d.id, ...d.data()})))
+    })
+    return unsub
+  },[])
+
+  async function handleUpload(e){
+    e.preventDefault()
+    if(!user) return alert('You must log in to upload')
+    if(!title || !schemFile) return alert('Title and schematic file required')
+
+    setLoading(true)
+    try{
+      const uname = user.email.split('@')[0]
+      // upload image
+      let imgUrl = null
+      if(imageFile){
+        const imgPath = `schem_previews/${uname}/${Date.now()}_${imageFile.name}`
+        const imgRef = ref(storage, imgPath)
+        const task = uploadBytesResumable(imgRef, imageFile)
+        await new Promise((res,rej)=> task.on('state_changed', ()=>{}, rej, res))
+        imgUrl = await getDownloadURL(task.snapshot.ref)
+      }
+
+      // upload schem file
+      const schemPath = `schematics/${uname}/${Date.now()}_${schemFile.name}`
+      const schemRef = ref(storage, schemPath)
+      const task2 = uploadBytesResumable(schemRef, schemFile)
+      await new Promise((res, rej)=> task2.on('state_changed', ()=>{}, rej, res))
+      const schemUrl = await getDownloadURL(task2.snapshot.ref)
+
+      await addDoc(collection(db,'schematics'), {
+        title,
+        description,
+        preview: imgUrl,
+        fileUrl: schemUrl,
+        author: uname,
+        createdAt: Date.now()
+      })
+
+      setTitle(''); setDescription(''); setImageFile(null); setSchemFile(null)
+    }catch(e){ console.error(e); alert('Upload failed') }
+    finally{ setLoading(false) }
+  }
+
+  return (
+    <div className="rounded-lg bg-slate-800/30 p-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Community Uploads</h2>
+        <div className="text-sm text-gray-300">Share your schematic with one click</div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="col-span-1 md:col-span-1 p-4 bg-slate-700 rounded">
+          <form onSubmit={handleUpload} className="space-y-3">
+            <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Schematic Name" className="w-full p-2 bg-slate-600 rounded" />
+            <textarea value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Description" className="w-full p-2 bg-slate-600 rounded h-24" />
+            <label className="block">Preview Image <input onChange={(e)=>setImageFile(e.target.files[0])} type="file" accept="image/*" /></label>
+            <label className="block">Schematic File <input onChange={(e)=>setSchemFile(e.target.files[0])} type="file" accept=".schem,.schematic,.nbt" required /></label>
+            <div className="flex gap-2">
+              <button type="submit" disabled={loading} className="flex-1 py-2 bg-green-600 rounded">Upload</button>
+            </div>
+          </form>
+        </div>
+
+        <div className="col-span-1 md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {uploads.map(u=> (
+              <UploadCard key={u.id} item={u} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function UploadCard({ item }){
+  async function handleDownload(){
+    // navigate user to file url - browser will download
+    window.open(item.fileUrl, '_blank')
+  }
+
+  return (
+    <motion.div whileHover={{scale:1.02}} className="p-3 bg-slate-700 rounded flex gap-3">
+      <div className="w-28 h-20 bg-gray-600 rounded overflow-hidden">
+        {item.preview ? <img src={item.preview} className="w-full h-full object-cover"/> : <div className="w-full h-full flex items-center justify-center text-gray-300">No Preview</div>}
+      </div>
+      <div className="flex-1">
+        <div className="font-semibold">{item.title}</div>
+        <div className="text-xs text-gray-300">By {item.author}</div>
+        <div className="text-sm mt-2">{item.description}</div>
+        <div className="mt-3 flex gap-2">
+          <button onClick={handleDownload} className="px-3 py-2 bg-blue-600 rounded">Download</button>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// === public/default-pfp.png ===
+// (Add a small default avatar image in your public folder named default-pfp.png)
+
+// === Firestore security notes ===
+/*
+This demo uses simple Firestore writes. For production, update security rules to require auth and proper ownership checks.
+Example simple rules:
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email.split('@')[0] == userId;
+    }
+    match /schematics/{doc} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if false; // add ownership checks when needed
+    }
+    match /usernames/{id} {
+      allow read: if true;
+      allow write: if false; // handle via Cloud Function or server to reserve username securely
+    }
+  }
+}
+*/
+
+// === End of file list ===
