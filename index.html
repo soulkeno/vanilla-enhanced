@@ -1,88 +1,175 @@
-import React, { useState } from 'react';
-import './App.css';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minecraft Schematics</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #121212;
+      color: white;
+    }
+    header {
+      background: #1f1f1f;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    nav button.active {
+      border-bottom: 2px solid #00ff88;
+    }
+    main {
+      padding: 20px;
+    }
+    .schematic-card {
+      background: #1e1e1e;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+    }
+    .upload-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+    }
+    input, select, textarea {
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+    }
+    button {
+      background: #00ff88;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
 
-function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [activeTab, setActiveTab] = useState('main');
-  const [schematics, setSchematics] = useState([]);
+<div id="loginScreen" class="login-screen">
+  <h2>Login to Minecraft Schematics</h2>
+  <input type="text" id="username" placeholder="Username"/>
+  <input type="password" id="password" placeholder="Password"/>
+  <button onclick="login()">Login</button>
+</div>
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setLoggedIn(true);
-  };
-
-  const handleUpload = (e) => {
-    e.preventDefault();
-    const name = e.target.name.value;
-    const file = e.target.file.files[0];
-    const tag = e.target.tag.value;
-    const description = e.target.description.value;
-
-    const newSchematic = { name, file, tag, description };
-    setSchematics([...schematics, newSchematic]);
-    e.target.reset();
-  };
-
-  if (!loggedIn) {
-    return (
-      <div className="login-page">
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
-          <input type="text" placeholder="Username" required />
-          <input type="password" placeholder="Password" required />
-          <button type="submit">Login</button>
-        </form>
+<div id="app" class="hidden">
+  <header>
+    <h1>Minecraft Schematics</h1>
+    <nav>
+      <button id="mainTab" class="active" onclick="showTab('main')">Main Schematics</button>
+      <button id="communityTab" onclick="showTab('community')">Community</button>
+    </nav>
+  </header>
+  
+  <main id="mainContent">
+    <!-- Main Schematics -->
+    <div id="mainSection">
+      <div class="schematic-card">
+        <h3>Starter House</h3>
+        <p>Small survival base for early game.</p>
+        <button>Download</button>
       </div>
-    );
-  }
-
-  return (
-    <div className="app">
-      <header>
-        <h1>Minecraft Schematics</h1>
-        <nav>
-          <button onClick={() => setActiveTab('main')}>Main Schematics</button>
-          <button onClick={() => setActiveTab('community')}>Community</button>
-        </nav>
-      </header>
-
-      <main>
-        {activeTab === 'main' && (
-          <div className="main-schematics">
-            <h2>Main Schematics</h2>
-            <p>Official schematics curated by us.</p>
-          </div>
-        )}
-
-        {activeTab === 'community' && (
-          <div className="community-schematics">
-            <h2>Community Schematics</h2>
-            <ul>
-              {schematics.map((s, i) => (
-                <li key={i}>
-                  <h3>{s.name} <small>[{s.tag}]</small></h3>
-                  <p>{s.description}</p>
-                  <button>Download</button>
-                </li>
-              ))}
-            </ul>
-            <h3>Upload Your Own</h3>
-            <form onSubmit={handleUpload}>
-              <input name="name" type="text" placeholder="Schematic Name" required />
-              <input name="file" type="file" accept=".schem" required />
-              <select name="tag" required>
-                <option value="">Select Tag</option>
-                <option value="Farm">Farm</option>
-                <option value="Stash">Stash</option>
-              </select>
-              <textarea name="description" placeholder="Description" required></textarea>
-              <button type="submit">Upload</button>
-            </form>
-          </div>
-        )}
-      </main>
+      <div class="schematic-card">
+        <h3>Farm Plot</h3>
+        <p>Efficient crop farm layout.</p>
+        <button>Download</button>
+      </div>
     </div>
-  );
-}
+    
+    <!-- Community -->
+    <div id="communitySection" class="hidden">
+      <h2>Community Schematics</h2>
+      <button onclick="toggleUploadForm()">Upload Your Own</button>
+      
+      <div id="uploadForm" class="upload-form hidden">
+        <input type="text" id="schemName" placeholder="Schematic Name" required/>
+        <input type="file" id="schemFile" accept=".schem" required/>
+        <select id="schemTag">
+          <option value="Farm">Farm</option>
+          <option value="Stash">Stash</option>
+        </select>
+        <textarea id="schemDesc" placeholder="Description" rows="4"></textarea>
+        <button onclick="uploadSchematic()">Submit</button>
+      </div>
+      
+      <div id="communityList"></div>
+    </div>
+  </main>
+</div>
 
-export default App;
+<script>
+  function login() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    // Simple check for demo purposes
+    if(user && pass) {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+    } else {
+      alert('Please enter username and password.');
+    }
+  }
+  
+  function showTab(tab) {
+    document.getElementById('mainSection').classList.toggle('hidden', tab !== 'main');
+    document.getElementById('communitySection').classList.toggle('hidden', tab !== 'community');
+    document.getElementById('mainTab').classList.toggle('active', tab === 'main');
+    document.getElementById('communityTab').classList.toggle('active', tab === 'community');
+  }
+  
+  function toggleUploadForm() {
+    document.getElementById('uploadForm').classList.toggle('hidden');
+  }
+  
+  function uploadSchematic() {
+    const name = document.getElementById('schemName').value;
+    const file = document.getElementById('schemFile').files[0];
+    const tag = document.getElementById('schemTag').value;
+    const desc = document.getElementById('schemDesc').value;
+    
+    if(!name || !file) {
+      alert('Name and file are required!');
+      return;
+    }
+    
+    const card = document.createElement('div');
+    card.className = 'schematic-card';
+    card.innerHTML = `<h3>${name} <small>[${tag}]</small></h3>
+                      <p>${desc}</p>
+                      <button>Download</button>`;
+    document.getElementById('communityList').appendChild(card);
+    
+    document.getElementById('uploadForm').classList.add('hidden');
+    document.getElementById('schemName').value = '';
+    document.getElementById('schemFile').value = '';
+    document.getElementById('schemDesc').value = '';
+  }
+</script>
+
+</body>
+</html>
