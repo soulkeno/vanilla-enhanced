@@ -1,106 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft Schematics</title>
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #121212;
-        color: white;
-    }
-    header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 30px;
-        background-color: #181818;
-        border-bottom: 1px solid #282828;
-    }
-    header h1 {
-        font-size: 1.5rem;
-        color: #1DB954; /* Spotify green */
-    }
-    .container {
-        padding: 20px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-    }
-    .card {
-        background-color: #181818;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: transform 0.2s ease;
-    }
-    .card:hover {
-        transform: scale(1.03);
-        background-color: #202020;
-    }
-    .card img {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-    }
-    .card-content {
-        padding: 15px;
-    }
-    .card-content h3 {
-        margin: 0 0 10px 0;
-        font-size: 1.1rem;
-    }
-    .download-btn {
-        display: inline-block;
-        background-color: #1DB954;
-        color: white;
-        padding: 8px 12px;
-        border-radius: 20px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: background 0.2s ease;
-    }
-    .download-btn:hover {
-        background-color: #1ed760;
-    }
-</style>
-</head>
-<body>
+import React, { useState } from 'react';
+import './App.css';
 
-<header>
-    <h1>MC Schematics</h1>
-    <nav>
-        <a href="#" style="color:white; margin-left:15px; text-decoration:none;">Home</a>
-        <a href="#" style="color:white; margin-left:15px; text-decoration:none;">About</a>
-    </nav>
-</header>
+function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [activeTab, setActiveTab] = useState('main');
+  const [schematics, setSchematics] = useState([]);
 
-<main class="container">
-    <div class="card">
-        <img src="https://via.placeholder.com/300x150" alt="Schematic Preview">
-        <div class="card-content">
-            <h3>Castle Build</h3>
-            <a href="castle.schem" class="download-btn">Download</a>
-        </div>
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setLoggedIn(true);
+  };
+
+  const handleUpload = (e) => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const file = e.target.file.files[0];
+    const tag = e.target.tag.value;
+    const description = e.target.description.value;
+
+    const newSchematic = { name, file, tag, description };
+    setSchematics([...schematics, newSchematic]);
+    e.target.reset();
+  };
+
+  if (!loggedIn) {
+    return (
+      <div className="login-page">
+        <h2>Login</h2>
+        <form onSubmit={handleLogin}>
+          <input type="text" placeholder="Username" required />
+          <input type="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <header>
+        <h1>Minecraft Schematics</h1>
+        <nav>
+          <button onClick={() => setActiveTab('main')}>Main Schematics</button>
+          <button onClick={() => setActiveTab('community')}>Community</button>
+        </nav>
+      </header>
+
+      <main>
+        {activeTab === 'main' && (
+          <div className="main-schematics">
+            <h2>Main Schematics</h2>
+            <p>Official schematics curated by us.</p>
+          </div>
+        )}
+
+        {activeTab === 'community' && (
+          <div className="community-schematics">
+            <h2>Community Schematics</h2>
+            <ul>
+              {schematics.map((s, i) => (
+                <li key={i}>
+                  <h3>{s.name} <small>[{s.tag}]</small></h3>
+                  <p>{s.description}</p>
+                  <button>Download</button>
+                </li>
+              ))}
+            </ul>
+            <h3>Upload Your Own</h3>
+            <form onSubmit={handleUpload}>
+              <input name="name" type="text" placeholder="Schematic Name" required />
+              <input name="file" type="file" accept=".schem" required />
+              <select name="tag" required>
+                <option value="">Select Tag</option>
+                <option value="Farm">Farm</option>
+                <option value="Stash">Stash</option>
+              </select>
+              <textarea name="description" placeholder="Description" required></textarea>
+              <button type="submit">Upload</button>
+            </form>
+          </div>
+        )}
+      </main>
     </div>
+  );
+}
 
-    <div class="card">
-        <img src="https://via.placeholder.com/300x150" alt="Schematic Preview">
-        <div class="card-content">
-            <h3>Modern House</h3>
-            <a href="modern-house.schem" class="download-btn">Download</a>
-        </div>
-    </div>
-
-    <div class="card">
-        <img src="https://via.placeholder.com/300x150" alt="Schematic Preview">
-        <div class="card-content">
-            <h3>Medieval Village</h3>
-            <a href="medieval-village.schem" class="download-btn">Download</a>
-        </div>
-    </div>
-</main>
-
-</body>
-</html>
+export default App;
