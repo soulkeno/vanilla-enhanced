@@ -1,628 +1,294 @@
-/*
-README - Minecraft Schematic Share
-React + Tailwind + Framer Motion + Firebase (Auth, Firestore, Storage)
-
-This canvas contains a ready-to-copy file listing for a Vite + React front-end that uses
-Firebase Auth / Firestore / Storage for a real, working prototype.
-
-Important: copy each file's contents into the matching file path in your project. Do NOT paste the entire
-canvas into one file — each section below is a separate file.
-
-Quick checklist if you see syntax errors:
-- Ensure files are split exactly as listed (e.g. src/App.jsx, src/components/AuthModal.jsx, etc.).
-- Use Node 18+ for building with Vite.
-- Replace the placeholders in `src/firebase.js` with your Firebase config.
-
-*/
-
-// === package.json ===
-{
-  "name": "schem-share",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "firebase": "^9.22.0",
-    "framer-motion": "^10.12.16",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.10.1"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.1.0",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.24",
-    "tailwindcss": "^3.5.3",
-    "vite": "^5.1.7"
-  }
-}
-
-/* === tailwind.config.cjs === */
-module.exports = {
-  content: ['./index.html', './src/**/*.{js,jsx}'],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-};
-
-/* === vite.config.js === */
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig({
-  plugins: [react()],
-  base: './'
-});
-
-/* === index.html === */
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Schematic Share</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <!-- Vite will serve this module in dev; the leading slash is fine for Vite dev server -->
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schematic Hub</title>
+<style>
+    :root {
+        --primary: #4f46e5;
+        --secondary: #6366f1;
+        --bg: #f9fafb;
+        --text: #111827;
+        --card-bg: #fff;
+        --radius: 0.75rem;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: var(--bg); color: var(--text); }
+    header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0.75rem 1rem; background: var(--primary); color: white;
+    }
+    nav { display: flex; gap: 1rem; }
+    nav button {
+        background: none; border: none; color: white; font-weight: bold; cursor: pointer;
+    }
+    nav button.active { text-decoration: underline; }
+    .profile-pic {
+        width: 40px; height: 40px; border-radius: 50%; cursor: pointer; object-fit: cover;
+    }
+    main { padding: 1rem; }
+    .hidden { display: none !important; }
+    .auth-form, .upload-form, .profile-form {
+        max-width: 400px; margin: 2rem auto; padding: 1rem; background: var(--card-bg);
+        border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input, button, textarea {
+        width: 100%; margin-top: 0.5rem; padding: 0.5rem; border-radius: var(--radius);
+        border: 1px solid #ccc; font-size: 1rem;
+    }
+    button {
+        background: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold;
+    }
+    button:hover { background: var(--secondary); }
+    .card-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;
+    }
+    .card {
+        background: var(--card-bg); padding: 1rem; border-radius: var(--radius);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column;
+    }
+    .card img { width: 100%; border-radius: var(--radius); object-fit: cover; height: 150px; }
+    .card h3 { margin: 0.5rem 0; }
+    .top-actions {
+        display: flex; justify-content: flex-end; margin-bottom: 1rem;
+    }
+    @media (max-width: 600px) {
+        header { flex-direction: column; gap: 0.5rem; }
+    }
+</style>
+</head>
+<body>
 
-/* === src/firebase.js === */
-// IMPORTANT: Replace placeholders with your Firebase project's config values.
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+<header>
+    <h1>Schematic Hub</h1>
+    <nav>
+        <button data-tab="search" class="active">Search</button>
+        <button data-tab="community">Community</button>
+        <button data-tab="profile" class="hidden">Profile</button>
+    </nav>
+    <img src="https://via.placeholder.com/40" alt="Profile" id="profilePic" class="profile-pic hidden">
+</header>
 
-const firebaseConfig = {
-  apiKey: "REPLACE_ME",
-  authDomain: "REPLACE_ME",
-  projectId: "REPLACE_ME",
-  storageBucket: "REPLACE_ME",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
-};
-
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-
-/* === src/main.jsx === */
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import './index.css';
-
-const root = createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-/* === src/index.css === */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html, body, #root { height: 100%; }
-
-/* small helper glow for owner Keno */
-.owner-glow {
-  animation: glow 2s infinite;
-}
-@keyframes glow {
-  0% { text-shadow: 0 0 6px rgba(255,223,0,0.8); }
-  50% { text-shadow: 0 0 18px rgba(255,80,80,0.9); }
-  100% { text-shadow: 0 0 6px rgba(255,223,0,0.8); }
-}
-
-/* === src/App.jsx === */
-import React, { useEffect, useState } from 'react';
-import { auth } from './firebase';
-import AuthModal from './components/AuthModal';
-import Community from './components/Community';
-import ProfileMenu from './components/ProfileMenu';
-import Home from './components/Home';
-import { onAuthStateChanged } from 'firebase/auth';
-
-// Small ErrorBoundary to surface render errors during dev
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { error: null };
-  }
-  static getDerivedStateFromError(error) {
-    return { error };
-  }
-  componentDidCatch(error, info) {
-    // eslint-disable-next-line no-console
-    console.error('ErrorBoundary caught:', error, info);
-  }
-  render() {
-    if (this.state.error) {
-      return (
-        <div className="p-6 text-red-300 bg-slate-900 min-h-screen">
-          <h2 className="text-2xl font-bold">An error occurred</h2>
-          <pre className="whitespace-pre-wrap mt-4">{String(this.state.error)}</pre>
+<main>
+    <!-- Auth Forms -->
+    <section id="authSection">
+        <div class="auth-form" id="loginForm">
+            <h2>Login</h2>
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button id="loginBtn">Login</button>
+            <p>Don't have an account? <a href="#" id="showRegister">Register</a></p>
         </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-export default function App() {
-  const [user, setUser] = useState(null);
-  const [showAuth, setShowAuth] = useState(false);
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
-    return unsub;
-  }, []);
-
-  return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-900 to-gray-800 text-white">
-        <nav className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="text-2xl font-bold">SchemShare</div>
-            <div className="hidden md:flex gap-2">
-              <a className="px-3 py-2 rounded hover:bg-white/5" href="#home">Home</a>
-              <a className="px-3 py-2 rounded hover:bg-white/5" href="#community">Community</a>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {!user ? (
-              <button className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500" onClick={() => setShowAuth(true)}>Login / Sign Up</button>
-            ) : (
-              <ProfileMenu user={user} />
-            )}
-          </div>
-        </nav>
-
-        <main className="px-6 pb-20">
-          <section id="home" className="mt-6">
-            <Home user={user} />
-          </section>
-
-          <section id="community" className="mt-12">
-            <Community user={user} />
-          </section>
-        </main>
-
-        {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
-      </div>
-    </ErrorBoundary>
-  );
-}
-
-/* === src/components/AuthModal.jsx === */
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-
-export default function AuthModal({ onClose }) {
-  const [mode, setMode] = useState('login');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState('');
-
-  const syntheticEmail = (u) => `${u}@schem.local`;
-
-  async function handleSignup(e) {
-    e.preventDefault();
-    setErr('');
-    if (password !== confirm) return setErr('Passwords do not match');
-    if (!username.match(/^[a-zA-Z0-9_\-]{3,20}$/)) return setErr('Username must be 3-20 chars, letters/numbers/_/-');
-
-    setLoading(true);
-    try {
-      const key = username.toLowerCase();
-      const userDoc = await getDoc(doc(db, 'usernames', key));
-      if (userDoc.exists()) {
-        setErr('Username already taken');
-        setLoading(false);
-        return;
-      }
-
-      await createUserWithEmailAndPassword(auth, syntheticEmail(username), password);
-
-      await setDoc(doc(db, 'users', key), {
-        username: username,
-        bio: '',
-        pfp: null,
-        banner: null,
-        createdAt: Date.now()
-      });
-
-      await setDoc(doc(db, 'usernames', key), { uid: key });
-
-      onClose();
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-      setErr(e.message || 'Signup failed');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleLogin(e) {
-    e.preventDefault();
-    setErr('');
-    setLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, syntheticEmail(username), password);
-      onClose();
-    } catch (e) {
-      setErr(e.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60">
-      <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="w-96 bg-slate-800 rounded-lg p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold">{mode === 'login' ? 'Login' : 'Create Account'}</h3>
-          <button onClick={onClose} className="text-gray-300">✕</button>
+        <div class="auth-form hidden" id="registerForm">
+            <h2>Register</h2>
+            <input type="text" id="regUsername" placeholder="Username">
+            <input type="password" id="regPassword" placeholder="Password">
+            <input type="password" id="regConfirmPassword" placeholder="Confirm Password">
+            <button id="registerBtn">Register</button>
+            <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
         </div>
+    </section>
 
-        <form onSubmit={mode === 'login' ? handleLogin : handleSignup} className="space-y-3">
-          <div>
-            <label className="block text-sm">Username</label>
-            <input required value={username} onChange={(e) => setUsername(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
-          </div>
+    <!-- Search/Main -->
+    <section id="searchSection" class="hidden">
+        <div class="top-actions hidden" id="mainUploadBtnWrap">
+            <button id="mainUploadBtn">Upload</button>
+        </div>
+        <div class="card-grid" id="mainCards"></div>
+    </section>
 
-          <div>
-            <label className="block text-sm">Password</label>
-            <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
-          </div>
+    <!-- Community -->
+    <section id="communitySection" class="hidden">
+        <div class="top-actions">
+            <button id="communityUploadBtn">Upload Your Own</button>
+        </div>
+        <div class="card-grid" id="communityCards"></div>
+    </section>
 
-          {mode === 'signup' && (
-            <div>
-              <label className="block text-sm">Confirm Password</label>
-              <input required type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="w-full mt-1 bg-slate-700 rounded px-3 py-2" />
-            </div>
-          )}
+    <!-- Profile -->
+    <section id="profileSection" class="hidden">
+        <div class="profile-form">
+            <h2>Profile Settings</h2>
+            <input type="text" id="profileName" placeholder="Name">
+            <input type="file" id="profilePicInput" accept="image/*">
+            <button id="saveProfileBtn">Save</button>
+        </div>
+    </section>
 
-          {err && <div className="text-red-400">{err}</div>}
+    <!-- Upload Form -->
+    <section id="uploadSection" class="hidden">
+        <div class="upload-form">
+            <h2>Upload Schematic</h2>
+            <input type="text" id="uploadName" placeholder="Name of the creation">
+            <textarea id="uploadDesc" placeholder="Description"></textarea>
+            <input type="file" id="uploadImage" accept="image/*">
+            <input type="file" id="uploadFile" accept=".schematic">
+            <button id="submitUpload">Submit</button>
+        </div>
+    </section>
+</main>
 
-          <div className="flex gap-2">
-            <button disabled={loading} className="flex-1 px-3 py-2 bg-green-600 rounded hover:bg-green-500">{mode === 'login' ? 'Login' : 'Sign Up'}</button>
-            <button type="button" onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} className="px-3 py-2 bg-gray-600 rounded">{mode === 'login' ? 'Create' : 'Have an account?'}</button>
-          </div>
-        </form>
-      </motion.div>
-    </div>
-  );
-}
-
-/* === src/components/ProfileMenu.jsx === */
-import React, { useEffect, useState } from 'react';
-import { auth, db, storage } from '../firebase';
-import { signOut } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { motion } from 'framer-motion';
-
-export default function ProfileMenu({ user }) {
-  const [open, setOpen] = useState(false);
-  const [profile, setProfile] = useState(null);
-  const uidUsername = user && user.email ? user.email.split('@')[0] : null;
-
-  useEffect(() => {
-    if (!uidUsername) return undefined;
-    let mounted = true;
-    const load = async () => {
-      try {
-        const p = await getDoc(doc(db, 'users', uidUsername));
-        if (p.exists() && mounted) setProfile(p.data());
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e);
-      }
+<script>
+    const state = {
+        user: JSON.parse(localStorage.getItem('user')) || null,
+        schematics: JSON.parse(localStorage.getItem('schematics')) || [],
+        community: JSON.parse(localStorage.getItem('community')) || [],
+        uploadTarget: null
     };
-    load();
-    return () => {
-      mounted = false;
+
+    const authSection = document.getElementById('authSection');
+    const searchSection = document.getElementById('searchSection');
+    const communitySection = document.getElementById('communitySection');
+    const profileSection = document.getElementById('profileSection');
+    const uploadSection = document.getElementById('uploadSection');
+    const profilePic = document.getElementById('profilePic');
+    const navButtons = document.querySelectorAll('nav button');
+    const profileTab = document.querySelector('button[data-tab="profile"]');
+    const mainUploadBtnWrap = document.getElementById('mainUploadBtnWrap');
+
+    function showSection(id) {
+        [searchSection, communitySection, profileSection, uploadSection].forEach(sec => sec.classList.add('hidden'));
+        if (id) document.getElementById(id).classList.remove('hidden');
+        navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.tab + 'Section' === id));
+    }
+
+    function renderCards(container, data) {
+        container.innerHTML = '';
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${item.image}" alt="${item.name}">
+                <h3>${item.name}</h3>
+                <p>${item.desc}</p>
+                <a href="${item.file}" download><button>Download</button></a>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function updateUI() {
+        if (state.user) {
+            authSection.classList.add('hidden');
+            searchSection.classList.remove('hidden');
+            profilePic.classList.remove('hidden');
+            profilePic.src = state.user.pic || 'https://via.placeholder.com/40';
+            profileTab.classList.remove('hidden');
+            mainUploadBtnWrap.classList.remove('hidden');
+            renderCards(document.getElementById('mainCards'), state.schematics);
+            renderCards(document.getElementById('communityCards'), state.community);
+        } else {
+            authSection.classList.remove('hidden');
+            searchSection.classList.add('hidden');
+            communitySection.classList.add('hidden');
+            profilePic.classList.add('hidden');
+            profileTab.classList.add('hidden');
+        }
+    }
+
+    // Auth
+    document.getElementById('loginBtn').onclick = () => {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        const stored = JSON.parse(localStorage.getItem('users') || '[]');
+        const found = stored.find(u => u.username === username && u.password === password);
+        if (found) {
+            state.user = { ...found };
+            localStorage.setItem('user', JSON.stringify(state.user));
+            updateUI();
+        } else {
+            alert('Invalid credentials');
+        }
     };
-  }, [uidUsername]);
+    document.getElementById('registerBtn').onclick = () => {
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirmPassword').value;
+        if (password !== confirm) return alert('Passwords do not match');
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        if (users.find(u => u.username === username)) return alert('User exists');
+        const newUser = { username, password, pic: '', name: username };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+        state.user = { ...newUser };
+        localStorage.setItem('user', JSON.stringify(state.user));
+        updateUI();
+    };
+    document.getElementById('showRegister').onclick = () => {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.remove('hidden');
+    };
+    document.getElementById('showLogin').onclick = () => {
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('loginForm').classList.remove('hidden');
+    };
 
-  async function handleLogout() {
-    await signOut(auth);
-  }
-
-  async function uploadFileToStorage(path, file) {
-    const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
-  }
-
-  async function handlePfpChange(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file || !uidUsername) return;
-    const path = `pfps/${uidUsername}/${Date.now()}_${file.name}`;
-    try {
-      const url = await uploadFileToStorage(path, file);
-      await updateDoc(doc(db, 'users', uidUsername), { pfp: url });
-      setProfile((prev) => ({ ...prev, pfp: url }));
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-    }
-  }
-
-  async function handleBannerChange(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file || !uidUsername) return;
-    const path = `banners/${uidUsername}/${Date.now()}_${file.name}`;
-    try {
-      const url = await uploadFileToStorage(path, file);
-      await updateDoc(doc(db, 'users', uidUsername), { banner: url });
-      setProfile((prev) => ({ ...prev, banner: url }));
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-    }
-  }
-
-  function handleUsernameChange() {
-    alert('Username change is not supported in this demo. To change username, contact admin.');
-  }
-
-  return (
-    <div className="relative">
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-2">
-        <img src={(profile && profile.pfp) || '/default-pfp.png'} alt="pfp" className="w-10 h-10 rounded-full border-2 border-white/10" />
-        <div className="hidden md:block">
-          <div className={`text-sm font-semibold ${uidUsername === 'Keno' ? 'owner-glow' : ''}`}>{(profile && profile.username) || uidUsername}</div>
-        </div>
-      </button>
-
-      {open && (
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="absolute right-0 mt-2 w-72 bg-slate-800 rounded shadow p-3">
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-full h-20 bg-gray-700 rounded overflow-hidden">
-              {profile && profile.banner ? (
-                <img src={profile.banner} alt="banner" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">No banner</div>
-              )}
-            </div>
-
-            <div className="flex items-center gap-3 w-full">
-              <img src={(profile && profile.pfp) || '/default-pfp.png'} className="w-12 h-12 rounded-full" alt="pfp" />
-              <div className="flex-1 text-left">
-                <div className={`font-bold ${uidUsername === 'Keno' ? 'owner-glow' : ''}`}>{profile && profile.username}</div>
-                <div className="text-xs text-gray-300">{(profile && profile.bio) || 'No bio yet'}</div>
-              </div>
-            </div>
-
-            <div className="w-full flex gap-2">
-              <label className="flex-1 text-center py-2 bg-slate-700 rounded cursor-pointer">Change PFP
-                <input onChange={handlePfpChange} type="file" accept="image/*" className="hidden" />
-              </label>
-              <label className="flex-1 text-center py-2 bg-slate-700 rounded cursor-pointer">Change Banner
-                <input onChange={handleBannerChange} type="file" accept="image/*" className="hidden" />
-              </label>
-            </div>
-
-            <div className="w-full flex gap-2">
-              <button onClick={handleUsernameChange} className="flex-1 py-2 bg-blue-600 rounded">Change Username</button>
-              <button onClick={handleLogout} className="flex-1 py-2 bg-red-600 rounded">Logout</button>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </div>
-  );
-}
-
-/* === src/components/Home.jsx === */
-import React from 'react';
-import { motion } from 'framer-motion';
-
-export default function Home({ user }) {
-  return (
-    <div className="rounded-lg bg-slate-800/40 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Welcome to SchemShare</h1>
-          <p className="text-gray-300">Download schematics or share your builds with one click.</p>
-        </div>
-        <motion.div whileHover={{ scale: 1.05 }} className="p-3 rounded bg-gradient-to-r from-purple-600 to-pink-500">Get Started</motion.div>
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card title="Popular" desc="Top picks from the community" />
-        <Card title="New" desc="Recently uploaded schematics" />
-        <Card title="Featured" desc="Hand-picked by admin" />
-      </div>
-    </div>
-  );
-}
-
-function Card({ title, desc }) {
-  return (
-    <motion.div whileHover={{ y: -6 }} className="p-4 bg-slate-700 rounded">
-      <div className="font-semibold">{title}</div>
-      <div className="text-sm text-gray-300">{desc}</div>
-      <div className="mt-3">
-        <button className="px-3 py-2 rounded bg-green-600">Browse</button>
-      </div>
-    </motion.div>
-  );
-}
-
-/* === src/components/Community.jsx === */
-import React, { useEffect, useState } from 'react';
-import { db, storage } from '../firebase';
-import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { motion } from 'framer-motion';
-
-export default function Community({ user }) {
-  const [uploads, setUploads] = useState([]);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [schemFile, setSchemFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const q = query(collection(db, 'schematics'), orderBy('createdAt', 'desc'));
-    const unsub = onSnapshot(q, (snap) => {
-      setUploads(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    // Nav
+    navButtons.forEach(btn => btn.onclick = () => {
+        if (!state.user) return;
+        showSection(btn.dataset.tab + 'Section');
     });
-    return unsub;
-  }, []);
 
-  async function uploadFileToStorage(path, file) {
-    const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
-  }
+    // Profile
+    profilePic.onclick = () => showSection('profileSection');
+    document.getElementById('saveProfileBtn').onclick = () => {
+        const name = document.getElementById('profileName').value;
+        const file = document.getElementById('profilePicInput').files[0];
+        if (name) state.user.name = name;
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                state.user.pic = reader.result;
+                localStorage.setItem('user', JSON.stringify(state.user));
+                updateUI();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            localStorage.setItem('user', JSON.stringify(state.user));
+            updateUI();
+        }
+    };
 
-  async function handleUpload(e) {
-    e.preventDefault();
-    if (!user) return alert('You must log in to upload');
-    if (!title || !schemFile) return alert('Title and schematic file required');
-
-    setLoading(true);
-    try {
-      const uname = user.email.split('@')[0];
-      let imgUrl = null;
-      if (imageFile) {
-        const imgPath = `schem_previews/${uname}/${Date.now()}_${imageFile.name}`;
-        imgUrl = await uploadFileToStorage(imgPath, imageFile);
-      }
-
-      const schemPath = `schematics/${uname}/${Date.now()}_${schemFile.name}`;
-      const schemUrl = await uploadFileToStorage(schemPath, schemFile);
-
-      await addDoc(collection(db, 'schematics'), {
-        title,
-        description,
-        preview: imgUrl,
-        fileUrl: schemUrl,
-        author: uname,
-        createdAt: Date.now()
-      });
-
-      setTitle('');
-      setDescription('');
-      setImageFile(null);
-      setSchemFile(null);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-      alert('Upload failed');
-    } finally {
-      setLoading(false);
+    // Upload
+    function handleUpload() {
+        const name = document.getElementById('uploadName').value;
+        const desc = document.getElementById('uploadDesc').value;
+        const imgFile = document.getElementById('uploadImage').files[0];
+        const schematicFile = document.getElementById('uploadFile').files[0];
+        if (!name || !desc || !imgFile || !schematicFile) return alert('Fill all fields');
+        const readerImg = new FileReader();
+        const readerFile = new FileReader();
+        readerImg.onload = () => {
+            const imgData = readerImg.result;
+            readerFile.onload = () => {
+                const fileData = readerFile.result;
+                const newSchematic = { name, desc, image: imgData, file: fileData };
+                if (state.uploadTarget === 'main') {
+                    state.schematics.push(newSchematic);
+                    localStorage.setItem('schematics', JSON.stringify(state.schematics));
+                } else {
+                    state.community.push(newSchematic);
+                    localStorage.setItem('community', JSON.stringify(state.community));
+                }
+                showSection(state.uploadTarget === 'main' ? 'searchSection' : 'communitySection');
+                updateUI();
+            };
+            readerFile.readAsDataURL(schematicFile);
+        };
+        readerImg.readAsDataURL(imgFile);
     }
-  }
+    document.getElementById('mainUploadBtn').onclick = () => {
+        state.uploadTarget = 'main';
+        showSection('uploadSection');
+    };
+    document.getElementById('communityUploadBtn').onclick = () => {
+        state.uploadTarget = 'community';
+        showSection('uploadSection');
+    };
+    document.getElementById('submitUpload').onclick = handleUpload;
 
-  return (
-    <div className="rounded-lg bg-slate-800/30 p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Community Uploads</h2>
-        <div className="text-sm text-gray-300">Share your schematic with one click</div>
-      </div>
-
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="col-span-1 md:col-span-1 p-4 bg-slate-700 rounded">
-          <form onSubmit={handleUpload} className="space-y-3">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Schematic Name" className="w-full p-2 bg-slate-600 rounded" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="w-full p-2 bg-slate-600 rounded h-24" />
-            <label className="block">Preview Image <input onChange={(e) => setImageFile(e.target.files && e.target.files[0])} type="file" accept="image/*" /></label>
-            <label className="block">Schematic File <input onChange={(e) => setSchemFile(e.target.files && e.target.files[0])} type="file" accept=".schem,.schematic,.nbt" required /></label>
-            <div className="flex gap-2">
-              <button type="submit" disabled={loading} className="flex-1 py-2 bg-green-600 rounded">Upload</button>
-            </div>
-          </form>
-        </div>
-
-        <div className="col-span-1 md:col-span-2">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {uploads.map((u) => (
-              <UploadCard key={u.id} item={u} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function UploadCard({ item }) {
-  async function handleDownload() {
-    if (!item || !item.fileUrl) return alert('No file URL');
-    window.open(item.fileUrl, '_blank');
-  }
-
-  return (
-    <motion.div whileHover={{ scale: 1.02 }} className="p-3 bg-slate-700 rounded flex gap-3">
-      <div className="w-28 h-20 bg-gray-600 rounded overflow-hidden">
-        {item && item.preview ? (
-          <img src={item.preview} className="w-full h-full object-cover" alt="preview" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-300">No Preview</div>
-        )}
-      </div>
-
-      <div className="flex-1">
-        <div className="font-semibold">{item && item.title}</div>
-        <div className="text-xs text-gray-300">By {item && item.author}</div>
-        <div className="text-sm mt-2">{item && item.description}</div>
-        <div className="mt-3 flex gap-2">
-          <button onClick={handleDownload} className="px-3 py-2 bg-blue-600 rounded">Download</button>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* === public/default-pfp.png === */
-/* Add a small default avatar image in your public folder named default-pfp.png */
-
-/* === Firestore security notes === */
-/*
-This demo uses simple Firestore writes. For production, update security rules to require auth and proper ownership checks.
-Example simple rules:
-
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read: if true;
-      allow write: if request.auth != null && request.auth.token.email.split('@')[0] == userId;
-    }
-    match /schematics/{doc} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update, delete: if false;
-    }
-    match /usernames/{id} {
-      allow read: if true;
-      allow write: if false;
-    }
-  }
-}
-*/
-
-/* === End of file list === */
+    updateUI();
+</script>
+</body>
+</html>
