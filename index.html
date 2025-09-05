@@ -1,312 +1,65 @@
-
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Roblox tools | Download Roblox clothing, audio, and accessories</title>
-		<meta name="description" content="Download Roblox shirts and pants, download Roblox audio, and download Roblox assets. Works on most catalog items. Online Roblox asset downloader.">
-		<!-- Common metadata on all pages -->
-<meta charset="UTF-8">
-<meta http-equiv="content-language" content="en-gb">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="canonical" href="https://thecsdev.com/tool/roblox-tools/">
+<head>
+  <meta charset="UTF-8">
+  <title>Roblox Shirt Template Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #preview {
+      margin-top: 20px;
+    }
+    img {
+      max-width: 300px;
+      display: block;
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
 
-<!-- Common styles and scripts on all pages; 3rd party assets -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.js" integrity="sha512-RTxmGPtGtFBja+6BCvELEfuUdzlPcgf5TZ7qOVRmDfI9fDdX2f1IwBq+ChiELfWt72WY34n0Ti1oo2Q3cWn+kw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <h1>Roblox Clothing Template Viewer</h1>
+  <p>Enter a Roblox Clothing URL or ID:</p>
+  <input type="text" id="clothingInput" placeholder="Paste Roblox clothing URL or ID here" size="50">
+  <button onclick="fetchPreview()">Show Preview</button>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" referrerpolicy="no-referrer">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <div id="preview" class="hidden">
+    <h2>Shirt Preview</h2>
+    <img id="shirtImage" src="" alt="Shirt Preview">
+    <p><a id="templateDownload" href="https://static.rbxcdn.com/images/Template-Shirts-R15_07252017.png" download>Download Roblox Shirt Template (PNG)</a></p>
+  </div>
 
-<!-- Common styles and scripts on all pages; 1st party assets -->
-<link rel="stylesheet" href="/assets/css/theme.scss">
-<link rel="stylesheet" href="/assets/css/main.scss">
-<script src="/assets/js/main.js"></script>
+  <script>
+    function fetchPreview() {
+      const input = document.getElementById("clothingInput").value.trim();
+      let assetId = "";
 
+      // Extract asset ID from URL or use raw ID
+      const match = input.match(/(\d{5,})/);
+      if (match) {
+        assetId = match[1];
+      } else {
+        alert("Invalid clothing ID or URL.");
+        return;
+      }
 
-		<script>/** @param {string} assetUrl */
-function getRobloxAssetID(assetUrl)
-{
-	if(assetUrl.toLowerCase().startsWith("http"))
-	{
-		let match = assetUrl.match(/\/[0-9]{1,}/);
-		return match ? match[0].replaceAll("/", "") : undefined;
-	}
-	else if(/^[0-9]{1,}$/.test(assetUrl)) return assetUrl;
-	else return undefined;
-}
-</script>
-	</head>
-	<body>
-		<style data-x-unique>body{--tcd-header-height: 2.75em}body header,body footer{position:relative}body header,body footer{width:100%;height:var(--tcd-header-height);z-index:2;background:var(--tcd-bg-secondary)}body header nav,body footer nav{padding:.75em}body hnf-separator{display:block;position:absolute;min-width:1px;min-height:1px;padding:0;margin:0;background-image:radial-gradient(circle, var(--tcd-color-secondary), var(--tcd-bg-secondary))}</style>
+      // Generate thumbnail preview URL
+      const thumbnailUrl = `https://www.roblox.com/asset-thumbnail/image?assetId=${assetId}&width=420&height=420&format=png`;
 
-<header class="d-flex flex-column">
-	<nav class="d-flex w-100 justify-content-center align-items-center t1753171424341">
-		<a href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Homepage">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-panel-left-icon lucide-layout-panel-left"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg>
-		</a>
-		<span style="flex: 10;"></span>
-		<a href="/projects/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Projects">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-		</a>
-		<a href="/docs/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Documentations">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-a"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="m8 13 4-7 4 7"/><path d="M9.1 11h5.7"/></svg>
-		</a>
-		<button name="btn_ct" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Contact me">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-plus"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
-		</button>
-		<button name="btn-theme-toggle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Toggle theme">
-			<svg hidden="" sun="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-			<svg hidden="" moon="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon-star"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
-		</button>
-		<span class="flex-fill"></span>
-		<a name="btn-account_n_settings" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Settings section coming soon...">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-			<svg hidden="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
-		</a>
-	</nav>
-	<hnf-separator class="w-100 bottom-0"></hnf-separator>
-</header>
+      document.getElementById("shirtImage").src = thumbnailUrl;
+      document.getElementById("preview").classList.remove("hidden");
+    }
+  </script>
 
-<noscript data-x-unique"><style>a[name=btn-account_n_settings],button[btn-theme-toggle]{display:none}</style></noscript>
-
-
-<script data-x-unique defer>(() =>{
-	function _0x4177(_0x40b2e6,_0xb67d52){const _0x180f1e=_0x180f();return _0x4177=function(_0x4177c1,_0x4086d9){_0x4177c1=_0x4177c1-0x14b;let _0xf4f2bc=_0x180f1e[_0x4177c1];return _0xf4f2bc;},_0x4177(_0x40b2e6,_0xb67d52);}const _0x2cad46=_0x4177;(function(_0x38eddc,_0x3cd734){const _0x63b9ae=_0x4177,_0x311d09=_0x38eddc();while(!![]){try{const _0x50101c=-parseInt(_0x63b9ae(0x157))/0x1+-parseInt(_0x63b9ae(0x15c))/0x2*(-parseInt(_0x63b9ae(0x156))/0x3)+-parseInt(_0x63b9ae(0x159))/0x4+-parseInt(_0x63b9ae(0x158))/0x5*(parseInt(_0x63b9ae(0x151))/0x6)+-parseInt(_0x63b9ae(0x14e))/0x7+parseInt(_0x63b9ae(0x14c))/0x8*(-parseInt(_0x63b9ae(0x155))/0x9)+-parseInt(_0x63b9ae(0x153))/0xa*(-parseInt(_0x63b9ae(0x15b))/0xb);if(_0x50101c===_0x3cd734)break;else _0x311d09['push'](_0x311d09['shift']());}catch(_0x19a105){_0x311d09['push'](_0x311d09['shift']());}}}(_0x180f,0x59bf6),$(_0x2cad46(0x14f))['click'](()=>toggleTheme()));function _0x180f(){const _0x11e923=['2454710hAGfSv','Z21haWwuY29t','18099stGrYS','9ZMvvlq','385497NBjlwt','275dmBwXB','14812taLDTT','QA==','55ilyqqf','132482NMrEKu','VG8gY29udGFjdCBtZSwgcGxlYXNlIHNlbmQgYW4gRS1NYWlsIHRvOg==','376AhdfJQ','dGhlY3NkZXY=','4019435WtDyoi','.t1753171424341\x20button[name=\x22btn-theme-toggle\x22]','.t1753171424341\x20button[name=\x22btn_ct\x22]','60kqyArh','click'];_0x180f=function(){return _0x11e923;};return _0x180f();}let a=_0x2cad46(0x14d),b=_0x2cad46(0x15a),c=_0x2cad46(0x154),d=atob;$(_0x2cad46(0x150))[_0x2cad46(0x152)](()=>alert(d(_0x2cad46(0x14b))+'\x0a'+d(a)+d(b)+d(c)));
-})();</script>
-		<div data-x-unique id="simple-modal" class="modal modal-dialog-scrollable fade" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Dialog box</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" hidden>
-					<span aria-hidden="true">&#xd7;</span>
-				</button>
-			</div>
-			<div class="modal-body">...</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<script data-x-unique>
-	function showSimpleModal(title, htmlBody)
-	{
-		let $sm = $("#simple-modal");
-		$sm.find(".modal-title").text(title);
-		$sm.find(".modal-body").html(htmlBody);
-		$sm.modal("show");
-	}
-	function hideSimpleModal() { $("#simple-modal").modal("hide"); }
-</script>
-		<main class="p-3 p-lg-5" style="padding-bottom: 0 !important; z-index: 1;">
-			<iframe src="/assets/templates/backgrounds/hero/" frameborder="0" class="position-fixed m-0 p-0 top-0 start-0 w-100 h-100" style="z-index: -1; opacity: 0.15;" allowtransparency="true"></iframe>
-			<div class="row g-3">
-	<div class="col-lg-3 h-100 overflow-visible">
-		<div class="card p-3" id="clothing-downloader">
-	<center><h6 class="m-0">Clothing downloader</h6></center>
-	<hr>
-	<p>Export and download Roblox <ins>classic</ins> clothing items, such as shirts and pants.</p>
-	<div class="d-flex">
-		<input class="flex-fill" type="text" name id placeholder="Clothing ID or URL">
-		<button submit class="ml-1 p-2">
-			<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-		</button>
-	</div>
-</div>
-
-<script data-x-unique defer>
-{
-	let $menu   = $("main #clothing-downloader");
-	let $input  = $menu.find("input[type=text]");
-	let $submit = $menu.find("button[submit]");
-
-	let fetchRc = async (id) =>
-	{
-		let res = await fetch(`api-s/rcd-image/?asset_id=${id}`);
-		if(res.status === 502)
-		{
-			showSimpleModal(
-				"Failed to export clothing item",
-				"Roblox's servers responded to <code>thecsdev.com</code> in an " +
-				"unexpected way, resulting in an error.<br><br>" +
-				"If this issue continues, feel free to contact me."/* +
-				`<hr><p>Debug info:</p><pre><code>${(await res.text()).trim()}</code></pre>`*/
-			);
-			return;
-		}
-		else if(res.status === 429)
-		{
-			showSimpleModal(
-				"You are being rate-limited",
-				"You have requested too many images in a short period of time. " +
-				"Please wait and try again later.<br><br>" +
-				"If this issue continues, feel free to contact me."/* +
-				`<hr><p>Debug info:</p><pre><code>${(await res.text()).trim()}</code></pre>`*/
-			);
-			return;
-		}
-		else if(res.status === 404)
-		{
-			showSimpleModal(
-				"Clothing item could not be found",
-				"Please double-check the clothing ID or URL.<br><br>" +
-				"If this issue continues, feel free to contact me."/* +
-				`<hr><p>Debug info:</p><pre><code>${(await res.text()).trim()}</code></pre>`*/
-			);
-			return;
-		}
-		else if(res.status !== 200)
-		{
-			showSimpleModal(
-				"Failed to export clothing item",
-				"Something went wrong while exporting the clothing item. " +
-				"Please try again.<br><br>" +
-				"If this issue continues, feel free to contact me."/* +
-				`<hr><p>Debug info:</p><pre><code>${(await res.text()).trim()}</code></pre>`*/
-			);
-			return;
-		}
-		
-		$input.val("");
-		$("main #col-middle").html(`
-			<img download="${id}.png" src="api-s/rcd-image/?asset_id=${id}	" alt="Exported image">
-			<p class="m-0 p-0">Right-click (or long-tap) the image to save it.</p>`);
-	};
-
-	$submit.on("click", () =>
-	{
-		let id = getRobloxAssetID(`${$input.val()}`.trim());
-		if(id == null) return;
-		$submit.attr("disabled", "");
-		$submit.attr("style", "opacity: 0.5;");
-		fetchRc(id).finally(() =>
-		{
-			$submit.removeAttr("disabled");
-			$submit.removeAttr("style");
-		});
-	});
-}
-</script>
-		<br>
-		<div class="card p-3" id="audio-downloader">
-	<center><h6 class="m-0">Audio downloader</h6></center>
-	<hr>
-	<p>
-		Download Roblox audios and sounds. Most are in <code>.ogg</code> format.
-		Might not work often as Roblox may block some downloads.
-	</p>
-	<div class="d-flex">
-		<input class="flex-fill" type="text" name id placeholder="Audio ID or URL">
-		<button submit class="ml-1 p-2">
-			<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-		</button>
-	</div>
-	<i class="mt-1" style="opacity: 0.7;"><b>Note:</b> You likely must save as <code>.ogg</code> file.</i>
-</div>
-
-<script data-x-unique defer>
-{
-	let $menu   = $("main #audio-downloader");
-	let $input  = $menu.find("input[type=text]");
-	let $submit = $menu.find("button[submit]");
-	
-	$submit.on("click", () =>
-	{
-		let id = getRobloxAssetID(`${$input.val()}`.trim());
-		if(id == null) return;
-		window.open(`https://assetdelivery.roblox.com/v1/asset/?id=${id}`, "_blank")
-	});
-}
-</script>
-	</div>
-	<div id="col-middle" class="col-lg-6 h-100 p-0 overflow-visible d-flex flex-column justify-content-center align-items-center">
-		<noscript>
-	<h6 class="m-0"><ins><b>Please enable JavaScript for this page to work!</b></ins></h6><br>
-	<style>main button,main input{display:none}</style>
-</noscript>
-
-<img tabindex="0" src="https://prod.docsiteassets.roblox.com/assets/accessories/classic-clothing/Template-Shirts-R15.png" alt="Roblox shirt template">
-<p class="m-0 p-0">Right-click (or long-tap) the image to save it.</p>
-	</div>
-	<div class="col-lg-3 h-100 overflow-visible">
-		<div class="card p-3" id="accessory-downloader">
-	<center><h6 class="m-0">Accessory downloader</h6></center>
-	<hr>
-	<p>Download avatar accessories, aka catalog avatar items, in <code>.rbxm</code> format.</p>
-	<div class="d-flex">
-		<input class="flex-fill" type="text" name id placeholder="Accessory ID or URL">
-		<button submit class="ml-1 p-2">
-			<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-		</button>
-	</div>
-	<i class="mt-1" style="opacity: 0.7;"><b>Note:</b> You must save as <code>.rbxm</code> file.</i>
-</div>
-
-<script data-x-unique defer>
-{
-	let $menu   = $("main #accessory-downloader");
-	let $input  = $menu.find("input[type=text]");
-	let $submit = $menu.find("button[submit]");
-
-	$submit.on("click", () =>
-	{
-		let id = getRobloxAssetID(`${$input.val()}`.trim());
-		if(id == null) return;
-		window.open(`https://assetdelivery.roblox.com/v1/asset/?id=${id}`, "_blank");
-	});
-}
-</script>
-		<br>
-		<center><button id="btn-hide-hnf" type="button" class="btn btn-secondary">
-	Hide header and footer
-</button></center>
-
-<script data-x-unique defer>
-	$("#btn-hide-hnf").click(() =>
-	{
-		$("body > header, body > footer").remove();
-		$("#btn-hide-hnf").remove();
-	});
-</script>
-		<br>
-	</div>
-</div>
-		</main>
-		<style data-x-unique>footer *[notice]{font-size:.7em;user-select:none}@media(orientation: portrait){footer *[notice]{display:none}}</style>
-
-<footer class="d-flex flex-column">
-	<hnf-separator class="w-100"></hnf-separator>
-	<nav class="d-flex w-100 justify-content-center align-items-center t1753171424341">
-		<a href="https://github.com/TheCSDev" data-bs-toggle="tooltip" data-bs-placement="bottom" title="GitHub">
-			<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-		</a>
-		<a href="https://www.curseforge.com/members/thecsdev/projects" data-bs-toggle="tooltip" data-bs-placement="bottom" title="CurseForge">
-			<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>CurseForge</title><path d="M18.326 9.2145S23.2261 8.4418 24 6.1882h-7.5066V4.4H0l2.0318 2.3576V9.173s5.1267-.2665 7.1098 1.2372c2.7146 2.516-3.053 5.917-3.053 5.917L5.0995 19.6c1.5465-1.4726 4.494-3.3775 9.8983-3.2857-2.0565.65-4.1245 1.6651-5.7344 3.2857h10.9248l-1.0288-3.2726s-7.918-4.6688-.8336-7.1127z"/></svg>
-		</a>
-		<a href="https://modrinth.com/user/TheCSDev" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Modrinth">
-			<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>Modrinth</title><path d="M12.252.004a11.78 11.768 0 0 0-8.92 3.73 11 10.999 0 0 0-2.17 3.11 11.37 11.359 0 0 0-1.16 5.169c0 1.42.17 2.5.6 3.77.24.759.77 1.899 1.17 2.529a12.3 12.298 0 0 0 8.85 5.639c.44.05 2.54.07 2.76.02.2-.04.22.1-.26-1.7l-.36-1.37-1.01-.06a8.5 8.489 0 0 1-5.18-1.8 5.34 5.34 0 0 1-1.3-1.26c0-.05.34-.28.74-.5a37.572 37.545 0 0 1 2.88-1.629c.03 0 .5.45 1.06.98l1 .97 2.07-.43 2.06-.43 1.47-1.47c.8-.8 1.48-1.5 1.48-1.52 0-.09-.42-1.63-.46-1.7-.04-.06-.2-.03-1.02.18-.53.13-1.2.3-1.45.4l-.48.15-.53.53-.53.53-.93.1-.93.07-.52-.5a2.7 2.7 0 0 1-.96-1.7l-.13-.6.43-.57c.68-.9.68-.9 1.46-1.1.4-.1.65-.2.83-.33.13-.099.65-.579 1.14-1.069l.9-.9-.7-.7-.7-.7-1.95.54c-1.07.3-1.96.53-1.97.53-.03 0-2.23 2.48-2.63 2.97l-.29.35.28 1.03c.16.56.3 1.16.31 1.34l.03.3-.34.23c-.37.23-2.22 1.3-2.84 1.63-.36.2-.37.2-.44.1-.08-.1-.23-.6-.32-1.03-.18-.86-.17-2.75.02-3.73a8.84 8.839 0 0 1 7.9-6.93c.43-.03.77-.08.78-.1.06-.17.5-2.999.47-3.039-.01-.02-.1-.02-.2-.03Zm3.68.67c-.2 0-.3.1-.37.38-.06.23-.46 2.42-.46 2.52 0 .04.1.11.22.16a8.51 8.499 0 0 1 2.99 2 8.38 8.379 0 0 1 2.16 3.449 6.9 6.9 0 0 1 .4 2.8c0 1.07 0 1.27-.1 1.73a9.37 9.369 0 0 1-1.76 3.769c-.32.4-.98 1.06-1.37 1.38-.38.32-1.54 1.1-1.7 1.14-.1.03-.1.06-.07.26.03.18.64 2.56.7 2.78l.06.06a12.07 12.058 0 0 0 7.27-9.4c.13-.77.13-2.58 0-3.4a11.96 11.948 0 0 0-5.73-8.578c-.7-.42-2.05-1.06-2.25-1.06Z"/></svg>
-		</a>
-		<a href="https://www.youtube.com/@TheCSDev" data-bs-toggle="tooltip" data-bs-placement="bottom" title="YouTube">
-			<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><title>YouTube</title><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-		</a>
-		<span class="flex-fill"></span>
-		<center notice class="p-0 m-0">Copyright &#xa9; TheCSDev - All rights reserved</center>
-		<span class="flex-fill"></span>
-		<a href="/legal/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Legal documents">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scale-icon lucide-scale"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
-		</a>
-		<a href="/legal/terms/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Services agreement">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text-icon lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M13 16H8"/></svg>
-		</a>
-		<a href="/legal/privacy/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Privacy statement">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe-lock-icon lucide-globe-lock"><path d="M15.686 15A14.5 14.5 0 0 1 12 22a14.5 14.5 0 0 1 0-20 10 10 0 1 0 9.542 13"/><path d="M2 12h8.5"/><path d="M20 6V4a2 2 0 1 0-4 0v2"/><rect width="8" height="5" x="14" y="6" rx="1"/></svg>
-		</a>
-	</nav>
-</footer>
-
-
-		<style>html{scrollbar-width:none}html main{font-size:.8em;background:url("/tool/roblox-tools/bg_b_dark.webp") center 70%/cover no-repeat}@media(min-width: 992px){html main .row{height:100%}}html main hr{margin-block:.8em}html main .card{background-color:color-mix(in srgb, color-mix(in srgb, var(--bs-card-bg) 90%, var(--bs-body-color) 10%) 50%, transparent 50%);backdrop-filter:blur(3px);box-shadow:0 4px 30px rgba(0,0,0,.3)}html main .card h1,html main .card h2,html main .card h3,html main .card h4,html main .card h5,html main .card h6,html main .card p,html main .card i{user-select:none}html main .card input[type=text]{margin-right:.3em}html main .card input[type=text],html main .card button[submit]{padding:.25em;color:var(--tcd-color-primary);background-color:hsla(0,0%,100%,.1333333333);border:1px solid gray;border-radius:.25em}html main #col-middle img,html main #col-middle iframe{max-width:60%;background-color:rgba(0,0,0,.2);backdrop-filter:blur(3px);box-shadow:0 0 1.5em color-mix(in srgb, var(--tcd-color-primary) 40%, transparent 60%);border:3px solid #000;border-radius:.5em;object-fit:contain;aspect-ratio:1}@media(max-width: 992px){html main #col-middle img,html main #col-middle iframe{max-width:80%}}html[theme=light] main{background:url("/tool/roblox-tools/bg_b_light.webp") center 70%/cover no-repeat}</style>
-	<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97a6424a0b4649b7',t:'MTc1NzA4MDg5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
