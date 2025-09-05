@@ -2,64 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Roblox Shirt Template Tool</title>
+  <title>Roblox Clothing Template Fetcher</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-    }
-    #preview {
-      margin-top: 20px;
-    }
-    img {
-      max-width: 300px;
-      display: block;
-      margin-top: 10px;
-    }
-    .hidden {
-      display: none;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button { padding: 8px; font-size: 16px; }
+    #result { margin-top: 20px; }
+    img { max-width: 300px; display: block; margin-top: 10px; }
   </style>
 </head>
 <body>
+  <h1>Roblox Clothing Template Fetcher</h1>
+  <input type="text" id="clothingInput" placeholder="Enter Roblox clothing URL or ID" size="50">
+  <button onclick="fetchTemplate()">Get Template</button>
 
-  <h1>Roblox Clothing Template Viewer</h1>
-  <p>Enter a Roblox Clothing URL or ID:</p>
-  <input type="text" id="clothingInput" placeholder="Paste Roblox clothing URL or ID here" size="50">
-  <button onclick="fetchPreview()">Show Preview</button>
-
-  <div id="preview" class="hidden">
-    <h2>Shirt Preview</h2>
-    <img id="shirtImage" src="" alt="Shirt Preview">
-    <p><a id="templateDownload" href="https://static.rbxcdn.com/images/Template-Shirts-R15_07252017.png" download>Download Roblox Shirt Template (PNG)</a></p>
+  <div id="result" style="display:none;">
+    <h2>Template Preview</h2>
+    <img id="templateImg" src="" alt="Clothing Template">
+    <a id="downloadLink" href="" download="template.png">Download Template</a>
   </div>
 
   <script>
-    function fetchPreview() {
-      const input = document.getElementById("clothingInput").value.trim();
-      let assetId = "";
-
-      // Extract asset ID from URL or use raw ID
+    function fetchTemplate() {
+      const input = document.getElementById('clothingInput').value.trim();
       const match = input.match(/(\d{5,})/);
-      if (match) {
-        assetId = match[1];
-      } else {
-        alert("Invalid clothing ID or URL.");
+      if (!match) {
+        alert('Invalid ID or URL');
         return;
       }
+      const id = match[1];
 
-      // Generate thumbnail preview URL
-      const thumbnailUrl = `https://www.roblox.com/asset-thumbnail/image?assetId=${assetId}&width=420&height=420&format=png`;
+      // Try known patterns:
+      const maybeTemplateURL = `https://assetdelivery.roblox.com/v1/asset/?id=${id}`;
 
-      document.getElementById("shirtImage").src = thumbnailUrl;
-      document.getElementById("preview").classList.remove("hidden");
+      // OR a third-party proxy/loader endpoint
+      // const maybeTemplateURL = `/api/getTemplate?id=${id}`;
+
+      document.getElementById('templateImg').src = maybeTemplateURL;
+      document.getElementById('downloadLink').href = maybeTemplateURL;
+      document.getElementById('result').style.display = 'block';
     }
   </script>
-
 </body>
 </html>
