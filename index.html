@@ -1,46 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Roblox Clothing Template Fetcher</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input, button { padding: 8px; font-size: 16px; }
-    #result { margin-top: 20px; }
-    img { max-width: 300px; display: block; margin-top: 10px; }
-  </style>
-</head>
-<body>
-  <h1>Roblox Clothing Template Fetcher</h1>
-  <input type="text" id="clothingInput" placeholder="Enter Roblox clothing URL or ID" size="50">
-  <button onclick="fetchTemplate()">Get Template</button>
+import requests
+from bs4 import BeautifulSoup
+import time
+import random
 
-  <div id="result" style="display:none;">
-    <h2>Template Preview</h2>
-    <img id="templateImg" src="" alt="Clothing Template">
-    <a id="downloadLink" href="" download="template.png">Download Template</a>
-  </div>
-
-  <script>
-    function fetchTemplate() {
-      const input = document.getElementById('clothingInput').value.trim();
-      const match = input.match(/(\d{5,})/);
-      if (!match) {
-        alert('Invalid ID or URL');
-        return;
-      }
-      const id = match[1];
-
-      // Try known patterns:
-      const maybeTemplateURL = `https://assetdelivery.roblox.com/v1/asset/?id=${id}`;
-
-      // OR a third-party proxy/loader endpoint
-      // const maybeTemplateURL = `/api/getTemplate?id=${id}`;
-
-      document.getElementById('templateImg').src = maybeTemplateURL;
-      document.getElementById('downloadLink').href = maybeTemplateURL;
-      document.getElementById('result').style.display = 'block';
+def get_clothing_details(clothing_name):
+    # Base URL for the site (this will depend on the website you're scraping from)
+    url = f'https://example.com/search?q={clothing_name}'  # Replace with actual search URL
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
-  </script>
-</body>
-</html>
+    
+    try:
+        # Send the GET request
+        print(f"Searching for: {clothing_name}...")
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Will raise an HTTPError for bad responses
+        
+        # Parse the page content
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Find the container where the clothing item details are (adjust as per the website structure)
+        product = soup.find('div', class_='product-container')  # Adjust class based on the website
+
+        if not product:
+            print(f"Couldn't find this clothing: {clothing_name}")
+            return None
+
+        # Extract product details
+        product_name = product.find('h3', class_='product-title').text.strip()  # Adjust as per website
+        product_price = product.find('span', class_='price').text.strip()  # Adjust as per website
+        product_url = product.find('a', href=True)['href']  # Adjust as per website
+        
+        # You can also extract other information (like size options, images, etc.), depending on what you need
+        product_details = {
+            'name': product_name,
+            'price': product_price,
+            'url': product_url
+        }
+
+        return product_details
+
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
+        return None
+
+def main():
+    print("Welcome to the Clothing Search Script!")
+    clothing_name = input("Enter the clothing name: ")
+
+    # Attempt to get the product details for the given clothing name
+    clothing_details = get_clothing_details(clothing_name)
+    
+    if clothing_details:
+        print(f"\nProduct Found!")
+        print(f"Name: {clothing_details['name']}")
+        print(f"Price: {clothing_details['price']}")
+        print(f"URL: {clothing_details['url']}")
+    else:
+        print(f"\nNo details found for '{clothing_name}'. Try another product or check the website.")
+
+if __name__ == "__main__":
+    main()
