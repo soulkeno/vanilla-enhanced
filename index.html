@@ -1,8 +1,8 @@
-
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Pekora Values</title>
 <style>
 :root{ --bg:#0a0e15; --panel:#0f1523; --soft:#121b2e; --line:#27324f; --fg:#e9eef8; --muted:#a5b6dc; --accent:#2b5cff; --accent2:#203766; }
@@ -11,15 +11,16 @@ body{margin:0;background:radial-gradient(1100px 700px at 70% -10%, #0f1730 0%, #
 a{color:#cfe1ff;text-decoration:none}
 .top{position:sticky;top:0;z-index:60;background:rgba(10,14,21,.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center}
-.brand{font-weight:800;letter-spacing:.2px}
+.brand{font-weight:800;letter-spacing:.2px;cursor:pointer}
 .spacer{flex:1}
-.tab{padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#0f1523,#0b1120);color:#cfe1ff}
+.tab{padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#0f1523,#0b1120);color:#cfe1ff;cursor:pointer}
 .tab.active{outline:1px solid #3f58a6;background:linear-gradient(180deg,#131d35,#0b1326)}
 .search{flex:1;min-width:260px;background:#0c1222;color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;transition:box-shadow .18s}
 .search:focus{outline:none;box-shadow:0 0 0 3px rgba(43,92,255,.2)}
 .btn{background:linear-gradient(180deg,#1a2750,#0f1a3a);border:1px solid var(--line);padding:9px 12px;border-radius:12px;color:#fff;cursor:pointer}
 .btn.small{padding:5px 8px;font-size:12px}
 .btn.ghost{background:transparent}
+.btn:hover{background:linear-gradient(180deg,#1f2e5a,#121f45)}
 main{max-width:1200px;margin:18px auto;padding:0 16px}
 .card{background:linear-gradient(180deg,var(--panel),#0c1325);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
 .pad{padding:18px}
@@ -34,32 +35,6 @@ main{max-width:1200px;margin:18px auto;padding:0 16px}
 .avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:#0c1224}
 .badge{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 8px;background:#0d162b;color:#b8c9ef;font-size:12px}
 .badge.warn{border-color:#6b4a12;background:#2b1c07;color:#ffd89b}
-table{width:100%;border-collapse:collapse}
-th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
-th{font-size:12px;text-transform:uppercase;color:#b9c7ea;letter-spacing:.08em}
-td.right{text-align:right}
-.small{font-size:12px}.muted{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
-.skeleton{position:relative;overflow:hidden;background:#0c1224;border:1px solid var(--line);border-radius:12px}
-.skeleton:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimmer 1100ms infinite}
-@keyframes shimmer{100%{transform:translateX(100%)}}
-.fade{opacity:0;transform:translateY(4px)}
-.fade.in{opacity:1;transform:none;transition:opacity .18s ease, transform .18s ease}
-.resultCard{background:#121a2d;border:1px solid var(--line);border-radius:14px;padding:12px}
-.resultCard:hover{background:#17233f}
-.rowFlex{display:flex;gap:10px;align-items:center}
-.pill{padding:2px 6px;border:1px solid var(--line);border-radius:999px;background:#0f1830}
-.rank{width:40px;text-align:right;font-weight:800}
-.nameCell{display:flex;align-items:center;gap:10px;min-width:0}
-.nameCell div{min-width:0}
-.text-truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-/* Items list alignment */
-#tbl th:nth-child(4), #tbl td:nth-child(4) { text-align: right; width: 130px; } /* RAP */
-#tbl th:nth-child(5), #tbl td:nth-child(5) { text-align: right; width: 130px; } /* Value */
-#tbl tbody tr.clickable { cursor: pointer; }
-#tbl tbody tr.clickable:hover { background: #0f1830; }
-
-/* Loud Projected badge */
 .badge.warn.big {
   border-color: #ff7a1a;
   background: linear-gradient(180deg,#3a1406,#2a0d05);
@@ -75,288 +50,578 @@ td.right{text-align:right}
   0%,100% { box-shadow: 0 0 0 2px rgba(255,122,26,.15) inset, 0 0 8px rgba(255,122,26,.22); }
   50%     { box-shadow: 0 0 0 2px rgba(255,122,26,.25) inset, 0 0 18px rgba(255,122,26,.35); }
 }
-
-/* ===== Login modal ===== */
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
+th{font-size:12px;text-transform:uppercase;color:#b9c7ea;letter-spacing:.08em}
+td.right{text-align:right}
+.small{font-size:12px}.muted{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.skeleton{position:relative;overflow:hidden;background:#0c1224;border:1px solid var(--line);border-radius:12px}
+.skeleton:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimmer 1100ms infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.fade{opacity:0;transform:translateY(4px)}
+.fade.in{opacity:1;transform:none;transition:opacity .18s ease, transform .18s ease}
+.resultCard{background:#121a2d;border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;transition:background .15s}
+.resultCard:hover{background:#17233f}
+.rowFlex{display:flex;gap:10px;align-items:center}
+.pill{padding:2px 6px;border:1px solid var(--line);border-radius:999px;background:#0f1830}
+.rank{width:40px;text-align:right;font-weight:800}
+.nameCell{display:flex;align-items:center;gap:10px;min-width:0}
+.nameCell div{min-width:0}
+.text-truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hidden{display:none !important}
-#loginBack{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:100;display:none}
-#loginModal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);background:linear-gradient(180deg,var(--panel),#0c1325);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:110}
-#loginModal .pad{padding:18px}
-.smallNote{color:#a5b6dc;font-size:12px}
-#phraseBox{user-select:all;cursor:text}
-
-/* ===== Feature Announcement (same as admin.php) ===== */
+.kpi{text-align:center;padding:20px}
+.kpi h3{margin:0 0 8px;color:var(--accent);font-size:32px;font-weight:900}
+.kpi p{margin:0;color:var(--muted);text-transform:uppercase;font-size:12px;letter-spacing:.08em}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 .alertBg-0-2-25 { background:#F68802; }
 .alertText-0-2-26 { color:#fff; padding:12px 0; font-size:18px; text-align:center; font-weight:bold; margin:0; }
 .alertLink-0-2-27 { color:#fff; text-decoration:none; }
 .alertLink-0-2-27:hover { text-decoration:underline; }
+
+/* Tab content containers */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Items table alignment */
+#itemsTable th:nth-child(4), #itemsTable td:nth-child(4) { text-align: right; width: 130px; }
+#itemsTable th:nth-child(5), #itemsTable td:nth-child(5) { text-align: right; width: 130px; }
+#itemsTable tbody tr { cursor: pointer; }
+#itemsTable tbody tr:hover { background: #0f1830; }
 </style>
 </head>
 <body>
 
 <div class="alertBg-0-2-25">
-      <p class="alertText-0-2-26">
-      <a class="alertLink-0-2-27" href="https://discord.gg/smJETKaJBA">
-        The website currently does not work However we are  almost done fixing the website give us 3 days :)      </a>
-    </p>
-  </div>
+  <p class="alertText-0-2-26">
+    <a class="alertLink-0-2-27" href="https://discord.gg/smJETKaJBA">
+      The website currently does not work However we are almost done fixing the website give us 3 days :)
+    </a>
+  </p>
+</div>
 
-<div class="top"><div class="nav">
-  <a class="brand" href="index.php">Pekora Values</a>
-  <a class="tab "   href="?tab=home">Home</a>
-  <a class="tab active"  href="?tab=items">Limiteds</a>
-  <a class="tab " href="?tab=players">Players</a>
-  <a class="tab " href="?tab=leaderboard">Leaderboard</a>
-  <a class="tab " href="trade-ads.php">Trade Ads</a>
-  <a class="tab" href="admin.php">Admin</a>
-  <div class="spacer"></div>
-
-      <button id="btnLogin" class="btn">Log in</button>
-  
-      <input id="filter" class="search" placeholder="Filter by name or ID…"/>
-    <button id="btnRefresh" class="btn">Refresh</button>
-  </div></div>
-
-<!-- ===== Login Modal (3 steps) ===== -->
-<div id="loginBack">
-  <div id="loginModal" class="card">
-    <div class="pad">
-      <div class="rowFlex">
-        <div style="font-weight:900;font-size:18px">Login via About-me phrase</div>
-        <div class="spacer"></div>
-        <button id="loginCancel" class="btn small ghost">Close</button>
-      </div>
-    </div>
-    <div class="pad" id="step1">
-      <div style="font-weight:800;margin-bottom:8px">Step 1  Enter your Pekora username</div>
-      <input id="loginUser" class="search" placeholder="Your Pekora username…"/>
-      <div class="smallNote" style="margin-top:8px">We’ll look up your user ID from <code>./data/users.json</code>.</div>
-      <div class="rowFlex" style="margin-top:12px">
-        <div class="spacer"></div>
-        <button id="loginNext" class="btn">Continue</button>
-      </div>
-    </div>
-
-    <div class="pad hidden" id="step2">
-      <div style="font-weight:800">Step 2  Copy this 15-word phrase</div>
-      <div class="smallNote">
-        Copy the phrase below (one click), then paste it into your Pekora <strong>About me</strong>.
-        Keep the words exactly as shown, separated by single spaces.
-      </div>
-      <div id="phraseBox" class="mono" style="margin-top:10px;border:1px solid var(--line);background:#0f1830;border-radius:10px;padding:12px;word-break:break-word"></div>
-      <div class="rowFlex" style="margin-top:10px">
-        <button id="btnCopyPhrase" class="btn small">Copy phrase</button>
-        <div class="spacer"></div>
-        <button id="loginBackBtn" class="btn small ghost">Back</button>
-        <button id="loginNext2" class="btn">Continue</button>
-      </div>
-      <div class="smallNote" style="margin-top:8px">After you press Continue, we’ll check your About me until it contains this exact phrase.</div>
-    </div>
-
-    <div class="pad hidden" id="step3">
-      <div style="font-weight:800">Step 3  Checking your About me…</div>
-      <div id="loginStatus" class="smallNote" style="margin-top:8px">Polling…</div>
-      <div class="rowFlex" style="margin-top:12px">
-        <div class="spacer"></div>
-        <button id="loginClose" class="btn hidden">Done</button>
-      </div>
-    </div>
+<div class="top">
+  <div class="nav">
+    <div class="brand" onclick="showTab('home')">Pekora Values</div>
+    <div class="tab active" onclick="showTab('home')">Home</div>
+    <div class="tab" onclick="showTab('limiteds')">Limiteds</div>
+    <div class="tab" onclick="showTab('players')">Players</div>
+    <div class="tab" onclick="showTab('leaderboard')">Leaderboard</div>
+    <div class="tab" onclick="showTab('trade-ads')">Trade Ads</div>
+    <div class="tab" onclick="showTab('admin')">Admin</div>
+    <div class="spacer"></div>
+    <button class="btn">Log in</button>
+    <input id="globalFilter" class="search" placeholder="Search everything…"/>
+    <button class="btn" onclick="refreshCurrentTab()">Refresh</button>
   </div>
 </div>
 
 <main>
-  <div class="card"><div class="pad rowFlex">
-    <strong>Limiteds</strong>
-    <div class="spacer"></div>
-    <span id="listMsg" class="small muted"></span>
-  </div></div>
-  <div class="card"><div class="pad">
-    <table id="tbl">
-      <thead><tr><th>Thumb</th><th>Asset ID</th><th>Name</th><th class="right">RAP (avg)</th><th class="right">Value</th><th class="right">Projected</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <div class="pad rowFlex"><button id="more" class="btn">Load more</button><div class="spacer"></div><span class="small muted">Newest on top • Paged from server</span></div>
-  </div></div>
+  <!-- HOME TAB -->
+  <div id="home-content" class="tab-content active">
+    <div class="card">
+      <div class="pad">
+        <h1 class="h1">Welcome to Pekora Values</h1>
+        <p class="sub">Your ultimate destination for Pekora trading values and analytics</p>
+        
+        <div class="stat-grid">
+          <div class="kpi">
+            <h3>2,847</h3>
+            <p>Total Items</p>
+          </div>
+          <div class="kpi">
+            <h3>15.2M</h3>
+            <p>Total Value</p>
+          </div>
+          <div class="kpi">
+            <h3>1,234</h3>
+            <p>Active Players</p>
+          </div>
+          <div class="kpi">
+            <h3>567</h3>
+            <p>Trade Ads</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <div class="card">
+      <div class="pad">
+        <h3 style="margin:0 0 16px">Recent Activity</h3>
+        <div id="recentActivity">
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="avatar skeleton"></div>
+              <div style="flex:1">
+                <div><strong>Player123</strong> traded <strong>Dominus Empyreus</strong></div>
+                <div class="small muted">2 minutes ago</div>
+              </div>
+              <div class="badge">+2.5M</div>
+            </div>
+          </div>
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="avatar skeleton"></div>
+              <div style="flex:1">
+                <div><strong>TraderPro</strong> listed new trade ad</div>
+                <div class="small muted">5 minutes ago</div>
+              </div>
+              <div class="badge warn">Seeking</div>
+            </div>
+          </div>
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="avatar skeleton"></div>
+              <div style="flex:1">
+                <div><strong>ItemCollector</strong> updated inventory</div>
+                <div class="small muted">12 minutes ago</div>
+              </div>
+              <div class="badge">+150 items</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIMITEDS TAB -->
+  <div id="limiteds-content" class="tab-content">
+    <div class="card">
+      <div class="pad rowFlex">
+        <strong>Limiteds</strong>
+        <div class="spacer"></div>
+        <span id="limitedsMsg" class="small muted">Loading...</span>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="pad">
+        <table id="itemsTable">
+          <thead>
+            <tr>
+              <th>Thumb</th>
+              <th>Asset ID</th>
+              <th>Name</th>
+              <th class="right">RAP (avg)</th>
+              <th class="right">Value</th>
+              <th class="right">Projected</th>
+            </tr>
+          </thead>
+          <tbody id="itemsTableBody">
+            <!-- Items will be populated here -->
+          </tbody>
+        </table>
+        <div class="pad rowFlex">
+          <button id="loadMoreItems" class="btn">Load more</button>
+          <div class="spacer"></div>
+          <span class="small muted">Newest on top • Paged from server</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYERS TAB -->
+  <div id="players-content" class="tab-content">
+    <div class="card">
+      <div class="pad rowFlex">
+        <strong>Player Search</strong>
+        <div class="spacer"></div>
+        <input id="playerSearch" class="search" placeholder="Search players by username..."/>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="pad">
+        <div id="playerResults">
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="avatar skeleton"></div>
+              <div style="flex:1">
+                <div><strong>TopTrader2024</strong></div>
+                <div class="small muted">Level 45 • Last seen 2 hours ago</div>
+              </div>
+              <div class="badge">15.2M RAP</div>
+            </div>
+          </div>
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="avatar skeleton"></div>
+              <div style="flex:1">
+                <div><strong>LimitedCollector</strong></div>
+                <div class="small muted">Level 38 • Last seen 1 day ago</div>
+              </div>
+              <div class="badge">8.7M RAP</div>
+            </div>
+          </div>
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="avatar skeleton"></div>
+              <div style="flex:1">
+                <div><strong>ProTrader123</strong></div>
+                <div class="small muted">Level 52 • Last seen 3 hours ago</div>
+              </div>
+              <div class="badge">22.1M RAP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD TAB -->
+  <div id="leaderboard-content" class="tab-content">
+    <div class="card">
+      <div class="pad rowFlex">
+        <strong>Top Players by RAP</strong>
+        <div class="spacer"></div>
+        <span class="small muted">Updated hourly</span>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="pad">
+        <table id="leaderboardTable">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th class="right">Items</th>
+              <th class="right">Total RAP</th>
+              <th class="right">Change</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <!-- Leaderboard will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADE ADS TAB -->
+  <div id="trade-ads-content" class="tab-content">
+    <div class="card">
+      <div class="pad rowFlex">
+        <strong>Active Trade Advertisements</strong>
+        <div class="spacer"></div>
+        <button class="btn">Post New Ad</button>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="pad">
+        <div id="tradeAds">
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="thumb skeleton"></div>
+              <div style="flex:1">
+                <div><strong>Seeking: Dominus Empyreus</strong></div>
+                <div class="small muted">Offering: 15M RAP + adds</div>
+                <div class="small muted">Posted by <strong>BigTrader2024</strong> • 2 hours ago</div>
+              </div>
+              <div class="badge warn">SEEKING</div>
+            </div>
+          </div>
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="thumb skeleton"></div>
+              <div style="flex:1">
+                <div><strong>Trading: Korblox Deathspeaker</strong></div>
+                <div class="small muted">Looking for: 2.5M RAP or equivalent</div>
+                <div class="small muted">Posted by <strong>ItemTrader</strong> • 4 hours ago</div>
+              </div>
+              <div class="badge">TRADING</div>
+            </div>
+          </div>
+          <div class="resultCard">
+            <div class="rowFlex">
+              <div class="thumb skeleton"></div>
+              <div style="flex:1">
+                <div><strong>Buying: Any Sparkle Time Fedoras</strong></div>
+                <div class="small muted">Paying above RAP, serious offers only</div>
+                <div class="small muted">Posted by <strong>FedoraCollector</strong> • 6 hours ago</div>
+              </div>
+              <div class="badge">BUYING</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN TAB -->
+  <div id="admin-content" class="tab-content">
+    <div class="card">
+      <div class="pad rowFlex">
+        <strong>Admin Panel</strong>
+        <div class="spacer"></div>
+        <span class="badge warn">Admin Access Required</span>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="pad">
+        <div class="stat-grid">
+          <div class="kpi">
+            <h3>847</h3>
+            <p>API Requests/Hour</p>
+          </div>
+          <div class="kpi">
+            <h3>99.8%</h3>
+            <p>Uptime</p>
+          </div>
+          <div class="kpi">
+            <h3>2.1GB</h3>
+            <p>Database Size</p>
+          </div>
+          <div class="kpi">
+            <h3>156</h3>
+            <p>Active Sessions</p>
+          </div>
+        </div>
+        
+        <div style="margin-top:24px">
+          <h3>Quick Actions</h3>
+          <div class="rowFlex" style="gap:8px;flex-wrap:wrap">
+            <button class="btn">Update Item Values</button>
+            <button class="btn">Sync Player Data</button>
+            <button class="btn">Generate Reports</button>
+            <button class="btn">Clear Cache</button>
+            <button class="btn ghost">View Logs</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script>
-const NF=new Intl.NumberFormat();
-const IMG='https://pekora.rip';
-const API='https://www.pekora.rip';
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-function kfmt(n){if(n==null)return'';n=+n;if(n>=1e6)return(Math.round(n/1e5)/10)+'m';if(n>=1e3)return(Math.round(n/1e2)/10)+'k';return String(n)}
-function rapDual(n){if(n==null)return'';n=+n;return kfmt(n)+' / '+NF.format(n)}
-async function api(params, asText=false){
-  const u=new URL(location.href); Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
-  const r=await fetch(u,{credentials:'same-origin',method: (params._method||'GET')==='POST'?'POST':'GET',
-    headers: (params._method==='POST')?{'Content-Type':'application/x-www-form-urlencoded'}:undefined,
-    body: (params._method==='POST')? new URLSearchParams(params._body||{}): undefined
+// Global state
+let currentTab = 'home';
+let itemsOffset = 0;
+const itemsStep = 50;
+
+// Formatting utilities
+const NF = new Intl.NumberFormat();
+function kfmt(n) {
+  if (n == null) return '';
+  n = +n;
+  if (n >= 1e6) return (Math.round(n / 1e5) / 10) + 'M';
+  if (n >= 1e3) return (Math.round(n / 1e2) / 10) + 'K';
+  return String(n);
+}
+
+// Tab management
+function showTab(tabName) {
+  // Update active tab
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  // Hide all content
+  document.querySelectorAll('.tab-content').forEach(content => {
+    content.classList.remove('active');
   });
-  if(!r.ok) throw new Error('HTTP '+r.status);
-  return asText? r.text() : r.json();
+  
+  // Show selected content
+  document.getElementById(tabName + '-content').classList.add('active');
+  currentTab = tabName;
+  
+  // Load tab-specific data
+  loadTabData(tabName);
 }
 
-/* ===== HOME KPIs ===== */
-
-/* ===== PLAYERS SEARCH ===== */
-
-/* ===== PLAYER PROFILE ===== */
-
-/* ===== ITEMS LIST (paged) ===== */
-const state={offset:0,step:120,q:''};
-
-function row(it){
-  const href = `?tab=items&assetId=${it.id}`;
-  const tr=document.createElement('tr'); tr.className='fade clickable'; tr.dataset.href = href;
-  const projectedHTML = it.projected
-    ? '<span class="badge warn big" title="This item is projected">⚠️ Projected</span>'
-    : '<span class="badge" style="opacity:.65">false</span>';
-  tr.innerHTML=`
-    <td>${it.thumb?`<img class="thumb" loading="lazy" src="${esc(it.thumb)}">`:`<div class="thumb skeleton"></div>`}</td>
-    <td class="mono">${it.id}</td>
-    <td class="name"><a href="${href}">${esc(it.name||('Item '+it.id))}</a></td>
-    <td class="right mono">${it.rap!=null?NF.format(+it.rap):''}</td>
-    <td class="right mono">${it.value!=null?NF.format(+it.value):''}</td>
-    <td class="right">${projectedHTML}</td>`;
-  tr.addEventListener('click', (e) => { if (e.target.closest('a,button,input,label')) return; window.location.href = href; });
-  requestAnimationFrame(()=>requestAnimationFrame(()=>tr.classList.add('in')));
-  return tr;
+// Mock data generators
+function generateMockItems(count = 50) {
+  const items = [];
+  const itemNames = [
+    'Dominus Empyreus', 'Korblox Deathspeaker', 'Sparkle Time Fedora',
+    'Dominus Messor', 'Valkyrie Helm', 'Clockwork Headphones',
+    'Red Sparkle Time Fedora', 'Dominus Frigidus', 'Headrow',
+    'International Fedora', 'Sinister Horns', 'Dominus Rex'
+  ];
+  
+  for (let i = 0; i < count; i++) {
+    const isProjected = Math.random() < 0.15;
+    const baseValue = Math.floor(Math.random() * 10000000) + 1000;
+    
+    items.push({
+      id: 100000 + i + itemsOffset,
+      name: itemNames[Math.floor(Math.random() * itemNames.length)] + ` #${i + 1}`,
+      rap: Math.floor(baseValue * (0.8 + Math.random() * 0.4)),
+      value: baseValue,
+      projected: isProjected,
+      thumb: null
+    });
+  }
+  return items;
 }
 
-async function loadPage(reset=false){
-  const tb=document.querySelector('#tbl tbody');
-  if(reset){ tb.innerHTML=''; state.offset=0; }
-  const jd=await api({action:'itemsPage', offset: state.offset, limit: state.step, q: state.q});
-  const rows = jd.rows||[], total = jd.total||0;
-  const frag=document.createDocumentFragment();
-  rows.forEach(it=>frag.appendChild(row(it)));
-  tb.appendChild(frag);
-  state.offset += rows.length;
-  document.getElementById('listMsg').textContent = `${Math.min(state.offset,total)} / ${total} items`;
-  document.getElementById('more').disabled = (state.offset>=total) || rows.length===0;
+function generateMockLeaderboard(count = 25) {
+  const players = [];
+  const usernames = [
+    'TopTrader2024', 'LimitedCollector', 'ProTrader123', 'ItemMaster',
+    'TradingKing', 'RareHunter', 'ValueExpert', 'MarketWhiz'
+  ];
+  
+  for (let i = 0; i < count; i++) {
+    const baseRAP = Math.floor(Math.random() * 50000000) + 1000000;
+    const change = (Math.random() - 0.5) * 1000000;
+    
+    players.push({
+      rank: i + 1,
+      username: usernames[Math.floor(Math.random() * usernames.length)] + (i > 7 ? i : ''),
+      items: Math.floor(Math.random() * 500) + 50,
+      rap: baseRAP,
+      change: change
+    });
+  }
+  
+  return players.sort((a, b) => b.rap - a.rap);
 }
 
-document.getElementById('more').addEventListener('click',()=>loadPage(false));
-document.getElementById('btnRefresh').addEventListener('click',()=>loadPage(true));
-document.getElementById('filter').addEventListener('input',e=>{
-  state.q = e.target.value.trim();
-  loadPage(true);
+// Data loading functions
+function loadTabData(tabName) {
+  switch(tabName) {
+    case 'limiteds':
+      loadLimiteds();
+      break;
+    case 'leaderboard':
+      loadLeaderboard();
+      break;
+    case 'players':
+    case 'trade-ads':
+    case 'admin':
+      // Already have static content
+      break;
+  }
+}
+
+function loadLimiteds(reset = false) {
+  if (reset) {
+    itemsOffset = 0;
+    document.getElementById('itemsTableBody').innerHTML = '';
+  }
+  
+  const items = generateMockItems(itemsStep);
+  const tbody = document.getElementById('itemsTableBody');
+  
+  items.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.className = 'fade';
+    
+    const projectedHTML = item.projected
+      ? '<span class="badge warn big" title="This item is projected">⚠️ Projected</span>'
+      : '<span class="badge" style="opacity:.65">Normal</span>';
+    
+    tr.innerHTML = `
+      <td><div class="thumb skeleton"></div></td>
+      <td class="mono">${item.id}</td>
+      <td><strong>${item.name}</strong></td>
+      <td class="right mono">${NF.format(item.rap)}</td>
+      <td class="right mono">${NF.format(item.value)}</td>
+      <td class="right">${projectedHTML}</td>
+    `;
+    
+    tbody.appendChild(tr);
+    
+    // Fade in animation
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        tr.classList.add('in');
+      });
+    });
+  });
+  
+  itemsOffset += items.length;
+  document.getElementById('limitedsMsg').textContent = `${itemsOffset} items loaded`;
+}
+
+function loadLeaderboard() {
+  const players = generateMockLeaderboard();
+  const tbody = document.getElementById('leaderboardBody');
+  tbody.innerHTML = '';
+  
+  players.forEach(player => {
+    const tr = document.createElement('tr');
+    tr.className = 'fade';
+    
+    const changeIcon = player.change >= 0 ? '↗️' : '↘️';
+    const changeClass = player.change >= 0 ? 'badge' : 'badge warn';
+    
+    tr.innerHTML = `
+      <td class="rank">#${player.rank}</td>
+      <td>
+        <div class="nameCell">
+          <div class="avatar skeleton"></div>
+          <div>
+            <div><strong>${player.username}</strong></div>
+            <div class="small muted">${player.items} items</div>
+          </div>
+        </div>
+      </td>
+      <td class="right mono">${NF.format(player.items)}</td>
+      <td class="right mono">${kfmt(player.rap)}</td>
+      <td class="right">
+        <span class="${changeClass}">${changeIcon} ${kfmt(Math.abs(player.change))}</span>
+      </td>
+    `;
+    
+    tbody.appendChild(tr);
+    
+    // Fade in animation
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        tr.classList.add('in');
+      });
+    });
+  });
+}
+
+// Event listeners
+document.getElementById('loadMoreItems')?.addEventListener('click', () => {
+  loadLimiteds(false);
 });
 
-loadPage(true);
-document.querySelector('#tbl tbody').addEventListener('click', (e) => {
-  const tr = e.target.closest('tr[data-href]');
-  if (!tr || e.target.closest('a,button,input,label')) return;
-  window.location.href = tr.dataset.href;
+document.getElementById('playerSearch')?.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  // Mock search functionality - in real app would make API call
+  console.log('Searching for players:', query);
 });
 
-/* ===== ITEM PAGE ===== */
-
-/* ===== LEADERBOARD ===== */
-
-/* ===== LOGIN FLOW (modal + phrase + polling) ===== */
-(function(){
-  const back = document.getElementById('loginBack');
-  const btn = document.getElementById('btnLogin');
-  const btnCancel = document.getElementById('loginCancel');
-  const s1 = document.getElementById('step1');
-  const s2 = document.getElementById('step2');
-  const s3 = document.getElementById('step3');
-
-  const inputUser = document.getElementById('loginUser');
-  const phraseBox = document.getElementById('phraseBox');
-  const btnCopyPhrase = document.getElementById('btnCopyPhrase');
-  const status = document.getElementById('loginStatus');
-
-  const btnNext = document.getElementById('loginNext');
-  const btnBack = document.getElementById('loginBackBtn');
-  const btnNext2 = document.getElementById('loginNext2');
-  const btnClose = document.getElementById('loginClose');
-
-  let phrase = '';
-  let pollTimer = null;
-  let step = 1;
-
-  function showStep(n){
-    step = n;
-    s1.classList.toggle('hidden', n!==1);
-    s2.classList.toggle('hidden', n!==2);
-    s3.classList.toggle('hidden', n!==3);
-    btnClose.classList.toggle('hidden', n!==3);
+function refreshCurrentTab() {
+  switch(currentTab) {
+    case 'limiteds':
+      loadLimiteds(true);
+      break;
+    case 'leaderboard':
+      loadLeaderboard();
+      break;
+    default:
+      console.log('Refreshing', currentTab);
   }
-  function openModal(){
-    back.style.display = 'block';
-    showStep(1);
-    inputUser.value = '';
-    phraseBox.textContent = '';
-    phrase = '';
-    status.textContent = 'Polling…';
-    clearInterval(pollTimer);
-    setTimeout(()=>inputUser.focus(), 40);
-  }
-  function closeModal(){
-    back.style.display = 'none';
-    clearInterval(pollTimer);
-  }
+}
 
-  async function startPhrase(){
-    const j = await api({action:'loginWords'});
-    if (j._error) throw new Error(j._error);
-    phrase = String(j.phrase||'');
-    phraseBox.textContent = phrase;
+// Initialize the page
+document.addEventListener('DOMContentLoaded', () => {
+  loadTabData('home');
+});
+
+// Add click handlers for result cards
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.resultCard')) {
+    const card = e.target.closest('.resultCard');
+    // Mock navigation - would navigate to actual page
+    console.log('Clicked card:', card);
   }
-  async function lookupUser(){
-    const username = inputUser.value.trim();
-    if (!username) { alert('Please enter your Pekora username.'); return false; }
-    const j = await api({action:'loginLookup', _method:'POST', _body:{username}});
-    if (j._error) { alert(j._error); return false; }
-    return true;
+});
+
+// Global search functionality
+document.getElementById('globalFilter')?.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  if (query.length > 2) {
+    console.log('Global search:', query);
+    // Would implement global search across all tabs
   }
-  async function startPolling(){
-    async function tick(){
-      try{
-        const j = await api({action:'loginPoll'});
-        if (j && j.ok && j.loggedIn) {
-          status.textContent = 'Success! You are now logged in.';
-          clearInterval(pollTimer);
-          setTimeout(()=>location.reload(), 700);
-        } else {
-          status.textContent = 'Still checking… (make sure your About me contains the exact 15-word phrase)';
-        }
-      }catch(e){
-        status.textContent = 'Network error; retrying…';
-      }
-    }
-    await tick();
-    pollTimer = setInterval(tick, 5000);
-  }
-
-  btn?.addEventListener('click', async ()=>{
-    openModal();
-    try { await startPhrase(); } catch(e){ alert('Could not load phrase: '+e.message); }
-  });
-  btnCancel?.addEventListener('click', closeModal);
-  btnClose?.addEventListener('click', closeModal);
-  btnBack?.addEventListener('click', ()=>showStep(1));
-
-  btnCopyPhrase?.addEventListener('click', async ()=>{
-    if (!phrase) return;
-    try { await navigator.clipboard.writeText(phrase); btnCopyPhrase.textContent='Copied!'; setTimeout(()=>btnCopyPhrase.textContent='Copy phrase', 900); } catch {}
-  });
-
-  btnNext?.addEventListener('click', async ()=>{
-    if (await lookupUser()) showStep(2);
-  });
-  btnNext2?.addEventListener('click', async ()=>{
-    if (!phrase) { alert('Phrase not loaded.'); return; }
-    const ok = confirm('Have you copied the 15-word phrase and set your Pekora “About me” to include this exact phrase?');
-    if (!ok) return;
-    showStep(3);
-    await startPolling();
-  });
-
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && back.style.display==='block') closeModal(); });
-})();
+});
 </script>
 </body>
 </html>
