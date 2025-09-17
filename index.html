@@ -1,56 +1,362 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Roblox Clothing Template Fetcher</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
-    input, button { padding: 10px; font-size: 16px; margin: 5px; }
-    img { max-width: 300px; margin-top: 20px; border: 1px solid #ccc; }
-    pre { text-align: left; margin: 20px auto; display: inline-block; background: #f4f4f4; padding: 10px; }
-  </style>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Pekora Values</title>
+<style>
+:root{ --bg:#0a0e15; --panel:#0f1523; --soft:#121b2e; --line:#27324f; --fg:#e9eef8; --muted:#a5b6dc; --accent:#2b5cff; --accent2:#203766; }
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:radial-gradient(1100px 700px at 70% -10%, #0f1730 0%, #0a0e15 55%) no-repeat, var(--bg); color:var(--fg); font:14px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial}
+a{color:#cfe1ff;text-decoration:none}
+.top{position:sticky;top:0;z-index:60;background:rgba(10,14,21,.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center}
+.brand{font-weight:800;letter-spacing:.2px}
+.spacer{flex:1}
+.tab{padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#0f1523,#0b1120);color:#cfe1ff}
+.tab.active{outline:1px solid #3f58a6;background:linear-gradient(180deg,#131d35,#0b1326)}
+.search{flex:1;min-width:260px;background:#0c1222;color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;transition:box-shadow .18s}
+.search:focus{outline:none;box-shadow:0 0 0 3px rgba(43,92,255,.2)}
+.btn{background:linear-gradient(180deg,#1a2750,#0f1a3a);border:1px solid var(--line);padding:9px 12px;border-radius:12px;color:#fff;cursor:pointer}
+.btn.small{padding:5px 8px;font-size:12px}
+.btn.ghost{background:transparent}
+main{max-width:1200px;margin:18px auto;padding:0 16px}
+.card{background:linear-gradient(180deg,var(--panel),#0c1325);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.pad{padding:18px}
+.h1{font-weight:900;font-size:28px;margin:0 0 6px}
+.sub{color:var(--muted);margin-bottom:10px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--line);background:#0c1224}
+.cardthumb{width:100%;height:140px;border-radius:12px;object-fit:cover;border:1px solid var(--line);background:#0c1224}
+.avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:#0c1224}
+.badge{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 8px;background:#0d162b;color:#b8c9ef;font-size:12px}
+.badge.warn{border-color:#6b4a12;background:#2b1c07;color:#ffd89b}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
+th{font-size:12px;text-transform:uppercase;color:#b9c7ea;letter-spacing:.08em}
+td.right{text-align:right}
+.small{font-size:12px}.muted{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.skeleton{position:relative;overflow:hidden;background:#0c1224;border:1px solid var(--line);border-radius:12px}
+.skeleton:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimmer 1100ms infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.fade{opacity:0;transform:translateY(4px)}
+.fade.in{opacity:1;transform:none;transition:opacity .18s ease, transform .18s ease}
+.resultCard{background:#121a2d;border:1px solid var(--line);border-radius:14px;padding:12px}
+.resultCard:hover{background:#17233f}
+.rowFlex{display:flex;gap:10px;align-items:center}
+.pill{padding:2px 6px;border:1px solid var(--line);border-radius:999px;background:#0f1830}
+.rank{width:40px;text-align:right;font-weight:800}
+.nameCell{display:flex;align-items:center;gap:10px;min-width:0}
+.nameCell div{min-width:0}
+.text-truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Items list alignment */
+#tbl th:nth-child(4), #tbl td:nth-child(4) { text-align: right; width: 130px; } /* RAP */
+#tbl th:nth-child(5), #tbl td:nth-child(5) { text-align: right; width: 130px; } /* Value */
+#tbl tbody tr.clickable { cursor: pointer; }
+#tbl tbody tr.clickable:hover { background: #0f1830; }
+
+/* Loud Projected badge */
+.badge.warn.big {
+  border-color: #ff7a1a;
+  background: linear-gradient(180deg,#3a1406,#2a0d05);
+  color: #ffd7b0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  box-shadow: 0 0 0 2px rgba(255,122,26,.15) inset, 0 0 16px rgba(255,122,26,.25);
+  padding: 4px 10px;
+  animation: warnPulse 1.6s ease-in-out infinite;
+}
+@keyframes warnPulse {
+  0%,100% { box-shadow: 0 0 0 2px rgba(255,122,26,.15) inset, 0 0 8px rgba(255,122,26,.22); }
+  50%     { box-shadow: 0 0 0 2px rgba(255,122,26,.25) inset, 0 0 18px rgba(255,122,26,.35); }
+}
+
+/* ===== Login modal ===== */
+.hidden{display:none !important}
+#loginBack{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:100;display:none}
+#loginModal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);background:linear-gradient(180deg,var(--panel),#0c1325);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:110}
+#loginModal .pad{padding:18px}
+.smallNote{color:#a5b6dc;font-size:12px}
+#phraseBox{user-select:all;cursor:text}
+
+/* ===== Feature Announcement (same as admin.php) ===== */
+.alertBg-0-2-25 { background:#F68802; }
+.alertText-0-2-26 { color:#fff; padding:12px 0; font-size:18px; text-align:center; font-weight:bold; margin:0; }
+.alertLink-0-2-27 { color:#fff; text-decoration:none; }
+.alertLink-0-2-27:hover { text-decoration:underline; }
+</style>
 </head>
 <body>
-  <h1>Roblox Clothing Template Downloader</h1>
-  <input type="text" id="assetInput" placeholder="Enter Roblox clothing ID or URL" size="40">
-  <button onclick="downloadTemplate()">Fetch Template</button>
-  <div id="result"></div>
 
-  <script>
-    async function downloadTemplate() {
-      const input = document.getElementById('assetInput').value.trim();
-      const match = input.match(/(\\d{5,})/);
-      if (!match) {
-        alert('Invalid ID or URL!');
-        return;
-      }
-      const id = match[1];
-      const apiUrl = `https://www.roblox.com/asset/?id=${id}`;
+<div class="alertBg-0-2-25">
+      <p class="alertText-0-2-26">
+      <a class="alertLink-0-2-27" href="https://discord.gg/smJETKaJBA">
+        The website currently does not work However we are  almost done fixing the website give us 3 days :)      </a>
+    </p>
+  </div>
 
-      document.getElementById('result').innerHTML = '<p>Loading...</p>';
+<div class="top"><div class="nav">
+  <a class="brand" href="index.php">Pekora Values</a>
+  <a class="tab "   href="?tab=home">Home</a>
+  <a class="tab active"  href="?tab=items">Limiteds</a>
+  <a class="tab " href="?tab=players">Players</a>
+  <a class="tab " href="?tab=leaderboard">Leaderboard</a>
+  <a class="tab " href="trade-ads.php">Trade Ads</a>
+  <a class="tab" href="admin.php">Admin</a>
+  <div class="spacer"></div>
 
-      try {
-        const resp = await fetch(apiUrl);
-        if (!resp.ok) throw new Error('Bad response');
+      <button id="btnLogin" class="btn">Log in</button>
+  
+      <input id="filter" class="search" placeholder="Filter by name or ID…"/>
+    <button id="btnRefresh" class="btn">Refresh</button>
+  </div></div>
 
-        const text = await resp.text();
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(text, 'application/xml');
+<!-- ===== Login Modal (3 steps) ===== -->
+<div id="loginBack">
+  <div id="loginModal" class="card">
+    <div class="pad">
+      <div class="rowFlex">
+        <div style="font-weight:900;font-size:18px">Login via About-me phrase</div>
+        <div class="spacer"></div>
+        <button id="loginCancel" class="btn small ghost">Close</button>
+      </div>
+    </div>
+    <div class="pad" id="step1">
+      <div style="font-weight:800;margin-bottom:8px">Step 1  Enter your Pekora username</div>
+      <input id="loginUser" class="search" placeholder="Your Pekora username…"/>
+      <div class="smallNote" style="margin-top:8px">We’ll look up your user ID from <code>./data/users.json</code>.</div>
+      <div class="rowFlex" style="margin-top:12px">
+        <div class="spacer"></div>
+        <button id="loginNext" class="btn">Continue</button>
+      </div>
+    </div>
 
-        const urlTag = xml.querySelector('Content[name="ShirtTemplate"] > url');
-        if (!urlTag) {
-          document.getElementById('result').innerHTML = '<p>Template not found. Make sure it’s a classic shirt or pant.</p>';
-          return;
+    <div class="pad hidden" id="step2">
+      <div style="font-weight:800">Step 2  Copy this 15-word phrase</div>
+      <div class="smallNote">
+        Copy the phrase below (one click), then paste it into your Pekora <strong>About me</strong>.
+        Keep the words exactly as shown, separated by single spaces.
+      </div>
+      <div id="phraseBox" class="mono" style="margin-top:10px;border:1px solid var(--line);background:#0f1830;border-radius:10px;padding:12px;word-break:break-word"></div>
+      <div class="rowFlex" style="margin-top:10px">
+        <button id="btnCopyPhrase" class="btn small">Copy phrase</button>
+        <div class="spacer"></div>
+        <button id="loginBackBtn" class="btn small ghost">Back</button>
+        <button id="loginNext2" class="btn">Continue</button>
+      </div>
+      <div class="smallNote" style="margin-top:8px">After you press Continue, we’ll check your About me until it contains this exact phrase.</div>
+    </div>
+
+    <div class="pad hidden" id="step3">
+      <div style="font-weight:800">Step 3  Checking your About me…</div>
+      <div id="loginStatus" class="smallNote" style="margin-top:8px">Polling…</div>
+      <div class="rowFlex" style="margin-top:12px">
+        <div class="spacer"></div>
+        <button id="loginClose" class="btn hidden">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="card"><div class="pad rowFlex">
+    <strong>Limiteds</strong>
+    <div class="spacer"></div>
+    <span id="listMsg" class="small muted"></span>
+  </div></div>
+  <div class="card"><div class="pad">
+    <table id="tbl">
+      <thead><tr><th>Thumb</th><th>Asset ID</th><th>Name</th><th class="right">RAP (avg)</th><th class="right">Value</th><th class="right">Projected</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="pad rowFlex"><button id="more" class="btn">Load more</button><div class="spacer"></div><span class="small muted">Newest on top • Paged from server</span></div>
+  </div></div>
+
+</main>
+
+<script>
+const NF=new Intl.NumberFormat();
+const IMG='https://pekora.rip';
+const API='https://www.pekora.rip';
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function kfmt(n){if(n==null)return'';n=+n;if(n>=1e6)return(Math.round(n/1e5)/10)+'m';if(n>=1e3)return(Math.round(n/1e2)/10)+'k';return String(n)}
+function rapDual(n){if(n==null)return'';n=+n;return kfmt(n)+' / '+NF.format(n)}
+async function api(params, asText=false){
+  const u=new URL(location.href); Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+  const r=await fetch(u,{credentials:'same-origin',method: (params._method||'GET')==='POST'?'POST':'GET',
+    headers: (params._method==='POST')?{'Content-Type':'application/x-www-form-urlencoded'}:undefined,
+    body: (params._method==='POST')? new URLSearchParams(params._body||{}): undefined
+  });
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return asText? r.text() : r.json();
+}
+
+/* ===== HOME KPIs ===== */
+
+/* ===== PLAYERS SEARCH ===== */
+
+/* ===== PLAYER PROFILE ===== */
+
+/* ===== ITEMS LIST (paged) ===== */
+const state={offset:0,step:120,q:''};
+
+function row(it){
+  const href = `?tab=items&assetId=${it.id}`;
+  const tr=document.createElement('tr'); tr.className='fade clickable'; tr.dataset.href = href;
+  const projectedHTML = it.projected
+    ? '<span class="badge warn big" title="This item is projected">⚠️ Projected</span>'
+    : '<span class="badge" style="opacity:.65">false</span>';
+  tr.innerHTML=`
+    <td>${it.thumb?`<img class="thumb" loading="lazy" src="${esc(it.thumb)}">`:`<div class="thumb skeleton"></div>`}</td>
+    <td class="mono">${it.id}</td>
+    <td class="name"><a href="${href}">${esc(it.name||('Item '+it.id))}</a></td>
+    <td class="right mono">${it.rap!=null?NF.format(+it.rap):''}</td>
+    <td class="right mono">${it.value!=null?NF.format(+it.value):''}</td>
+    <td class="right">${projectedHTML}</td>`;
+  tr.addEventListener('click', (e) => { if (e.target.closest('a,button,input,label')) return; window.location.href = href; });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>tr.classList.add('in')));
+  return tr;
+}
+
+async function loadPage(reset=false){
+  const tb=document.querySelector('#tbl tbody');
+  if(reset){ tb.innerHTML=''; state.offset=0; }
+  const jd=await api({action:'itemsPage', offset: state.offset, limit: state.step, q: state.q});
+  const rows = jd.rows||[], total = jd.total||0;
+  const frag=document.createDocumentFragment();
+  rows.forEach(it=>frag.appendChild(row(it)));
+  tb.appendChild(frag);
+  state.offset += rows.length;
+  document.getElementById('listMsg').textContent = `${Math.min(state.offset,total)} / ${total} items`;
+  document.getElementById('more').disabled = (state.offset>=total) || rows.length===0;
+}
+
+document.getElementById('more').addEventListener('click',()=>loadPage(false));
+document.getElementById('btnRefresh').addEventListener('click',()=>loadPage(true));
+document.getElementById('filter').addEventListener('input',e=>{
+  state.q = e.target.value.trim();
+  loadPage(true);
+});
+
+loadPage(true);
+document.querySelector('#tbl tbody').addEventListener('click', (e) => {
+  const tr = e.target.closest('tr[data-href]');
+  if (!tr || e.target.closest('a,button,input,label')) return;
+  window.location.href = tr.dataset.href;
+});
+
+/* ===== ITEM PAGE ===== */
+
+/* ===== LEADERBOARD ===== */
+
+/* ===== LOGIN FLOW (modal + phrase + polling) ===== */
+(function(){
+  const back = document.getElementById('loginBack');
+  const btn = document.getElementById('btnLogin');
+  const btnCancel = document.getElementById('loginCancel');
+  const s1 = document.getElementById('step1');
+  const s2 = document.getElementById('step2');
+  const s3 = document.getElementById('step3');
+
+  const inputUser = document.getElementById('loginUser');
+  const phraseBox = document.getElementById('phraseBox');
+  const btnCopyPhrase = document.getElementById('btnCopyPhrase');
+  const status = document.getElementById('loginStatus');
+
+  const btnNext = document.getElementById('loginNext');
+  const btnBack = document.getElementById('loginBackBtn');
+  const btnNext2 = document.getElementById('loginNext2');
+  const btnClose = document.getElementById('loginClose');
+
+  let phrase = '';
+  let pollTimer = null;
+  let step = 1;
+
+  function showStep(n){
+    step = n;
+    s1.classList.toggle('hidden', n!==1);
+    s2.classList.toggle('hidden', n!==2);
+    s3.classList.toggle('hidden', n!==3);
+    btnClose.classList.toggle('hidden', n!==3);
+  }
+  function openModal(){
+    back.style.display = 'block';
+    showStep(1);
+    inputUser.value = '';
+    phraseBox.textContent = '';
+    phrase = '';
+    status.textContent = 'Polling…';
+    clearInterval(pollTimer);
+    setTimeout(()=>inputUser.focus(), 40);
+  }
+  function closeModal(){
+    back.style.display = 'none';
+    clearInterval(pollTimer);
+  }
+
+  async function startPhrase(){
+    const j = await api({action:'loginWords'});
+    if (j._error) throw new Error(j._error);
+    phrase = String(j.phrase||'');
+    phraseBox.textContent = phrase;
+  }
+  async function lookupUser(){
+    const username = inputUser.value.trim();
+    if (!username) { alert('Please enter your Pekora username.'); return false; }
+    const j = await api({action:'loginLookup', _method:'POST', _body:{username}});
+    if (j._error) { alert(j._error); return false; }
+    return true;
+  }
+  async function startPolling(){
+    async function tick(){
+      try{
+        const j = await api({action:'loginPoll'});
+        if (j && j.ok && j.loggedIn) {
+          status.textContent = 'Success! You are now logged in.';
+          clearInterval(pollTimer);
+          setTimeout(()=>location.reload(), 700);
+        } else {
+          status.textContent = 'Still checking… (make sure your About me contains the exact 15-word phrase)';
         }
-
-        const templateUrl = urlTag.textContent;
-        const imgHtml = `<img src="${templateUrl}" alt="Template PNG"><br><a href="${templateUrl}" download="roblox-template-${id}.png">Download Template</a>`;
-        document.getElementById('result').innerHTML = imgHtml;
-
-      } catch (err) {
-        document.getElementById('result').innerHTML = `<p>Error fetching template: ${err.message}</p>`;
+      }catch(e){
+        status.textContent = 'Network error; retrying…';
       }
     }
-  </script>
+    await tick();
+    pollTimer = setInterval(tick, 5000);
+  }
+
+  btn?.addEventListener('click', async ()=>{
+    openModal();
+    try { await startPhrase(); } catch(e){ alert('Could not load phrase: '+e.message); }
+  });
+  btnCancel?.addEventListener('click', closeModal);
+  btnClose?.addEventListener('click', closeModal);
+  btnBack?.addEventListener('click', ()=>showStep(1));
+
+  btnCopyPhrase?.addEventListener('click', async ()=>{
+    if (!phrase) return;
+    try { await navigator.clipboard.writeText(phrase); btnCopyPhrase.textContent='Copied!'; setTimeout(()=>btnCopyPhrase.textContent='Copy phrase', 900); } catch {}
+  });
+
+  btnNext?.addEventListener('click', async ()=>{
+    if (await lookupUser()) showStep(2);
+  });
+  btnNext2?.addEventListener('click', async ()=>{
+    if (!phrase) { alert('Phrase not loaded.'); return; }
+    const ok = confirm('Have you copied the 15-word phrase and set your Pekora “About me” to include this exact phrase?');
+    if (!ok) return;
+    showStep(3);
+    await startPolling();
+  });
+
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && back.style.display==='block') closeModal(); });
+})();
+</script>
 </body>
 </html>
