@@ -1,135 +1,60 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Exora Tracker</title>
-  <style>
-    :root {
-      --bg: #160024;
-      --panel: #24003d;
-      --soft: #2f0a4d;
-      --line: #442266;
-      --fg: #f5ebff;
-      --muted: #cbb1de;
-      --accent: #9b4dff;
-      --accent2: #5b2a91;
-    }
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Exora Tracker</title>
+<style>
+:root{ --bg:#160024; --panel:#24003d; --soft:#2f0a4d; --line:#442266; --fg:#f5ebff; --muted:#cbb1de; --accent:#9b4dff; --accent2:#5b2a91; }
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:radial-gradient(1100px 700px at 70% -10%, #320a5d 0%, #160024 55%) no-repeat, var(--bg); color:var(--fg); font:14px/1.45 "Poppins",system-ui,Segoe UI,Roboto,Arial}
+a{color:#d5b6ff;text-decoration:none}
+.top{position:sticky;top:0;z-index:60;background:rgba(22,0,36,.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center}
+.brand{font-weight:800;letter-spacing:.2px}
+.spacer{flex:1}
+.tab{padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#24003d,#18002b);color:#e9d6ff;cursor:pointer}
+.tab.active{outline:1px solid var(--accent);background:linear-gradient(180deg,#3a0a66,#1c0133);color:#fff}
+.search{flex:1;min-width:260px;background:#2f0a4d;color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.btn{background:linear-gradient(180deg,#4a1885,#2a0a4a);border:1px solid var(--line);padding:9px 12px;border-radius:12px;color:#fff;cursor:pointer}
+.btn.small{padding:5px 8px;font-size:12px}
+.btn.ghost{background:transparent}
+main{max-width:1200px;margin:18px auto;padding:0 16px}
+.card{background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.35);margin-bottom:20px}
+.pad{padding:18px}
+.h1{font-weight:900;font-size:28px;margin:0 0 6px}
+.sub{color:var(--muted);margin-bottom:10px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.badge{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 8px;background:#2f0a4d;color:#d5b6ff;font-size:12px}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
+th{font-size:12px;text-transform:uppercase;color:#d5b6ff;letter-spacing:.08em}
+td.right{text-align:right}
+.small{font-size:12px}.muted{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
-      background: radial-gradient(1100px 700px at 70% -10%, #320a5d 0%, #160024 55%) no-repeat, var(--bg);
-      color: var(--fg);
-      font-family: "Poppins", system-ui, Arial, sans-serif;
-    }
+/* ===== Login modal ===== */
+.hidden{display:none !important}
+#loginBack{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:100;display:none}
+#loginModal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(400px,92vw);background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:110;padding:20px;color:var(--fg)}
 
-    .top {
-      position: sticky; top: 0; z-index: 60;
-      background: rgba(22,0,36,.7);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav {
-      max-width: 1200px; margin: 0 auto;
-      padding: 12px 16px;
-      display: flex; gap: 10px; align-items: center;
-    }
-    .brand {
-      font-weight: 800; font-size: 18px;
-    }
-    .spacer { flex: 1; }
-    .tab {
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: linear-gradient(180deg, #24003d, #18002b);
-      color: #e9d6ff;
-      transition: all .2s;
-      cursor: pointer;
-    }
-    .tab:hover {
-      background: linear-gradient(180deg, #2f0a4d, #1c0133);
-    }
-    .tab.active {
-      outline: 1px solid var(--accent);
-      background: linear-gradient(180deg,#3a0a66,#1c0133);
-      color: #fff;
-    }
-
-    .btn {
-      background: linear-gradient(180deg,#4a1885,#2a0a4a);
-      border: 1px solid var(--line);
-      padding: 8px 12px;
-      border-radius: 12px;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    main {
-      max-width: 1200px;
-      margin: 18px auto;
-      padding: 0 16px;
-    }
-    .card {
-      background: linear-gradient(180deg,var(--panel),#150326);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.45);
-      margin-bottom: 20px;
-    }
-    .pad { padding: 18px; }
-    .h1 { font-weight: 900; font-size: 26px; margin: 0 0 6px; }
-    .sub { color: var(--muted); margin-bottom: 10px; }
-
-    /* ===== Tabs Content ===== */
-    .tabContent { display: none; }
-    .tabContent.active { display: block; }
-
-    /* ===== Login modal ===== */
-    .hidden { display: none !important; }
-    #loginBack {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(6px);
-      z-index: 100; display: none;
-    }
-    #loginModal {
-      position: fixed;
-      left: 50%; top: 50%;
-      transform: translate(-50%,-50%);
-      width: min(400px,92vw);
-      background: linear-gradient(180deg,var(--panel),#150326);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.6);
-      z-index: 110;
-      padding: 20px;
-    }
-    #loginModal input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      margin: 10px 0;
-      background: #1c0133;
-      color: var(--fg);
-    }
-  </style>
+/* ===== Extra Modals ===== */
+#valueConfigBack,#sliderBack{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;z-index:200}
+.modalBox{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);padding:20px;color:var(--fg)}
+</style>
 </head>
 <body>
 
-<div class="top">
-  <div class="nav">
-    <a class="brand">Exora Tracker</a>
-    <div class="tab active" data-tab="rap">RAP Leaderboard</div>
-    <div class="tab" data-tab="limiteds">Limiteds</div>
-    <div class="tab" data-tab="trades">Trade-Ads</div>
-    <div class="tab" data-tab="admin">Admin</div>
-    <div class="spacer"></div>
-    <button id="btnLogin" class="btn">Log in</button>
-  </div>
-</div>
+<div class="top"><div class="nav">
+  <a class="brand" href="#">Exora Tracker</a>
+  <div class="tab active" data-tab="leaderboard">RAP Leaderboard</div>
+  <div class="tab" data-tab="items">Limiteds</div>
+  <div class="tab" data-tab="trades">Trade-Ads</div>
+  <div class="tab" data-tab="admin">Admin</div>
+  <div class="spacer"></div>
+  <button id="btnLogin" class="btn">Log in</button>
+</div></div>
 
 <!-- ===== Login Modal ===== -->
 <div id="loginBack">
@@ -138,33 +63,43 @@
     <input type="text" id="loginUser" placeholder="Username"/>
     <input type="password" id="loginPass" placeholder="Password"/>
     <button id="loginSubmit" class="btn">Login</button>
-    <button id="loginCancel" class="btn" style="margin-top:8px;background:#333;">Cancel</button>
-    <p id="loginMsg" style="color: var(--muted); font-size: 14px;"></p>
+    <button id="loginCancel" class="btn small ghost">Cancel</button>
+    <p id="loginMsg" class="small muted"></p>
   </div>
 </div>
 
 <main>
-  <div id="rap" class="tabContent active">
+  <!-- RAP Leaderboard -->
+  <div id="leaderboard" class="tabContent active">
     <div class="card"><div class="pad">
       <div class="h1">RAP Leaderboard</div>
       <div class="sub">Top players by RAP value.</div>
+      <table id="tblLeaderboard">
+        <thead><tr><th>Rank</th><th>Player</th><th>RAP</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div></div>
   </div>
 
-  <div id="limiteds" class="tabContent">
+  <!-- Limiteds -->
+  <div id="items" class="tabContent">
     <div class="card"><div class="pad">
       <div class="h1">Limiteds</div>
-      <div class="sub">Browse all limited items.</div>
+      <div class="sub">All limited items.</div>
+      <div class="grid" id="itemsGrid"></div>
     </div></div>
   </div>
 
+  <!-- Trade Ads -->
   <div id="trades" class="tabContent">
     <div class="card"><div class="pad">
-      <div class="h1">Trade-Ads</div>
-      <div class="sub">See active trade advertisements.</div>
+      <div class="h1">Trade Ads</div>
+      <div class="sub">Recent trade advertisements.</div>
+      <div id="tradeList"></div>
     </div></div>
   </div>
 
+  <!-- Admin -->
   <div id="admin" class="tabContent">
     <div class="card"><div class="pad">
       <div class="h1">Admin Panel</div>
@@ -198,134 +133,63 @@
 </main>
 
 <!-- ===== Value Configurations Modal ===== -->
-<div id="valueConfigBack" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:200;">
-  <div id="valueConfigModal" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(600px,94vw);
-    background:linear-gradient(180deg,var(--panel),#150326);
-    border:1px solid var(--line);
-    border-radius:16px;
-    box-shadow:0 10px 40px rgba(0,0,0,.6);
-    z-index:210;padding:20px;color:var(--fg);">
+<div id="valueConfigBack">
+  <div class="modalBox" style="width:min(600px,94vw);">
     <h2>Item Value Configurations</h2>
-    <p style="color:var(--muted);">Select an item to change its value:</p>
+    <p class="muted">Select an item to change its value:</p>
     <div id="itemList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:14px;"></div>
     <button id="closeValueConfig" class="btn" style="margin-top:16px;">Close</button>
   </div>
 </div>
 
 <!-- ===== Slider Popup ===== -->
-<div id="sliderBack" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:300;">
-  <div id="sliderModal" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(400px,92vw);
-    background:linear-gradient(180deg,var(--panel),#150326);
-    border:1px solid var(--line);
-    border-radius:16px;
-    box-shadow:0 10px 40px rgba(0,0,0,.6);
-    z-index:310;padding:20px;color:var(--fg);">
+<div id="sliderBack">
+  <div class="modalBox" style="width:min(400px,92vw);">
     <h2 id="sliderItemName">Change Value</h2>
     <input type="range" id="valueSlider" min="0" max="100000" value="50000" style="width:100%;margin:16px 0;">
     <p>Value: <span id="sliderValue">50000</span></p>
     <button id="sliderSave" class="btn">Save</button>
-    <button id="sliderCancel" class="btn" style="background:#333;margin-left:8px;">Cancel</button>
+    <button id="sliderCancel" class="btn small ghost">Cancel</button>
   </div>
 </div>
 
 <script>
-  // ===== Tabs Switching =====
-  const tabs = document.querySelectorAll('.tab');
-  const contents = document.querySelectorAll('.tabContent');
-  let loggedIn = false;
+const NF=new Intl.NumberFormat();
+let loggedIn=false;
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const tabName = tab.dataset.tab;
-      if (tabName === 'admin' && !loggedIn) {
-        document.getElementById('loginBack').style.display = 'block';
-        return;
-      }
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      contents.forEach(c => c.classList.remove('active'));
-      document.getElementById(tabName).classList.add('active');
-    });
-  });
+// ===== Tabs =====
+const tabs=document.querySelectorAll('.tab');const contents=document.querySelectorAll('.tabContent');
+tabs.forEach(tab=>{tab.addEventListener('click',()=>{const name=tab.dataset.tab;if(name==='admin'&&!loggedIn){document.getElementById('loginBack').style.display='block';return;}tabs.forEach(t=>t.classList.remove('active'));tab.classList.add('active');contents.forEach(c=>c.classList.remove('active'));document.getElementById(name).classList.add('active');});});
 
-  // ===== Login Modal =====
-  const loginBack = document.getElementById('loginBack');
-  const btnLogin = document.getElementById('btnLogin');
-  const btnCancel = document.getElementById('loginCancel');
-  const btnSubmit = document.getElementById('loginSubmit');
-  const loginMsg = document.getElementById('loginMsg');
+// ===== Login =====
+document.getElementById('btnLogin').onclick=()=>{document.getElementById('loginBack').style.display='block';};
+document.getElementById('loginCancel').onclick=()=>{document.getElementById('loginBack').style.display='none';};
+document.getElementById('loginSubmit').onclick=()=>{const u=document.getElementById('loginUser').value.trim();const p=document.getElementById('loginPass').value.trim();if(u==='lol'&&p==='secret'){loggedIn=true;document.getElementById('loginMsg').textContent='Login success';setTimeout(()=>{document.getElementById('loginBack').style.display='none';document.querySelector('.tab[data-tab=\"admin\"]').click();},700);}else{document.getElementById('loginMsg').textContent='Invalid login';}};
 
-  btnLogin.addEventListener('click', () => { loginBack.style.display = 'block'; });
-  btnCancel.addEventListener('click', () => { loginBack.style.display = 'none'; loginMsg.textContent = ''; });
+// ===== Dummy Leaderboard Data =====
+const lb=[{name:'PlayerOne',rap:120000},{name:'PlayerTwo',rap:95000},{name:'PlayerThree',rap:87000}];
+const lbBody=document.querySelector('#tblLeaderboard tbody');
+lb.forEach((p,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${p.name}</td><td>${NF.format(p.rap)}</td>`;lbBody.appendChild(tr);});
 
-  btnSubmit.addEventListener('click', () => {
-    const user = document.getElementById('loginUser').value.trim();
-    const pass = document.getElementById('loginPass').value.trim();
-    if (user === 'lol' && pass === 'secret') {
-      loginMsg.style.color = 'lightgreen';
-      loginMsg.textContent = 'Login successful!';
-      loggedIn = true;
-      setTimeout(() => {
-        loginBack.style.display = 'none';
-        loginMsg.textContent = '';
-        document.querySelector('.tab[data-tab="admin"]').click();
-      }, 800);
-    } else {
-      loginMsg.style.color = 'red';
-      loginMsg.textContent = 'Invalid username or password.';
-    }
-  });
+// ===== Dummy Items Data =====
+const items=[\"Dominus Astra\",\"Dominus Frigidus\",\"Dominus Infernus\",\"Dominus Empyreus\",\"Valkyrie Helm\",\"Red Sparkle Time Fedora\"];
+const grid=document.getElementById('itemsGrid');
+items.forEach(n=>{const c=document.createElement('div');c.className='card';c.innerHTML=`<div class=\"pad\">${n}</div>`;grid.appendChild(c);});
 
-  // ===== Value Configurations =====
-  const btnValueConfig = document.getElementById('btnValueConfig');
-  const valueConfigBack = document.getElementById('valueConfigBack');
-  const closeValueConfig = document.getElementById('closeValueConfig');
-  const itemList = document.getElementById('itemList');
+// ===== Dummy Trades =====
+const trades=[\"PlayerOne offering Valkyrie\",\"PlayerTwo trading Dominus\"];
+const tradeList=document.getElementById('tradeList');
+trades.forEach(t=>{const c=document.createElement('div');c.className='card';c.innerHTML=`<div class=\"pad\">${t}</div>`;tradeList.appendChild(c);});
 
-  const items = [
-    "Dominus Astra",
-    "Dominus Frigidus",
-    "Dominus Infernus",
-    "Dominus Empyreus",
-    "Valkyrie Helm",
-    "Red Sparkle Time Fedora"
-  ];
+// ===== Value Config =====
+const btnValueConfig=document.getElementById('btnValueConfig');const valueConfigBack=document.getElementById('valueConfigBack');const closeValueConfig=document.getElementById('closeValueConfig');const itemList=document.getElementById('itemList');
+items.forEach(name=>{const b=document.createElement('button');b.textContent=name;b.className='btn';b.onclick=()=>openSlider(name);itemList.appendChild(b);});
+btnValueConfig.onclick=()=>valueConfigBack.style.display='block';closeValueConfig.onclick=()=>valueConfigBack.style.display='none';
 
-  items.forEach(name => {
-    const btn = document.createElement('button');
-    btn.textContent = name;
-    btn.className = 'btn';
-    btn.style.width = '100%';
-    btn.onclick = () => openSlider(name);
-    itemList.appendChild(btn);
-  });
-
-  btnValueConfig.onclick = () => { valueConfigBack.style.display = 'block'; };
-  closeValueConfig.onclick = () => { valueConfigBack.style.display = 'none'; };
-
-  // ===== Slider Modal =====
-  const sliderBack = document.getElementById('sliderBack');
-  const sliderItemName = document.getElementById('sliderItemName');
-  const valueSlider = document.getElementById('valueSlider');
-  const sliderValue = document.getElementById('sliderValue');
-  const sliderSave = document.getElementById('sliderSave');
-  const sliderCancel = document.getElementById('sliderCancel');
-
-  function openSlider(item) {
-    sliderItemName.textContent = item + " - Value";
-    valueSlider.value = 50000;
-    sliderValue.textContent = valueSlider.value;
-    sliderBack.style.display = 'block';
-  }
-
-  valueSlider.oninput = () => { sliderValue.textContent = valueSlider.value; };
-  sliderCancel.onclick = () => { sliderBack.style.display = 'none'; };
-  sliderSave.onclick = () => {
-    alert(sliderItemName.textContent + " set to " + valueSlider.value);
-    sliderBack.style.display = 'none';
-  };
+// ===== Slider =====
+const sliderBack=document.getElementById('sliderBack');const sliderItemName=document.getElementById('sliderItemName');const valueSlider=document.getElementById('valueSlider');const sliderValue=document.getElementById('sliderValue');const sliderSave=document.getElementById('sliderSave');const sliderCancel=document.getElementById('sliderCancel');
+function openSlider(item){sliderItemName.textContent=item+\" - Value\";valueSlider.value=50000;sliderValue.textContent=valueSlider.value;sliderBack.style.display='block';}
+valueSlider.oninput=()=>sliderValue.textContent=valueSlider.value;sliderCancel.onclick=()=>sliderBack.style.display='none';sliderSave.onclick=()=>{alert(sliderItemName.textContent+\" set to \"+valueSlider.value);sliderBack.style.display='none';};
 </script>
 </body>
 </html>
