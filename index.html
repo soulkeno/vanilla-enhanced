@@ -4,11 +4,25 @@
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Exora Tracker</title>
 <style>
-:root{ --bg:#160024; --panel:#24003d; --soft:#2f0a4d; --line:#442266; --fg:#f5ebff; --muted:#cbb1de; --accent:#9b4dff; --accent2:#5b2a91; }
+:root{
+  --bg:#12021d;
+  --panel:#1c0430;
+  --soft:#25053f;
+  --line:#3a1a5f;
+  --fg:#f3e9fc;
+  --muted:#c6a8de;
+  --accent:#a64dff;
+  --accent2:#5b2c8f;
+}
 *{box-sizing:border-box} html,body{height:100%}
-body{margin:0;background:radial-gradient(1100px 700px at 70% -10%, #320a5d 0%, #160024 55%) no-repeat, var(--bg); color:var(--fg); font:14px/1.45 "Poppins",system-ui,Segoe UI,Roboto,Arial}
-a{color:#d5b6ff;text-decoration:none}
-.top{position:sticky;top:0;z-index:60;background:rgba(22,0,36,.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+body{
+  margin:0;
+  background:radial-gradient(1100px 700px at 70% -10%, #2a0a48 0%, var(--bg) 55%) no-repeat, var(--bg);
+  color:var(--fg);
+  font:14px/1.45 "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+a{color:#dfc6ff;text-decoration:none}
+.top{position:sticky;top:0;z-index:60;background:rgba(18,2,29,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center}
 .brand{font-weight:800;letter-spacing:.2px}
 .spacer{flex:1}
@@ -27,6 +41,8 @@ main{max-width:1200px;margin:18px auto;padding:0 16px}
 @media(max-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.grid{grid-template-columns:1fr}}
+.thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--line);background:#1c0133}
+.avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:#1c0133}
 .badge{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 8px;background:#2f0a4d;color:#d5b6ff;font-size:12px}
 table{width:100%;border-collapse:collapse}
 th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
@@ -34,82 +50,144 @@ th{font-size:12px;text-transform:uppercase;color:#d5b6ff;letter-spacing:.08em}
 td.right{text-align:right}
 .small{font-size:12px}.muted{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
 
-/* ===== Login modal ===== */
+/* skeleton & misc */
+.skeleton{position:relative;overflow:hidden;background:#1c0133;border:1px solid var(--line);border-radius:12px}
+.skeleton:after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);animation:shimmer 1100ms infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+
+/* login modal — kept intact (original flow) */
 .hidden{display:none !important}
 #loginBack{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:100;display:none}
-#loginModal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(400px,92vw);background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:110;padding:20px;color:var(--fg)}
+#loginModal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,92vw);background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:110}
+#loginModal .pad{padding:18px}
+.smallNote{color:#a5b6dc;font-size:12px}
+#phraseBox{user-select:all;cursor:text}
 
-/* ===== Extra Modals ===== */
-#valueConfigBack,#sliderBack{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;z-index:200}
-.modalBox{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);padding:20px;color:var(--fg)}
+/* Value config and slider modals */
+#valueConfigBack{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;z-index:200}
+#valueConfigModal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,96vw);background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:210;padding:20px;color:var(--fg)}
+#sliderBack{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;z-index:300}
+#sliderModal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,92vw);background:linear-gradient(180deg,var(--panel),#150326);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:310;padding:20px;color:var(--fg)}
 </style>
 </head>
 <body>
 
+<div class="alertBg">
+  <!-- optional banner from original (left minimal) -->
+</div>
+
 <div class="top"><div class="nav">
   <a class="brand" href="#">Exora Tracker</a>
-  <div class="tab active" data-tab="leaderboard">RAP Leaderboard</div>
-  <div class="tab" data-tab="items">Limiteds</div>
-  <div class="tab" data-tab="trades">Trade-Ads</div>
-  <div class="tab" data-tab="admin">Admin</div>
+  <a class="tab active" data-tab="leaderboard" href="#">RAP Leaderboard</a>
+  <a class="tab" data-tab="items" href="#">Limiteds</a>
+  <a class="tab" data-tab="trades" href="#">Trade-Ads</a>
+  <a class="tab" data-tab="admin" href="#">Admin</a>
   <div class="spacer"></div>
   <button id="btnLogin" class="btn">Log in</button>
 </div></div>
 
-<!-- ===== Login Modal ===== -->
+<!-- ===== Login Modal (original 3-step flow preserved exactly) ===== -->
 <div id="loginBack">
-  <div id="loginModal">
-    <h2>Admin Login</h2>
-    <input type="text" id="loginUser" placeholder="Username"/>
-    <input type="password" id="loginPass" placeholder="Password"/>
-    <button id="loginSubmit" class="btn">Login</button>
-    <button id="loginCancel" class="btn small ghost">Cancel</button>
-    <p id="loginMsg" class="small muted"></p>
+  <div id="loginModal" class="card">
+    <div class="pad">
+      <div class="rowFlex">
+        <div style="font-weight:900;font-size:18px">Login via About-me phrase</div>
+        <div class="spacer"></div>
+        <button id="loginCancel" class="btn small ghost">Close</button>
+      </div>
+    </div>
+    <div class="pad" id="step1">
+      <div style="font-weight:800;margin-bottom:8px">Step 1 — Enter your Exora username</div>
+      <input id="loginUser" class="search" placeholder="Your Exora username…"/>
+      <div class="smallNote" style="margin-top:8px">We’ll look up your user ID from <code>./data/users.json</code> (server).</div>
+      <div class="rowFlex" style="margin-top:12px">
+        <div class="spacer"></div>
+        <button id="loginNext" class="btn">Continue</button>
+      </div>
+    </div>
+
+    <div class="pad hidden" id="step2">
+      <div style="font-weight:800">Step 2 — Copy this 15-word phrase</div>
+      <div class="smallNote">
+        Copy the phrase below (one click), then paste it into your Exora <strong>About me</strong>.
+        Keep the words exactly as shown, separated by single spaces.
+      </div>
+      <div id="phraseBox" class="mono" style="margin-top:10px;border:1px solid var(--line);background:#1c0133;border-radius:10px;padding:12px;word-break:break-word"></div>
+      <div class="rowFlex" style="margin-top:10px">
+        <button id="btnCopyPhrase" class="btn small">Copy phrase</button>
+        <div class="spacer"></div>
+        <button id="loginBackBtn" class="btn small ghost">Back</button>
+        <button id="loginNext2" class="btn">Continue</button>
+      </div>
+      <div class="smallNote" style="margin-top:8px">After you press Continue, we’ll check your About me until it contains this exact phrase.</div>
+    </div>
+
+    <div class="pad hidden" id="step3">
+      <div style="font-weight:800">Step 3 — Checking your About me…</div>
+      <div id="loginStatus" class="smallNote" style="margin-top:8px">Polling…</div>
+      <div class="rowFlex" style="margin-top:12px">
+        <div class="spacer"></div>
+        <button id="loginClose" class="btn hidden">Done</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <main>
+  <!-- Home / KPIs -->
+  <div class="card"><div class="pad">
+    <div class="h1">Welcome to Exora Tracker</div>
+    <div class="sub">Limiteds mirror with editable values & full item intel.</div>
+    <div class="rowFlex">
+      <div class="pill mono" id="k_users">— users</div>
+      <div class="pill mono" id="k_items">— items</div>
+      <div class="pill mono" id="k_updated">updated —</div>
+      <div class="pill mono" id="k_time">time —</div>
+    </div>
+  </div></div>
+
   <!-- RAP Leaderboard -->
-  <div id="leaderboard" class="tabContent active">
-    <div class="card"><div class="pad">
+  <div id="leaderboard" class="card tabContent" style="display:block;">
+    <div class="pad">
       <div class="h1">RAP Leaderboard</div>
       <div class="sub">Top players by RAP value.</div>
       <table id="tblLeaderboard">
-        <thead><tr><th>Rank</th><th>Player</th><th>RAP</th></tr></thead>
+        <thead><tr><th style="width:60px">Rank</th><th>Player</th><th class="right">RAP</th></tr></thead>
         <tbody></tbody>
       </table>
-    </div></div>
+    </div>
   </div>
 
   <!-- Limiteds -->
-  <div id="items" class="tabContent">
-    <div class="card"><div class="pad">
+  <div id="items" class="card tabContent" style="display:none;">
+    <div class="pad">
       <div class="h1">Limiteds</div>
-      <div class="sub">All limited items.</div>
-      <div class="grid" id="itemsGrid"></div>
-    </div></div>
+      <div class="sub">Limited items mirror.</div>
+      <div id="itemsGrid" class="grid"></div>
+    </div>
   </div>
 
   <!-- Trade Ads -->
-  <div id="trades" class="tabContent">
-    <div class="card"><div class="pad">
-      <div class="h1">Trade Ads</div>
-      <div class="sub">Recent trade advertisements.</div>
+  <div id="trades" class="card tabContent" style="display:none;">
+    <div class="pad">
+      <div class="h1">Trade-Ads</div>
+      <div class="sub">Active trade advertisements.</div>
       <div id="tradeList"></div>
-    </div></div>
+    </div>
   </div>
 
-  <!-- Admin -->
-  <div id="admin" class="tabContent">
-    <div class="card"><div class="pad">
+  <!-- Admin (we leave login flow as original; added admin tools inside) -->
+  <div id="admin" class="card tabContent" style="display:none;">
+    <div class="pad">
       <div class="h1">Admin Panel</div>
-      <div class="sub">Restricted access. Please log in.</div>
+      <div class="sub">Restricted access. Please log in (use the login modal above).</div>
 
       <!-- Limited Sniper -->
       <div class="card" style="margin-top:12px;">
         <div class="pad">
           <h3>Limited Sniper</h3>
           <p>Notifies logged-in users when a Limited Release drops.</p>
+          <label class="small muted"><input id="sniperEnabled" type="checkbox" /> Enable notifications (demo)</label>
         </div>
       </div>
 
@@ -117,7 +195,8 @@ td.right{text-align:right}
       <div class="card" style="margin-top:12px;">
         <div class="pad">
           <h3>Auto Limited Buyer</h3>
-          <p>Automatically buys newly released limited items.</p>
+          <p>Automatically buys newly released limited items. (Demo toggle)</p>
+          <label class="small muted"><input id="autoBuyer" type="checkbox" /> Enable auto-buyer (demo)</label>
         </div>
       </div>
 
@@ -128,68 +207,402 @@ td.right{text-align:right}
           <button id="btnValueConfig" class="btn">Open Configurations</button>
         </div>
       </div>
-    </div></div>
+    </div>
   </div>
 </main>
 
-<!-- ===== Value Configurations Modal ===== -->
+<!-- ===== Value Configurations Modal (admin tool) ===== -->
 <div id="valueConfigBack">
-  <div class="modalBox" style="width:min(600px,94vw);">
+  <div id="valueConfigModal" class="modalBox">
     <h2>Item Value Configurations</h2>
-    <p class="muted">Select an item to change its value:</p>
-    <div id="itemList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:14px;"></div>
-    <button id="closeValueConfig" class="btn" style="margin-top:16px;">Close</button>
+    <p class="muted">Select an item to change its value. Edits are saved locally (localStorage) in this demo.</p>
+    <div id="itemList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:14px;"></div>
+    <div style="margin-top:14px;text-align:right">
+      <button id="closeValueConfig" class="btn">Close</button>
+    </div>
   </div>
 </div>
 
-<!-- ===== Slider Popup ===== -->
+<!-- ===== Slider Popup (for editing single item value) ===== -->
 <div id="sliderBack">
-  <div class="modalBox" style="width:min(400px,92vw);">
+  <div id="sliderModal" class="modalBox">
     <h2 id="sliderItemName">Change Value</h2>
-    <input type="range" id="valueSlider" min="0" max="100000" value="50000" style="width:100%;margin:16px 0;">
+    <input type="range" id="valueSlider" min="0" max="1000000" value="50000" style="width:100%;margin:16px 0;">
     <p>Value: <span id="sliderValue">50000</span></p>
-    <button id="sliderSave" class="btn">Save</button>
-    <button id="sliderCancel" class="btn small ghost">Cancel</button>
+    <div style="text-align:right">
+      <button id="sliderSave" class="btn">Save</button>
+      <button id="sliderCancel" class="btn small ghost" style="margin-left:8px;">Cancel</button>
+    </div>
   </div>
 </div>
 
 <script>
-const NF=new Intl.NumberFormat();
-let loggedIn=false;
+/* ---------- Utilities & API (kept from your original) ---------- */
+const NF = new Intl.NumberFormat();
+const IMG = ''; // unchanged
+function esc(s){ return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function kfmt(n){ if(n==null) return '—'; n=+n; if(n>=1e6) return(Math.round(n/1e5)/10)+'m'; if(n>=1e3) return(Math.round(n/1e2)/10)+'k'; return String(n)}
+function rapDual(n){ if(n==null) return'—'; n=+n; return kfmt(n)+' / '+NF.format(n)}
 
-// ===== Tabs =====
-const tabs=document.querySelectorAll('.tab');const contents=document.querySelectorAll('.tabContent');
-tabs.forEach(tab=>{tab.addEventListener('click',()=>{const name=tab.dataset.tab;if(name==='admin'&&!loggedIn){document.getElementById('loginBack').style.display='block';return;}tabs.forEach(t=>t.classList.remove('active'));tab.classList.add('active');contents.forEach(c=>c.classList.remove('active'));document.getElementById(name).classList.add('active');});});
+/* API helper - tries to hit your backend using query params like original code did.
+   If backend not present, calls will reject and fallback logic below will handle it. */
+async function api(params={}, asText=false){
+  try{
+    const u=new URL(location.href);
+    Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+    const r=await fetch(u,{credentials:'same-origin',method: (params._method||'GET')==='POST'?'POST':'GET',
+      headers: (params._method==='POST')?{'Content-Type':'application/x-www-form-urlencoded'}:undefined,
+      body: (params._method==='POST')? new URLSearchParams(params._body||{}): undefined
+    });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return asText? r.text() : r.json();
+  }catch(e){
+    // bubble up - caller will handle fallback
+    throw e;
+  }
+}
 
-// ===== Login =====
-document.getElementById('btnLogin').onclick=()=>{document.getElementById('loginBack').style.display='block';};
-document.getElementById('loginCancel').onclick=()=>{document.getElementById('loginBack').style.display='none';};
-document.getElementById('loginSubmit').onclick=()=>{const u=document.getElementById('loginUser').value.trim();const p=document.getElementById('loginPass').value.trim();if(u==='lol'&&p==='secret'){loggedIn=true;document.getElementById('loginMsg').textContent='Login success';setTimeout(()=>{document.getElementById('loginBack').style.display='none';document.querySelector('.tab[data-tab=\"admin\"]').click();},700);}else{document.getElementById('loginMsg').textContent='Invalid login';}};
+/* ----- HOME KPIs (attempt to use original endpoints, fallback safe) ----- */
+(async function(){
+  try{
+    const s = await api({action:'store'});
+    document.getElementById('k_users').textContent = (s.count||0)+' users';
+  }catch(e){
+    // fallback
+    document.getElementById('k_users').textContent = '— users';
+  }
 
-// ===== Dummy Leaderboard Data =====
-const lb=[{name:'PlayerOne',rap:120000},{name:'PlayerTwo',rap:95000},{name:'PlayerThree',rap:87000}];
-const lbBody=document.querySelector('#tblLeaderboard tbody');
-lb.forEach((p,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${p.name}</td><td>${NF.format(p.rap)}</td>`;lbBody.appendChild(tr);});
+  try{
+    const it = await api({action:'itemsPage',offset:0,limit:1});
+    const cnt = it.total||0;
+    document.getElementById('k_items').textContent = cnt+' items';
+    const up = it.updatedAt? new Date(it.updatedAt*1000).toISOString().replace('T',' ').replace('Z','Z') : '—';
+    document.getElementById('k_updated').textContent = 'items updated '+up;
+  }catch(e){
+    document.getElementById('k_items').textContent = '— items';
+    document.getElementById('k_updated').textContent = 'updated —';
+  }
 
-// ===== Dummy Items Data =====
-const items=[\"Dominus Astra\",\"Dominus Frigidus\",\"Dominus Infernus\",\"Dominus Empyreus\",\"Valkyrie Helm\",\"Red Sparkle Time Fedora\"];
-const grid=document.getElementById('itemsGrid');
-items.forEach(n=>{const c=document.createElement('div');c.className='card';c.innerHTML=`<div class=\"pad\">${n}</div>`;grid.appendChild(c);});
+  try{
+    const p = await api({action:'ping'});
+    document.getElementById('k_time').textContent = p.now||'—';
+  }catch(e){
+    document.getElementById('k_time').textContent = '—';
+  }
+})();
 
-// ===== Dummy Trades =====
-const trades=[\"PlayerOne offering Valkyrie\",\"PlayerTwo trading Dominus\"];
-const tradeList=document.getElementById('tradeList');
-trades.forEach(t=>{const c=document.createElement('div');c.className='card';c.innerHTML=`<div class=\"pad\">${t}</div>`;tradeList.appendChild(c);});
+/* ---------- Tab switching (simple client-side) ---------- */
+const tabs = document.querySelectorAll('.tab');
+const tabContents = {
+  leaderboard: document.getElementById('leaderboard'),
+  items: document.getElementById('items'),
+  trades: document.getElementById('trades'),
+  admin: document.getElementById('admin')
+};
+tabs.forEach(t=>{
+  t.addEventListener('click', e=>{
+    e.preventDefault();
+    const name = t.dataset.tab;
+    // show/hide
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    Object.values(tabContents).forEach(c=>c.style.display='none');
+    if(tabContents[name]) tabContents[name].style.display='block';
+    // load content on demand
+    if(name==='leaderboard') loadLeaderboard();
+    if(name==='items') loadItems();
+    if(name==='trades') loadTrades();
+    // admin is just UI (login flow preserved)
+  });
+});
 
-// ===== Value Config =====
-const btnValueConfig=document.getElementById('btnValueConfig');const valueConfigBack=document.getElementById('valueConfigBack');const closeValueConfig=document.getElementById('closeValueConfig');const itemList=document.getElementById('itemList');
-items.forEach(name=>{const b=document.createElement('button');b.textContent=name;b.className='btn';b.onclick=()=>openSlider(name);itemList.appendChild(b);});
-btnValueConfig.onclick=()=>valueConfigBack.style.display='block';closeValueConfig.onclick=()=>valueConfigBack.style.display='none';
+/* ---------- Leaderboard (tries API, fallback to demo) ---------- */
+let leaderboardLoaded = false;
+async function loadLeaderboard(){
+  if(leaderboardLoaded) return;
+  leaderboardLoaded = true;
+  const tbody = document.querySelector('#tblLeaderboard tbody');
+  tbody.innerHTML = '';
+  try{
+    const j = await api({action:'leaderboard'}); // may not exist server-side
+    // expect j = [{name,rap},...]
+    if(Array.isArray(j) && j.length){
+      j.forEach((p,i)=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${i+1}</td><td class="text-truncate">${esc(p.name||'—')}</td><td class="right">${NF.format(p.rap||0)}</td>`;
+        tbody.appendChild(tr);
+      });
+      return;
+    }
+    throw new Error('no data');
+  }catch(e){
+    // fallback demo data
+    const demo = [
+      {name:'PlayerOne', rap:120000},
+      {name:'PlayerTwo', rap:95000},
+      {name:'PlayerThree', rap:87000},
+      {name:'PlayerFour', rap:60000}
+    ];
+    demo.forEach((p,i)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${i+1}</td><td class="text-truncate">${esc(p.name)}</td><td class="right">${NF.format(p.rap)}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+}
 
-// ===== Slider =====
-const sliderBack=document.getElementById('sliderBack');const sliderItemName=document.getElementById('sliderItemName');const valueSlider=document.getElementById('valueSlider');const sliderValue=document.getElementById('sliderValue');const sliderSave=document.getElementById('sliderSave');const sliderCancel=document.getElementById('sliderCancel');
-function openSlider(item){sliderItemName.textContent=item+\" - Value\";valueSlider.value=50000;sliderValue.textContent=valueSlider.value;sliderBack.style.display='block';}
-valueSlider.oninput=()=>sliderValue.textContent=valueSlider.value;sliderCancel.onclick=()=>sliderBack.style.display='none';sliderSave.onclick=()=>{alert(sliderItemName.textContent+\" set to \"+valueSlider.value);sliderBack.style.display='none';};
+/* ---------- Items (Limiteds) ---------- */
+let itemsLoaded = false;
+let itemsData = [];
+async function loadItems(){
+  if(itemsLoaded) return;
+  itemsLoaded = true;
+  const grid = document.getElementById('itemsGrid');
+  grid.innerHTML = '';
+  try{
+    const res = await api({action:'itemsPage',offset:0,limit:24});
+    // attempt to parse common shape: res.items or res.data
+    const arr = res.items || res.data || [];
+    if(arr && arr.length){
+      itemsData = arr.map(it => ({
+        name: it.name||it.title||'Unknown',
+        thumb: it.thumb || it.image || '',
+        rap: it.rap || it.value || 0
+      }));
+    } else {
+      throw new Error('no items');
+    }
+  }catch(e){
+    // fallback demo list (keeps same names as admin)
+    itemsData = ["Dominus Astra","Dominus Frigidus","Dominus Infernus","Dominus Empyreus","Valkyrie Helm","Red Sparkle Time Fedora"].map(n=>({name:n,thumb:'',rap:Math.round(Math.random()*90000)+10000}));
+  }
+  // render grid
+  itemsData.forEach(it=>{
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.innerHTML = `<div class="pad"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">${esc(it.name)}</div><div class="muted">${NF.format(it.rap)}</div></div></div>`;
+    grid.appendChild(d);
+  });
+}
+
+/* ---------- Trade Ads ---------- */
+let tradesLoaded=false;
+async function loadTrades(){
+  if(tradesLoaded) return;
+  tradesLoaded = true;
+  const out = document.getElementById('tradeList');
+  out.innerHTML = '';
+  try{
+    const res = await api({action:'tradeAds'});
+    const arr = res.ads || res.data || res;
+    if(Array.isArray(arr) && arr.length){
+      arr.forEach(a=>{
+        const d=document.createElement('div'); d.className='card';
+        d.innerHTML = `<div class="pad"><div style="font-weight:700">${esc(a.title||a.text||'Trade')}</div><div class="muted" style="margin-top:6px">${esc(a.detail||'—')}</div></div>`;
+        out.appendChild(d);
+      });
+      return;
+    }
+    throw new Error('no trades');
+  }catch(e){
+    // fallback demo
+    const demo = ["PlayerOne offering Valkyrie - WTB Dominus","PlayerTwo trading Dominus for 2x Valkyrie"];
+    demo.forEach(t=>{
+      const d=document.createElement('div'); d.className='card';
+      d.innerHTML = `<div class="pad">${esc(t)}</div>`;
+      out.appendChild(d);
+    });
+  }
+}
+
+/* ---------- Admin Login Flow (kept from original) ---------- */
+(function(){
+  const back = document.getElementById('loginBack');
+  const btn = document.getElementById('btnLogin');
+  const btnCancel = document.getElementById('loginCancel');
+  const s1 = document.getElementById('step1');
+  const s2 = document.getElementById('step2');
+  const s3 = document.getElementById('step3');
+
+  const inputUser = document.getElementById('loginUser');
+  const phraseBox = document.getElementById('phraseBox');
+  const btnCopyPhrase = document.getElementById('btnCopyPhrase');
+  const status = document.getElementById('loginStatus');
+
+  const btnNext = document.getElementById('loginNext');
+  const btnBack = document.getElementById('loginBackBtn');
+  const btnNext2 = document.getElementById('loginNext2');
+  const btnClose = document.getElementById('loginClose');
+
+  let phrase = '';
+  let pollTimer = null;
+  let step = 1;
+
+  function showStep(n){
+    step = n;
+    s1.classList.toggle('hidden', n!==1);
+    s2.classList.toggle('hidden', n!==2);
+    s3.classList.toggle('hidden', n!==3);
+    btnClose.classList.toggle('hidden', n!==3);
+  }
+  function openModal(){
+    back.style.display = 'block';
+    showStep(1);
+    inputUser.value = '';
+    phraseBox.textContent = '';
+    phrase = '';
+    status.textContent = 'Polling…';
+    clearInterval(pollTimer);
+    setTimeout(()=>inputUser.focus(), 40);
+  }
+  function closeModal(){
+    back.style.display = 'none';
+    clearInterval(pollTimer);
+  }
+
+  async function startPhrase(){
+    try{
+      const j = await api({action:'loginWords'});
+      if (j._error) throw new Error(j._error);
+      phrase = String(j.phrase||'');
+      phraseBox.textContent = phrase;
+    }catch(e){
+      // fallback demo phrase when no backend
+      phrase = 'demo phrase please replace with real phrase from server';
+      phraseBox.textContent = phrase;
+    }
+  }
+  async function lookupUser(){
+    const username = inputUser.value.trim();
+    if (!username) { alert('Please enter your Exora username.'); return false; }
+    try{
+      const j = await api({action:'loginLookup', _method:'POST', _body:{username}});
+      if (j._error) { alert(j._error); return false; }
+      return true;
+    }catch(e){
+      // fallback: pretend success if no backend
+      return true;
+    }
+  }
+  async function startPolling(){
+    async function tick(){
+      try{
+        const j = await api({action:'loginPoll'});
+        if (j && j.ok && j.loggedIn) {
+          status.textContent = 'Success! You are now logged in.';
+          clearInterval(pollTimer);
+          setTimeout(()=>location.reload(), 700);
+        } else {
+          status.textContent = 'Still checking… (make sure your About me contains the exact 15-word phrase)';
+        }
+      }catch(e){
+        // if backend missing, show demo message
+        status.textContent = 'Polling (demo), since no server found.';
+      }
+    }
+    await tick();
+    pollTimer = setInterval(tick, 5000);
+  }
+
+  btn?.addEventListener('click', async ()=>{
+    openModal();
+    try { await startPhrase(); } catch(e){ alert('Could not load phrase: '+e.message); }
+  });
+  btnCancel?.addEventListener('click', closeModal);
+  btnClose?.addEventListener('click', closeModal);
+  btnBack?.addEventListener('click', ()=>showStep(1));
+
+  btnCopyPhrase?.addEventListener('click', async ()=>{
+    if (!phrase) return;
+    try { await navigator.clipboard.writeText(phrase); btnCopyPhrase.textContent='Copied!'; setTimeout(()=>btnCopyPhrase.textContent='Copy phrase', 900); } catch {}
+  });
+
+  btnNext?.addEventListener('click', async ()=>{
+    if (await lookupUser()) showStep(2);
+  });
+  btnNext2?.addEventListener('click', async ()=>{
+    if (!phrase) { alert('Phrase not loaded.'); return; }
+    const ok = confirm('Have you copied the 15-word phrase and set your Exora “About me” to include this exact phrase?');
+    if (!ok) return;
+    showStep(3);
+    await startPolling();
+  });
+
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && back.style.display==='block') closeModal(); });
+})();
+
+/* ---------- Admin: Value Configurations (modal + slider) ---------- */
+const btnValueConfig = document.getElementById('btnValueConfig');
+const valueConfigBack = document.getElementById('valueConfigBack');
+const valueConfigModal = document.getElementById('valueConfigModal');
+const itemList = document.getElementById('itemList');
+const closeValueConfig = document.getElementById('closeValueConfig');
+
+const sliderBack = document.getElementById('sliderBack');
+const sliderModal = document.getElementById('sliderModal');
+const sliderItemName = document.getElementById('sliderItemName');
+const valueSlider = document.getElementById('valueSlider');
+const sliderValue = document.getElementById('sliderValue');
+const sliderSave = document.getElementById('sliderSave');
+const sliderCancel = document.getElementById('sliderCancel');
+
+let valuesStore = JSON.parse(localStorage.getItem('exora_values') || '{}');
+
+function saveValues() {
+  localStorage.setItem('exora_values', JSON.stringify(valuesStore));
+}
+function openValueConfig(){
+  // populate items from itemsData (if loaded) or fallback list
+  itemList.innerHTML = '';
+  const list = (window.itemsData && itemsData.length) ? itemsData.map(x=>x.name||x) : ["Dominus Astra","Dominus Frigidus","Dominus Infernus","Dominus Empyreus","Valkyrie Helm","Red Sparkle Time Fedora"];
+  list.forEach(name=>{
+    const b = document.createElement('button');
+    b.className = 'btn';
+    b.style.width='100%';
+    b.style.textAlign='left';
+    b.textContent = `${name} — ${valuesStore[name] ? NF.format(valuesStore[name]) : 'default'}`;
+    b.onclick = ()=> openSlider(name);
+    itemList.appendChild(b);
+  });
+  valueConfigBack.style.display='block';
+}
+function closeValueConfigFn(){ valueConfigBack.style.display='none'; }
+
+function openSlider(item){
+  sliderItemName.textContent = item + ' - Value';
+  valueSlider.value = valuesStore[item] || 50000;
+  sliderValue.textContent = valueSlider.value;
+  sliderBack.style.display = 'block';
+  // remember current item name on modal
+  sliderModal.dataset.item = item;
+}
+valueSlider.oninput = ()=> sliderValue.textContent = valueSlider.value;
+sliderCancel.onclick = ()=> sliderBack.style.display = 'none';
+sliderSave.onclick = ()=>{
+  const item = sliderModal.dataset.item;
+  const v = +valueSlider.value;
+  valuesStore[item] = v;
+  saveValues();
+  // update list display (if open)
+  openValueConfig();
+  sliderBack.style.display = 'none';
+  alert(item + ' set to ' + NF.format(v));
+};
+
+btnValueConfig?.addEventListener('click', openValueConfig);
+closeValueConfig?.addEventListener('click', closeValueConfigFn);
+
+/* ---------- Demo toggles for sniper / buyer (client-side demo only) ---------- */
+document.getElementById('sniperEnabled').addEventListener('change', (e)=>{
+  if(e.target.checked){ alert('Limited Sniper enabled (demo only)'); } else { alert('Limited Sniper disabled'); }
+});
+document.getElementById('autoBuyer').addEventListener('change', (e)=>{
+  if(e.target.checked){ alert('Auto Limited Buyer enabled (demo only)'); } else { alert('Auto Limited Buyer disabled'); }
+});
+
+/* ---------- Load initial page data ---------- */
+loadLeaderboard(); // pre-load leaderboard for immediate view
+
 </script>
 </body>
 </html>
