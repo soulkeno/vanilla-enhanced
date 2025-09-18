@@ -1,1015 +1,181 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Nexus Trading Hub</title>
-<style>
-:root{ 
-  --bg:#0a0b14; 
-  --panel:#171a26; 
-  --soft:#1e2235; 
-  --line:#373d52; 
-  --fg:#f2f3f8; 
-  --muted:#9ba3b8; 
-  --accent:#8b5cf6; 
-  --accent2:#a855f7; 
-  --success:#06d6a0;
-  --warn:#f59e0b;
-  --danger:#f43f5e;
-}
-*{box-sizing:border-box} html,body{height:100%}
-body{
-  margin:0;
-  background: linear-gradient(135deg, #0d0f14 0%, #1a1d26 50%, #242831 100%);
-  background-attachment: fixed;
-  color:var(--fg); 
-  font:15px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
-  position: relative;
-}
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(124, 58, 237, 0.06) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: -1;
-}
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Exora Tracker</title>
+  <style>
+    :root {
+      --bg: #160024;
+      --panel: #24003d;
+      --soft: #2f0a4d;
+      --line: #442266;
+      --fg: #f5ebff;
+      --muted: #cbb1de;
+      --accent: #9b4dff;
+      --accent2: #5b2a91;
+    }
 
-a{color:var(--accent2);text-decoration:none;transition:color .2s}
-a:hover{color:var(--accent)}
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: radial-gradient(1100px 700px at 70% -10%, #320a5d 0%, #160024 55%) no-repeat, var(--bg);
+      color: var(--fg);
+      font-family: "Poppins", system-ui, Arial, sans-serif;
+    }
 
-.header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:rgba(13,15,20,.85);
-  backdrop-filter:blur(20px) saturate(180%);
-  border-bottom:2px solid var(--line);
-  box-shadow: 0 4px 20px rgba(0,0,0,.3);
-}
-.nav{
-  max-width:1400px;
-  margin:0 auto;
-  padding:16px 20px;
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-.logo{
-  font-weight:600;
-  font-size:22px;
-  letter-spacing:2px;
-  font-family:'Segoe UI',system-ui,sans-serif;
-  background:linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  cursor:pointer;
-  text-transform:uppercase;
-}
-.spacer{flex:1}
-.nav-tab{
-  padding:10px 16px;
-  border:2px solid transparent;
-  border-radius:16px;
-  background:linear-gradient(135deg, #1f232d, #161922);
-  color:var(--fg);
-  cursor:pointer;
-  transition:all .25s cubic-bezier(0.4,0,0.2,1);
-  font-weight:500;
-  position:relative;
-  overflow:hidden;
-}
-.nav-tab::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  opacity: 0;
-  transition: opacity .25s;
-  border-radius: 14px;
-}
-.nav-tab span {
-  position: relative;
-  z-index: 1;
-}
-.nav-tab:hover{
-  transform:translateY(-2px);
-  border-color:var(--accent);
-  box-shadow:0 8px 25px rgba(139,92,246,.25);
-}
-.nav-tab.active{
-  border-color:var(--accent);
-  background:linear-gradient(135deg, var(--accent), var(--accent2));
-  color:#fff;
-  box-shadow:0 6px 20px rgba(139,92,246,.4);
-}
-.nav-tab.active::before {
-  opacity: 1;
-}
+    .top {
+      position: sticky; top: 0; z-index: 60;
+      background: rgba(22,0,36,.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      max-width: 1200px; margin: 0 auto;
+      padding: 12px 16px;
+      display: flex; gap: 10px; align-items: center;
+    }
+    .brand {
+      font-weight: 800; font-size: 18px;
+    }
+    .spacer { flex: 1; }
+    .tab {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #24003d, #18002b);
+      color: #e9d6ff;
+      transition: all .2s;
+    }
+    .tab:hover {
+      background: linear-gradient(180deg, #2f0a4d, #1c0133);
+    }
+    .tab.active {
+      outline: 1px solid var(--accent);
+      background: linear-gradient(180deg,#3a0a66,#1c0133);
+      color: #fff;
+    }
 
-.search-input{
-  flex:1;
-  min-width:280px;
-  background:rgba(26,29,38,.8);
-  color:var(--fg);
-  border:2px solid var(--line);
-  border-radius:14px;
-  padding:12px 16px;
-  transition:all .25s;
-  font-size:14px;
-}
-.search-input:focus{
-  outline:none;
-  border-color:var(--accent);
-  box-shadow:0 0 0 4px rgba(139,92,246,.15);
-  background:rgba(26,29,38,.95);
-}
-.btn-primary{
-  background:linear-gradient(135deg, var(--accent), var(--accent2));
-  border:none;
-  padding:12px 20px;
-  border-radius:14px;
-  color:#fff;
-  cursor:pointer;
-  font-weight:600;
-  transition:all .25s;
-  box-shadow:0 4px 15px rgba(139,92,246,.3);
-}
-.btn-primary:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 25px rgba(139,92,246,.4);
-}
-.btn-secondary{
-  background:rgba(60,68,82,.6);
-  border:2px solid var(--line);
-  padding:10px 18px;
-  border-radius:12px;
-  color:var(--fg);
-  cursor:pointer;
-  transition:all .25s;
-}
-.btn-secondary:hover{
-  border-color:var(--accent);
-  background:rgba(60,68,82,.8);
-}
+    .btn {
+      background: linear-gradient(180deg,#4a1885,#2a0a4a);
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      border-radius: 12px;
+      color: #fff;
+      cursor: pointer;
+    }
 
-main{max-width:1400px;margin:24px auto;padding:0 20px}
+    main {
+      max-width: 1200px;
+      margin: 18px auto;
+      padding: 0 16px;
+    }
+    .card {
+      background: linear-gradient(180deg,var(--panel),#150326);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+    }
+    .pad { padding: 18px; }
+    .h1 { font-weight: 900; font-size: 30px; margin: 0 0 6px; }
+    .sub { color: var(--muted); margin-bottom: 10px; }
 
-.panel{
-  background:rgba(26,29,38,.75);
-  backdrop-filter:blur(10px);
-  border:2px solid var(--line);
-  border-radius:20px;
-  box-shadow:0 8px 32px rgba(0,0,0,.2);
-  margin-bottom:20px;
-  overflow:hidden;
-}
-.panel-header{
-  padding:20px 24px;
-  border-bottom:2px solid var(--line);
-  background:linear-gradient(135deg, rgba(139,92,246,.05), rgba(168,85,247,.03));
-}
-.panel-content{padding:24px}
-
-.title-lg{font-weight:900;font-size:32px;margin:0 0 8px;color:var(--fg)}
-.subtitle{color:var(--muted);margin-bottom:16px;font-size:16px}
-
-.stats-grid{
-  display:grid;
-  gap:20px;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  margin-bottom:24px;
-}
-.stat-card{
-  background:linear-gradient(135deg, rgba(139,92,246,.08), rgba(168,85,247,.05));
-  border:2px solid var(--line);
-  border-radius:16px;
-  padding:24px;
-  text-align:center;
-  transition:all .25s;
-}
-.stat-card:hover{
-  transform:translateY(-4px);
-  border-color:var(--accent);
-  box-shadow:0 12px 40px rgba(139,92,246,.2);
-}
-.stat-value{
-  font-size:42px;
-  font-weight:900;
-  background:linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  margin:0 0 8px;
-}
-.stat-label{
-  color:var(--muted);
-  text-transform:uppercase;
-  font-size:13px;
-  letter-spacing:1px;
-  font-weight:600;
-}
-
-.content-grid{
-  display:grid;
-  gap:20px;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-}
-
-.item-card{
-  background:rgba(36,40,49,.6);
-  border:2px solid var(--line);
-  border-radius:16px;
-  padding:16px;
-  cursor:pointer;
-  transition:all .25s;
-  position:relative;
-  overflow:hidden;
-}
-.item-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  transition: left .5s;
-}
-.item-card:hover::before {
-  left: 100%;
-}
-.item-card:hover{
-  transform:translateY(-6px);
-  border-color:var(--accent);
-  background:rgba(36,40,49,.9);
-  box-shadow:0 12px 40px rgba(139,92,246,.15);
-}
-
-.item-row{display:flex;gap:16px;align-items:center}
-.item-thumb{
-  width:64px;
-  height:64px;
-  border-radius:12px;
-  background:linear-gradient(135deg, #2a2e38, #1f232c);
-  border:2px solid var(--line);
-  flex-shrink:0;
-}
-.item-info{flex:1;min-width:0}
-.item-name{font-weight:700;margin:0 0 4px;font-size:16px}
-.item-meta{color:var(--muted);font-size:13px}
-
-.status-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:6px 12px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-}
-.badge-success{background:rgba(0,217,255,.15);color:var(--success);border:2px solid rgba(0,217,255,.3)}
-.badge-warn{background:rgba(255,184,0,.15);color:var(--warn);border:2px solid rgba(255,184,0,.3)}
-.badge-danger{background:rgba(255,51,102,.15);color:var(--danger);border:2px solid rgba(255,51,102,.3)}
-.badge-projected{
-  background:linear-gradient(135deg, rgba(245,158,11,.2), rgba(139,92,246,.15));
-  color:#fef3c7;
-  border:2px solid rgba(245,158,11,.4);
-  animation:pulse-warn 2s ease-in-out infinite;
-}
-@keyframes pulse-warn {
-  0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,.4); }
-  50% { box-shadow: 0 0 0 8px rgba(245,158,11,.0); }
-}
-
-.data-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  background:rgba(26,29,38,.4);
-  border-radius:12px;
-  overflow:hidden;
-}
-.data-table thead{background:rgba(139,92,246,.1)}
-.data-table th{
-  padding:16px 20px;
-  text-align:left;
-  font-weight:700;
-  color:var(--accent);
-  text-transform:uppercase;
-  font-size:12px;
-  letter-spacing:1px;
-  border-bottom:2px solid var(--line);
-}
-.data-table td{
-  padding:16px 20px;
-  border-bottom:1px solid rgba(61,68,82,.3);
-}
-.data-table tr:hover{
-  background:rgba(139,92,246,.05);
-}
-.align-right{text-align:right}
-.mono{font-family:ui-monospace,'SF Mono',Monaco,Menlo,monospace;font-weight:500}
-
-.loading-shimmer{
-  position:relative;
-  overflow:hidden;
-  background:linear-gradient(135deg, #2a2e38, #1f232c);
-  border:2px solid var(--line);
-  border-radius:12px;
-}
-.loading-shimmer::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(90deg,transparent,rgba(139,92,246,.1),transparent);
-  transform:translateX(-100%);
-  animation:shimmer 1.5s infinite;
-}
-@keyframes shimmer{100%{transform:translateX(100%)}}
-
-.fade-in{
-  opacity:0;
-  transform:translateY(20px);
-  animation:fadeInUp .6s ease forwards;
-}
-@keyframes fadeInUp{
-  to{opacity:1;transform:translateY(0)}
-}
-
-.hidden{display:none !important}
-.tab-content{display:none}
-.tab-content.active{display:block}
-
-.alert-banner{
-  background:linear-gradient(135deg, var(--warn), var(--accent));
-  color:#fff;
-  text-align:center;
-  padding:16px;
-  font-weight:600;
-}
-.alert-link{color:#fff;text-decoration:underline}
-
-/* Responsive design */
-@media(max-width:1024px){
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .content-grid{grid-template-columns:1fr}
-}
-@media(max-width:768px){
-  .nav{flex-wrap:wrap;gap:8px}
-  .nav-tab{padding:8px 12px;font-size:14px}
-  .search-input{min-width:200px}
-  .stats-grid{grid-template-columns:1fr}
-  .stat-value{font-size:32px}
-}
-</style>
+    /* ===== Login modal ===== */
+    .hidden { display: none !important; }
+    #loginBack {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+      z-index: 100; display: none;
+    }
+    #loginModal {
+      position: fixed;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      width: min(400px,92vw);
+      background: linear-gradient(180deg,var(--panel),#150326);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.6);
+      z-index: 110;
+      padding: 20px;
+    }
+    #loginModal input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      margin: 10px 0;
+      background: #1c0133;
+      color: var(--fg);
+    }
+  </style>
 </head>
 <body>
 
-<div class="alert-banner">
-  <a class="alert-link" href="https://discord.gg/nexustrading">
-    🚀 New trading features coming soon! Join our Discord for early access and updates!
-  </a>
+<div class="top">
+  <div class="nav">
+    <a class="brand" href="#">Exora Tracker</a>
+    <a class="tab active" href="#">RAP Leaderboard</a>
+    <a class="tab" href="#">Limiteds</a>
+    <a class="tab" href="#">Trade-Ads</a>
+    <a class="tab" id="adminTab" href="#">Admin</a>
+    <div class="spacer"></div>
+    <button id="btnLogin" class="btn">Log in</button>
+  </div>
 </div>
 
-<div class="header">
-  <div class="nav">
-    <div class="logo" onclick="showTab('dashboard')">EXORA VALUES</div>
-    <div class="nav-tab active" onclick="showTab('dashboard')"><span>Dashboard</span></div>
-    <div class="nav-tab" onclick="showTab('marketplace')"><span>Marketplace</span></div>
-    <div class="nav-tab" onclick="showTab('traders')"><span>Traders</span></div>
-    <div class="nav-tab" onclick="showTab('rankings')"><span>Rankings</span></div>
-    <div class="nav-tab" onclick="showTab('deals')"><span>Live Deals</span></div>
-    <div class="nav-tab" onclick="showTab('analytics')"><span>Analytics</span></div>
-    <div class="spacer"></div>
-    <button class="btn-primary">Connect Wallet</button>
-    <input id="globalSearch" class="search-input" placeholder="Search items, traders, deals..."/>
-    <button class="btn-secondary" onclick="refreshCurrentTab()">↻ Refresh</button>
+<!-- ===== Login Modal ===== -->
+<div id="loginBack">
+  <div id="loginModal">
+    <h2>Admin Login</h2>
+    <input type="text" id="loginUser" placeholder="Username"/>
+    <input type="password" id="loginPass" placeholder="Password"/>
+    <button id="loginSubmit" class="btn">Login</button>
+    <button id="loginCancel" class="btn" style="margin-top:8px;background:#333;">Cancel</button>
+    <p id="loginMsg" style="color: var(--muted); font-size: 14px;"></p>
   </div>
 </div>
 
 <main>
-  <!-- DASHBOARD TAB -->
-  <div id="dashboard-content" class="tab-content active">
-    <div class="panel">
-      <div class="panel-content">
-        <h1 class="title-lg">Trading Dashboard</h1>
-        <p class="subtitle">Welcome to Exora Values - Your gateway to advanced trading analytics</p>
-        
-        <div class="stats-grid">
-          <div class="stat-card fade-in">
-            <div class="stat-value">4,382</div>
-            <div class="stat-label">Active Items</div>
-          </div>
-          <div class="stat-card fade-in" style="animation-delay:.1s">
-            <div class="stat-value">$28.7M</div>
-            <div class="stat-label">Market Cap</div>
-          </div>
-          <div class="stat-card fade-in" style="animation-delay:.2s">
-            <div class="stat-value">2,158</div>
-            <div class="stat-label">Online Traders</div>
-          </div>
-          <div class="stat-card fade-in" style="animation-delay:.3s">
-            <div class="stat-value">891</div>
-            <div class="stat-label">Live Deals</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">
-        <h3 style="margin:0;font-weight:700">Market Activity Feed</h3>
-      </div>
-      <div class="panel-content">
-        <div class="content-grid">
-          <div class="item-card fade-in">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">@syn</div>
-                <div class="item-meta">Completed trade: Cosmic Void Crown</div>
-                <div class="item-meta">3 minutes ago</div>
-              </div>
-              <div class="status-badge badge-success">+$4.2M</div>
-            </div>
-          </div>
-          <div class="item-card fade-in" style="animation-delay:.1s">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">@died</div>
-                <div class="item-meta">New listing: Ethereal Wings Set</div>
-                <div class="item-meta">7 minutes ago</div>
-              </div>
-              <div class="status-badge badge-warn">Seeking</div>
-            </div>
-          </div>
-          <div class="item-card fade-in" style="animation-delay:.2s">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">@ByZN</div>
-                <div class="item-meta">Price alert: Neon Dynasty Helmet</div>
-                <div class="item-meta">12 minutes ago</div>
-              </div>
-              <div class="status-badge badge-danger">-15%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MARKETPLACE TAB -->
-  <div id="marketplace-content" class="tab-content">
-    <div class="panel">
-      <div class="panel-header">
-        <div style="display:flex;align-items:center;gap:16px">
-          <h3 style="margin:0;font-weight:700">Marketplace Items</h3>
-          <div class="spacer"></div>
-          <span id="marketplaceStats" class="item-meta">Loading items...</span>
-        </div>
-      </div>
-      <div class="panel-content">
-        <table id="marketplaceTable" class="data-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Asset ID</th>
-              <th>Name</th>
-              <th class="align-right">Current Value</th>
-              <th class="align-right">24h Change</th>
-              <th class="align-right">Status</th>
-            </tr>
-          </thead>
-          <tbody id="marketplaceBody">
-            <!-- Items populated by JS -->
-          </tbody>
-        </table>
-        <div style="padding:20px 0;text-align:center">
-          <button id="loadMoreMarketplace" class="btn-primary">Load More Items</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TRADERS TAB -->
-  <div id="traders-content" class="tab-content">
-    <div class="panel">
-      <div class="panel-header">
-        <div style="display:flex;align-items:center;gap:16px">
-          <h3 style="margin:0;font-weight:700">Active Traders</h3>
-          <div class="spacer"></div>
-          <input class="search-input" placeholder="Search traders..." style="max-width:300px"/>
-        </div>
-      </div>
-      <div class="panel-content">
-        <div class="content-grid">
-          <div class="item-card fade-in">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">@syn</div>
-                <div class="item-meta">Level 67 • Online now</div>
-                <div class="item-meta">2.1K successful trades</div>
-              </div>
-              <div class="status-badge badge-success">$18.5M RAP</div>
-            </div>
-          </div>
-          <div class="item-card fade-in" style="animation-delay:.1s">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">@died</div>
-                <div class="item-meta">Level 52 • Last seen 2h ago</div>
-                <div class="item-meta">1.8K successful trades</div>
-              </div>
-              <div class="status-badge badge-success">$12.3M RAP</div>
-            </div>
-          </div>
-          <div class="item-card fade-in" style="animation-delay:.2s">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">@ByZN</div>
-                <div class="item-meta">Level 74 • Online now</div>
-                <div class="item-meta">3.2K successful trades</div>
-              </div>
-              <div class="status-badge badge-success">$25.7M RAP</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RANKINGS TAB -->
-  <div id="rankings-content" class="tab-content">
-    <div class="panel">
-      <div class="panel-header">
-        <h3 style="margin:0;font-weight:700">Top Traders Leaderboard</h3>
-        <p style="margin:8px 0 0;color:var(--muted)">Updated every 15 minutes</p>
-      </div>
-      <div class="panel-content">
-        <table id="rankingsTable" class="data-table">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Trader</th>
-              <th class="align-right">Portfolio</th>
-              <th class="align-right">Total RAP</th>
-              <th class="align-right">Trend</th>
-            </tr>
-          </thead>
-          <tbody id="rankingsBody">
-            <!-- Rankings populated by JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- DEALS TAB -->
-  <div id="deals-content" class="tab-content">
-    <div class="panel">
-      <div class="panel-header">
-        <div style="display:flex;align-items:center;gap:16px">
-          <h3 style="margin:0;font-weight:700">Live Trading Deals</h3>
-          <div class="spacer"></div>
-          <button class="btn-primary">+ Create Deal</button>
-        </div>
-      </div>
-      <div class="panel-content">
-        <div class="content-grid">
-          <div class="item-card fade-in">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">🔥 Seeking: Void Star Crown</div>
-                <div class="item-meta">Offering: $8.5M + rare adds</div>
-                <div class="item-meta">Posted by <strong>@Canel</strong> • 15m ago</div>
-              </div>
-              <div class="status-badge badge-warn">SEEKING</div>
-            </div>
-          </div>
-          <div class="item-card fade-in" style="animation-delay:.1s">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">💎 Trading: Cosmic Blade Set</div>
-                <div class="item-meta">Looking for: $3.2M or equivalent items</div>
-                <div class="item-meta">Posted by <strong>@Lulu</strong> • 32m ago</div>
-              </div>
-              <div class="status-badge badge-success">ACTIVE</div>
-            </div>
-          </div>
-          <div class="item-card fade-in" style="animation-delay:.2s">
-            <div class="item-row">
-              <div class="item-thumb loading-shimmer"></div>
-              <div class="item-info">
-                <div class="item-name">⚡ Buying: Any Quantum Helmets</div>
-                <div class="item-meta">Paying 120% RAP, bulk deals welcome</div>
-                <div class="item-meta">Posted by <strong>@syn</strong> • 1h ago</div>
-              </div>
-              <div class="status-badge badge-danger">HOT DEAL</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ANALYTICS TAB -->
-  <div id="analytics-content" class="tab-content">
-    <div class="panel">
-      <div class="panel-header">
-        <h3 style="margin:0;font-weight:700">Trading Analytics</h3>
-        <p style="margin:8px 0 0;color:var(--muted)">Advanced insights and system metrics</p>
-      </div>
-      <div class="panel-content">
-        <div class="stats-grid">
-          <div class="stat-card fade-in">
-            <div class="stat-value">1,247</div>
-            <div class="stat-label">API Calls/Hour</div>
-          </div>
-          <div class="stat-card fade-in" style="animation-delay:.1s">
-            <div class="stat-value">99.9%</div>
-            <div class="stat-label">System Uptime</div>
-          </div>
-          <div class="stat-card fade-in" style="animation-delay:.2s">
-            <div class="stat-value">4.7GB</div>
-            <div class="stat-label">Database Size</div>
-          </div>
-          <div class="stat-card fade-in" style="animation-delay:.3s">
-            <div class="stat-value">387</div>
-            <div class="stat-label">Active Sessions</div>
-          </div>
-        </div>
-        
-        <div style="margin-top:32px">
-          <h4 style="margin:0 0 16px">Quick Actions</h4>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn-primary">Sync Market Data</button>
-            <button class="btn-primary">Update Valuations</button>
-            <button class="btn-primary">Generate Reports</button>
-            <button class="btn-secondary">Export Data</button>
-            <button class="btn-secondary">View System Logs</button>
-          </div>
-        </div>
-      </div>
+  <div class="card">
+    <div class="pad">
+      <div class="h1">Welcome to Exora Tracker</div>
+      <div class="sub">Track RAP, limiteds, trade-ads, and manage admin tools.</div>
     </div>
   </div>
 </main>
 
 <script>
-// Global state
-let currentTab = 'dashboard';
-let marketplaceOffset = 0;
-const itemsPerLoad = 40;
+  const loginBack = document.getElementById('loginBack');
+  const btnLogin = document.getElementById('btnLogin');
+  const btnCancel = document.getElementById('loginCancel');
+  const btnSubmit = document.getElementById('loginSubmit');
+  const loginMsg = document.getElementById('loginMsg');
 
-// Utility functions
-const formatNumber = new Intl.NumberFormat();
-function formatValue(n) {
-  if (n == null) return '';
-  n = +n;
-  if (n >= 1e6) return '$' + (Math.round(n / 1e5) / 10) + 'M';
-  if (n >= 1e3) return '$' + (Math.round(n / 1e2) / 10) + 'K';
-  return '$' + String(n);
-}
-
-// Tab management
-function showTab(tabName) {
-  // Remove active from all tabs
-  document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
-  event.target.classList.add('active');
-  
-  // Hide all content
-  document.querySelectorAll('.tab-content').forEach(content => {
-    content.classList.remove('active');
+  btnLogin.addEventListener('click', () => {
+    loginBack.style.display = 'block';
   });
-  
-  // Show selected content
-  document.getElementById(tabName + '-content').classList.add('active');
-  currentTab = tabName;
-  
-  // Load tab data
-  loadTabData(tabName);
-}
-
-// Mock data generators
-function generateMarketplaceItems(count = 40) {
-  const items = [];
-  const itemNames = [
-    'Void Star Crown', 'Neon Dynasty Helmet', 'Cosmic Blade', 'Quantum Wings',
-    'Ethereal Armor Set', 'Digital Ghost Mask', 'Cyber Phoenix Wings', 'Nexus Orb',
-    'Solar Flare Cape', 'Dark Matter Sword', 'Prismatic Shield', 'Astral Boots'
-  ];
-  
-  for (let i = 0; i < count; i++) {
-    const baseValue = Math.floor(Math.random() * 15000000) + 50000;
-    const change = (Math.random() - 0.5) * 0.3;
-    const isProjected = Math.random() < 0.12;
-    
-    items.push({
-      id: 200000 + i + marketplaceOffset,
-      name: itemNames[Math.floor(Math.random() * itemNames.length)] + ` #${i + 1}`,
-      value: baseValue,
-      change: change,
-      projected: isProjected
-    });
-  }
-  return items;
-}
-
-function generateRankings(count = 30) {
-  const traders = [];
-  const traderNames = [
-    '@syn', '@died', '@ByZN', '@Canel', '@Lulu'
-  ];
-  
-  for (let i = 0; i < count; i++) {
-    const baseRAP = Math.floor(Math.random() * 80000000) + 5000000;
-    const portfolioSize = Math.floor(Math.random() * 800) + 100;
-    const trend = (Math.random() - 0.5) * 2000000;
-    
-    traders.push({
-      rank: i + 1,
-      username: traderNames[Math.floor(Math.random() * traderNames.length)] + (i > 7 ? i : ''),
-      portfolio: portfolioSize,
-      rap: baseRAP,
-      trend: trend
-    });
-  }
-  
-  return traders.sort((a, b) => b.rap - a.rap);
-}
-
-// Data loading functions
-function loadTabData(tabName) {
-  switch(tabName) {
-    case 'marketplace':
-      loadMarketplace();
-      break;
-    case 'rankings':
-      loadRankings();
-      break;
-    case 'dashboard':
-    case 'traders':
-    case 'deals':
-    case 'analytics':
-      // Static content already loaded
-      break;
-  }
-}
-
-function loadMarketplace(reset = false) {
-  if (reset) {
-    marketplaceOffset = 0;
-    document.getElementById('marketplaceBody').innerHTML = '';
-  }
-  
-  const items = generateMarketplaceItems(itemsPerLoad);
-  const tbody = document.getElementById('marketplaceBody');
-  
-  items.forEach((item, index) => {
-    const tr = document.createElement('tr');
-    tr.className = 'fade-in';
-    tr.style.animationDelay = `${index * 0.05}s`;
-    
-    const changePercent = (item.change * 100).toFixed(1);
-    const changeIcon = item.change >= 0 ? '↗️' : '↘️';
-    const changeBadge = item.change >= 0 ? 'badge-success' : 'badge-danger';
-    
-    const statusHTML = item.projected
-      ? '<span class="status-badge badge-projected">⚠️ PROJECTED</span>'
-      : '<span class="status-badge badge-success">VERIFIED</span>';
-    
-    tr.innerHTML = `
-      <td><div class="item-thumb loading-shimmer"></div></td>
-      <td class="mono">${item.id}</td>
-      <td><strong>${item.name}</strong></td>
-      <td class="align-right mono">${formatValue(item.value)}</td>
-      <td class="align-right">
-        <span class="status-badge ${changeBadge}">${changeIcon} ${changePercent}%</span>
-      </td>
-      <td class="align-right">${statusHTML}</td>
-    `;
-    
-    tbody.appendChild(tr);
+  btnCancel.addEventListener('click', () => {
+    loginBack.style.display = 'none';
+    loginMsg.textContent = '';
   });
-  
-  marketplaceOffset += items.length;
-  document.getElementById('marketplaceStats').textContent = `${marketplaceOffset} items loaded`;
-}
 
-function loadRankings() {
-  const traders = generateRankings();
-  const tbody = document.getElementById('rankingsBody');
-  tbody.innerHTML = '';
-  
-  traders.forEach((trader, index) => {
-    const tr = document.createElement('tr');
-    tr.className = 'fade-in';
-    tr.style.animationDelay = `${index * 0.03}s`;
-    
-    const trendIcon = trader.trend >= 0 ? '📈' : '📉';
-    const trendClass = trader.trend >= 0 ? 'badge-success' : 'badge-danger';
-    
-    tr.innerHTML = `
-      <td><span class="status-badge" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff">#${trader.rank}</span></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:12px">
-          <div class="item-thumb loading-shimmer" style="width:48px;height:48px"></div>
-          <div>
-            <div><strong>${trader.username}</strong></div>
-            <div class="item-meta">${trader.portfolio} items in portfolio</div>
-          </div>
-        </div>
-      </td>
-      <td class="align-right mono">${formatNumber.format(trader.portfolio)}</td>
-      <td class="align-right mono">${formatValue(trader.rap)}</td>
-      <td class="align-right">
-        <span class="status-badge ${trendClass}">${trendIcon} ${formatValue(Math.abs(trader.trend))}</span>
-      </td>
-    `;
-    
-    tbody.appendChild(tr);
-  });
-}
-
-function refreshCurrentTab() {
-  switch(currentTab) {
-    case 'marketplace':
-      loadMarketplace(true);
-      break;
-    case 'rankings':
-      loadRankings();
-      break;
-    default:
-      console.log('Refreshing', currentTab);
-      // Add refresh logic for other tabs
-  }
-}
-
-// Event listeners
-document.getElementById('loadMoreMarketplace')?.addEventListener('click', () => {
-  loadMarketplace(false);
-});
-
-document.getElementById('globalSearch')?.addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase();
-  if (query.length > 2) {
-    console.log('Global search:', query);
-    // Implement global search functionality
-  }
-});
-
-// Add click handlers for interactive elements
-document.addEventListener('click', (e) => {
-  if (e.target.closest('.item-card')) {
-    const card = e.target.closest('.item-card');
-    console.log('Clicked item card:', card);
-    // Add navigation logic
-  }
-});
-
-// Initialize fade-in animations
-function initAnimations() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.animationPlayState = 'running';
-      }
-    });
-  });
-  
-  document.querySelectorAll('.fade-in').forEach(el => {
-    observer.observe(el);
-  });
-}
-
-// Initialize the application
-document.addEventListener('DOMContentLoaded', () => {
-  loadTabData('dashboard');
-  initAnimations();
-  
-  // Add some dynamic effects
-  setInterval(() => {
-    const statValues = document.querySelectorAll('.stat-value');
-    statValues.forEach(stat => {
-      if (Math.random() < 0.3) {
-        stat.style.transform = 'scale(1.05)';
-        setTimeout(() => {
-          stat.style.transform = 'scale(1)';
-        }, 200);
-      }
-    });
-  }, 5000);
-});
-
-// Add keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey || e.metaKey) {
-    switch(e.key) {
-      case '1': showTab('dashboard'); e.preventDefault(); break;
-      case '2': showTab('marketplace'); e.preventDefault(); break;
-      case '3': showTab('traders'); e.preventDefault(); break;
-      case '4': showTab('rankings'); e.preventDefault(); break;
-      case '5': showTab('deals'); e.preventDefault(); break;
-      case '6': showTab('analytics'); e.preventDefault(); break;
-      case 'k': document.getElementById('globalSearch').focus(); e.preventDefault(); break;
-    }
-  }
-});
-
-// Add loading states
-function showLoading(elementId) {
-  const element = document.getElementById(elementId);
-  if (element) {
-    element.innerHTML = '<div class="loading-shimmer" style="height:200px;width:100%"></div>';
-  }
-}
-
-function hideLoading(elementId) {
-  // Loading is hidden when content is populated
-}
-
-// Theme transition effects
-document.querySelectorAll('.nav-tab').forEach(tab => {
-  tab.addEventListener('mouseenter', () => {
-    tab.style.transform = 'translateY(-2px) scale(1.02)';
-  });
-  
-  tab.addEventListener('mouseleave', () => {
-    if (!tab.classList.contains('active')) {
-      tab.style.transform = 'translateY(0) scale(1)';
+  btnSubmit.addEventListener('click', () => {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    if (user === 'lol' && pass === 'secret') {
+      loginMsg.style.color = 'lightgreen';
+      loginMsg.textContent = 'Login successful! Redirecting...';
+      setTimeout(() => {
+        loginBack.style.display = 'none';
+        alert('Welcome Admin! (Here you could load admin tools.)');
+      }, 1000);
+    } else {
+      loginMsg.style.color = 'red';
+      loginMsg.textContent = 'Invalid username or password.';
     }
   });
-});
-
-// Add particle effect for active elements
-function createParticleEffect(element) {
-  const particle = document.createElement('div');
-  particle.style.position = 'absolute';
-  particle.style.width = '4px';
-  particle.style.height = '4px';
-  particle.style.background = 'var(--accent)';
-  particle.style.borderRadius = '50%';
-  particle.style.pointerEvents = 'none';
-  particle.style.opacity = '0.8';
-  
-  const rect = element.getBoundingClientRect();
-  particle.style.left = rect.left + Math.random() * rect.width + 'px';
-  particle.style.top = rect.top + Math.random() * rect.height + 'px';
-  
-  document.body.appendChild(particle);
-  
-  particle.animate([
-    { transform: 'translateY(0px) scale(1)', opacity: 0.8 },
-    { transform: 'translateY(-100px) scale(0)', opacity: 0 }
-  ], {
-    duration: 1000,
-    easing: 'ease-out'
-  }).onfinish = () => particle.remove();
-}
-
-// Add success feedback
-function showSuccessToast(message) {
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, var(--success), var(--accent));
-    color: white;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    z-index: 1000;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-  `;
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  
-  setTimeout(() => toast.style.transform = 'translateX(0)', 100);
-  setTimeout(() => {
-    toast.style.transform = 'translateX(100%)';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
 </script>
 </body>
 </html>
