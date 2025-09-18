@@ -46,6 +46,7 @@
       background: linear-gradient(180deg, #24003d, #18002b);
       color: #e9d6ff;
       transition: all .2s;
+      cursor: pointer;
     }
     .tab:hover {
       background: linear-gradient(180deg, #2f0a4d, #1c0133);
@@ -75,10 +76,15 @@
       border: 1px solid var(--line);
       border-radius: 16px;
       box-shadow: 0 10px 40px rgba(0,0,0,.45);
+      margin-bottom: 20px;
     }
     .pad { padding: 18px; }
-    .h1 { font-weight: 900; font-size: 30px; margin: 0 0 6px; }
+    .h1 { font-weight: 900; font-size: 26px; margin: 0 0 6px; }
     .sub { color: var(--muted); margin-bottom: 10px; }
+
+    /* ===== Tabs Content ===== */
+    .tabContent { display: none; }
+    .tabContent.active { display: block; }
 
     /* ===== Login modal ===== */
     .hidden { display: none !important; }
@@ -115,11 +121,11 @@
 
 <div class="top">
   <div class="nav">
-    <a class="brand" href="#">Exora Tracker</a>
-    <a class="tab active" href="#">RAP Leaderboard</a>
-    <a class="tab" href="#">Limiteds</a>
-    <a class="tab" href="#">Trade-Ads</a>
-    <a class="tab" id="adminTab" href="#">Admin</a>
+    <a class="brand">Exora Tracker</a>
+    <div class="tab active" data-tab="rap">RAP Leaderboard</div>
+    <div class="tab" data-tab="limiteds">Limiteds</div>
+    <div class="tab" data-tab="trades">Trade-Ads</div>
+    <div class="tab" data-tab="admin">Admin</div>
     <div class="spacer"></div>
     <button id="btnLogin" class="btn">Log in</button>
   </div>
@@ -138,15 +144,63 @@
 </div>
 
 <main>
-  <div class="card">
-    <div class="pad">
-      <div class="h1">Welcome to Exora Tracker</div>
-      <div class="sub">Track RAP, limiteds, trade-ads, and manage admin tools.</div>
-    </div>
+  <div id="rap" class="tabContent active">
+    <div class="card"><div class="pad">
+      <div class="h1">RAP Leaderboard</div>
+      <div class="sub">Top players by RAP value.</div>
+      <p>[ Placeholder leaderboard table goes here ]</p>
+    </div></div>
+  </div>
+
+  <div id="limiteds" class="tabContent">
+    <div class="card"><div class="pad">
+      <div class="h1">Limiteds</div>
+      <div class="sub">Browse all limited items.</div>
+      <p>[ Placeholder items grid goes here ]</p>
+    </div></div>
+  </div>
+
+  <div id="trades" class="tabContent">
+    <div class="card"><div class="pad">
+      <div class="h1">Trade-Ads</div>
+      <div class="sub">See active trade advertisements.</div>
+      <p>[ Placeholder trade ads go here ]</p>
+    </div></div>
+  </div>
+
+  <div id="admin" class="tabContent">
+    <div class="card"><div class="pad">
+      <div class="h1">Admin Panel</div>
+      <div class="sub">Restricted access. Please log in.</div>
+      <p>[ After login, admin tools would show here. ]</p>
+    </div></div>
   </div>
 </main>
 
 <script>
+  // ===== Tabs Switching =====
+  const tabs = document.querySelectorAll('.tab');
+  const contents = document.querySelectorAll('.tabContent');
+  let loggedIn = false;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabName = tab.dataset.tab;
+
+      if (tabName === 'admin' && !loggedIn) {
+        // show login modal instead of switching
+        document.getElementById('loginBack').style.display = 'block';
+        return;
+      }
+
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      contents.forEach(c => c.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+    });
+  });
+
+  // ===== Login Modal =====
   const loginBack = document.getElementById('loginBack');
   const btnLogin = document.getElementById('btnLogin');
   const btnCancel = document.getElementById('loginCancel');
@@ -166,11 +220,14 @@
     const pass = document.getElementById('loginPass').value.trim();
     if (user === 'lol' && pass === 'secret') {
       loginMsg.style.color = 'lightgreen';
-      loginMsg.textContent = 'Login successful! Redirecting...';
+      loginMsg.textContent = 'Login successful!';
+      loggedIn = true;
       setTimeout(() => {
         loginBack.style.display = 'none';
-        alert('Welcome Admin! (Here you could load admin tools.)');
-      }, 1000);
+        loginMsg.textContent = '';
+        // auto switch to admin tab
+        document.querySelector('.tab[data-tab="admin"]').click();
+      }, 800);
     } else {
       loginMsg.style.color = 'red';
       loginMsg.textContent = 'Invalid username or password.';
