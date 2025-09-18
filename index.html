@@ -148,7 +148,6 @@
     <div class="card"><div class="pad">
       <div class="h1">RAP Leaderboard</div>
       <div class="sub">Top players by RAP value.</div>
-      <p>[ Placeholder leaderboard table goes here ]</p>
     </div></div>
   </div>
 
@@ -156,7 +155,6 @@
     <div class="card"><div class="pad">
       <div class="h1">Limiteds</div>
       <div class="sub">Browse all limited items.</div>
-      <p>[ Placeholder items grid goes here ]</p>
     </div></div>
   </div>
 
@@ -164,7 +162,6 @@
     <div class="card"><div class="pad">
       <div class="h1">Trade-Ads</div>
       <div class="sub">See active trade advertisements.</div>
-      <p>[ Placeholder trade ads go here ]</p>
     </div></div>
   </div>
 
@@ -172,10 +169,66 @@
     <div class="card"><div class="pad">
       <div class="h1">Admin Panel</div>
       <div class="sub">Restricted access. Please log in.</div>
-      <p>[ After login, admin tools would show here. ]</p>
+
+      <!-- Limited Sniper -->
+      <div class="card" style="margin-top:12px;">
+        <div class="pad">
+          <h3>Limited Sniper</h3>
+          <p>Notifies logged-in users when a Limited Release drops.</p>
+        </div>
+      </div>
+
+      <!-- Auto Limited Buyer -->
+      <div class="card" style="margin-top:12px;">
+        <div class="pad">
+          <h3>Auto Limited Buyer</h3>
+          <p>Automatically buys newly released limited items.</p>
+        </div>
+      </div>
+
+      <!-- Value Configurations -->
+      <div class="card" style="margin-top:12px;">
+        <div class="pad">
+          <h3>Value Configurations</h3>
+          <button id="btnValueConfig" class="btn">Open Configurations</button>
+        </div>
+      </div>
     </div></div>
   </div>
 </main>
+
+<!-- ===== Value Configurations Modal ===== -->
+<div id="valueConfigBack" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:200;">
+  <div id="valueConfigModal" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(600px,94vw);
+    background:linear-gradient(180deg,var(--panel),#150326);
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:0 10px 40px rgba(0,0,0,.6);
+    z-index:210;padding:20px;color:var(--fg);">
+    <h2>Item Value Configurations</h2>
+    <p style="color:var(--muted);">Select an item to change its value:</p>
+    <div id="itemList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:14px;"></div>
+    <button id="closeValueConfig" class="btn" style="margin-top:16px;">Close</button>
+  </div>
+</div>
+
+<!-- ===== Slider Popup ===== -->
+<div id="sliderBack" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:300;">
+  <div id="sliderModal" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(400px,92vw);
+    background:linear-gradient(180deg,var(--panel),#150326);
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:0 10px 40px rgba(0,0,0,.6);
+    z-index:310;padding:20px;color:var(--fg);">
+    <h2 id="sliderItemName">Change Value</h2>
+    <input type="range" id="valueSlider" min="0" max="100000" value="50000" style="width:100%;margin:16px 0;">
+    <p>Value: <span id="sliderValue">50000</span></p>
+    <button id="sliderSave" class="btn">Save</button>
+    <button id="sliderCancel" class="btn" style="background:#333;margin-left:8px;">Cancel</button>
+  </div>
+</div>
 
 <script>
   // ===== Tabs Switching =====
@@ -186,13 +239,10 @@
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const tabName = tab.dataset.tab;
-
       if (tabName === 'admin' && !loggedIn) {
-        // show login modal instead of switching
         document.getElementById('loginBack').style.display = 'block';
         return;
       }
-
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       contents.forEach(c => c.classList.remove('active'));
@@ -207,13 +257,8 @@
   const btnSubmit = document.getElementById('loginSubmit');
   const loginMsg = document.getElementById('loginMsg');
 
-  btnLogin.addEventListener('click', () => {
-    loginBack.style.display = 'block';
-  });
-  btnCancel.addEventListener('click', () => {
-    loginBack.style.display = 'none';
-    loginMsg.textContent = '';
-  });
+  btnLogin.addEventListener('click', () => { loginBack.style.display = 'block'; });
+  btnCancel.addEventListener('click', () => { loginBack.style.display = 'none'; loginMsg.textContent = ''; });
 
   btnSubmit.addEventListener('click', () => {
     const user = document.getElementById('loginUser').value.trim();
@@ -225,7 +270,6 @@
       setTimeout(() => {
         loginBack.style.display = 'none';
         loginMsg.textContent = '';
-        // auto switch to admin tab
         document.querySelector('.tab[data-tab="admin"]').click();
       }, 800);
     } else {
@@ -233,6 +277,55 @@
       loginMsg.textContent = 'Invalid username or password.';
     }
   });
+
+  // ===== Value Configurations =====
+  const btnValueConfig = document.getElementById('btnValueConfig');
+  const valueConfigBack = document.getElementById('valueConfigBack');
+  const closeValueConfig = document.getElementById('closeValueConfig');
+  const itemList = document.getElementById('itemList');
+
+  const items = [
+    "Dominus Astra",
+    "Dominus Frigidus",
+    "Dominus Infernus",
+    "Dominus Empyreus",
+    "Valkyrie Helm",
+    "Red Sparkle Time Fedora"
+  ];
+
+  items.forEach(name => {
+    const btn = document.createElement('button');
+    btn.textContent = name;
+    btn.className = 'btn';
+    btn.style.width = '100%';
+    btn.onclick = () => openSlider(name);
+    itemList.appendChild(btn);
+  });
+
+  btnValueConfig.onclick = () => { valueConfigBack.style.display = 'block'; };
+  closeValueConfig.onclick = () => { valueConfigBack.style.display = 'none'; };
+
+  // ===== Slider Modal =====
+  const sliderBack = document.getElementById('sliderBack');
+  const sliderItemName = document.getElementById('sliderItemName');
+  const valueSlider = document.getElementById('valueSlider');
+  const sliderValue = document.getElementById('sliderValue');
+  const sliderSave = document.getElementById('sliderSave');
+  const sliderCancel = document.getElementById('sliderCancel');
+
+  function openSlider(item) {
+    sliderItemName.textContent = item + " - Value";
+    valueSlider.value = 50000;
+    sliderValue.textContent = valueSlider.value;
+    sliderBack.style.display = 'block';
+  }
+
+  valueSlider.oninput = () => { sliderValue.textContent = valueSlider.value; };
+  sliderCancel.onclick = () => { sliderBack.style.display = 'none'; };
+  sliderSave.onclick = () => {
+    alert(sliderItemName.textContent + " set to " + valueSlider.value);
+    sliderBack.style.display = 'none';
+  };
 </script>
 </body>
 </html>
