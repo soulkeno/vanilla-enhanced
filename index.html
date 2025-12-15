@@ -1,309 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track and Chat</title>
-    <style>
-        /* General reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+-- Create profiles table for usernames
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  username TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #111;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            margin: 0;
-        }
+-- Enable RLS on profiles
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
-        .container {
-            width: 350px;
-            background-color: #1a1a1a;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            position: relative;
-            animation: fadeIn 0.5s ease-in-out;
-        }
+-- RLS policies for profiles
+CREATE POLICY "Users can view all profiles" ON public.profiles
+  FOR SELECT TO authenticated USING (true);
 
-        .title {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #ffffff;
-        }
+CREATE POLICY "Users can update own profile" ON public.profiles
+  FOR UPDATE TO authenticated USING (auth.uid() = id);
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background-color: #333;
-            border: 1px solid #444;
-            border-radius: 5px;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            transition: border 0.3s;
-        }
+CREATE POLICY "Users can insert own profile" ON public.profiles
+  FOR INSERT TO authenticated WITH CHECK (auth.uid() = id);
 
-        input:focus {
-            border: 1px solid #00b3b3;
-        }
+-- Create tracks table
+CREATE TABLE public.tracks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  code TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
 
-        button {
-            padding: 12px 20px;
-            background-color: #007bff;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            margin-top: 10px;
-        }
+-- Enable RLS on tracks
+ALTER TABLE public.tracks ENABLE ROW LEVEL SECURITY;
 
-        button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
+-- RLS policies for tracks - users can only see their own tracks
+CREATE POLICY "Users can view own tracks" ON public.tracks
+  FOR SELECT TO authenticated USING (auth.uid() = user_id);
 
-        .switch {
-            color: #aaa;
-            font-size: 14px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
+CREATE POLICY "Users can insert own tracks" ON public.tracks
+  FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
 
-        .switch:hover {
-            color: #fff;
-        }
+CREATE POLICY "Users can update own tracks" ON public.tracks
+  FOR UPDATE TO authenticated USING (auth.uid() = user_id);
 
-        .tabs {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-        }
+CREATE POLICY "Users can delete own tracks" ON public.tracks
+  FOR DELETE TO authenticated USING (auth.uid() = user_id);
 
-        .tabs button {
-            width: 100%;
-            padding: 10px;
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+-- Create chat messages table
+CREATE TABLE public.messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  image_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
 
-        .tabs button:hover {
-            background-color: #444;
-        }
+-- Enable RLS on messages
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
-        .hidden {
-            display: none;
-        }
+-- RLS policies for messages - all authenticated users can see all messages (shared chat)
+CREATE POLICY "Authenticated users can view all messages" ON public.messages
+  FOR SELECT TO authenticated USING (true);
 
-        /* Animations */
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
-</head>
-<body>
-    <div id="login-container" class="container">
-        <h1 class="title">Login</h1>
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button onclick="login()">Login</button>
-        <p class="switch" onclick="toggleToSignup()">Don't have an account? Sign Up</p>
-    </div>
+CREATE POLICY "Users can insert own messages" ON public.messages
+  FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
 
-    <div id="signup-container" class="container hidden">
-        <h1 class="title">Sign Up</h1>
-        <input type="text" id="new-username" placeholder="Username" required>
-        <input type="password" id="new-password" placeholder="Password" required>
-        <input type="password" id="confirm-password" placeholder="Confirm Password" required>
-        <button onclick="signup()">Sign Up</button>
-        <p class="switch" onclick="toggleToLogin()">Already have an account? Login</p>
-    </div>
+CREATE POLICY "Users can delete own messages" ON public.messages
+  FOR DELETE TO authenticated USING (auth.uid() = user_id);
 
-    <div id="app-container" class="container hidden">
-        <h1 class="title">Welcome</h1>
-        <div class="tabs">
-            <button onclick="showTab('tracks')">Tracks</button>
-            <button onclick="showTab('chat')">Chat</button>
-        </div>
-        <div id="tracks-tab" class="tab hidden">
-            <button onclick="addTrack()">+</button>
-            <div id="track-list"></div>
-        </div>
-        <div id="chat-tab" class="tab hidden">
-            <div id="chat-container"></div>
-            <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="handleChatInput(event)">
-            <button onclick="sendChat()">Send</button>
-            <input type="file" id="image-upload" onchange="handleImageUpload(event)" style="display:none;">
-            <button onclick="document.getElementById('image-upload').click()">+</button>
-        </div>
-    </div>
+-- Enable realtime for messages
+ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
 
-    <script>
-        let loggedIn = false;
-        let currentUser = '';
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        let tracks = JSON.parse(localStorage.getItem('tracks')) || [];
-        let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+-- Create storage bucket for chat images
+INSERT INTO storage.buckets (id, name, public) VALUES ('chat-images', 'chat-images', true);
 
-        function toggleToSignup() {
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('signup-container').classList.remove('hidden');
-        }
+-- Storage policies for chat images
+CREATE POLICY "Authenticated users can upload images" ON storage.objects
+  FOR INSERT TO authenticated WITH CHECK (bucket_id = 'chat-images');
 
-        function toggleToLogin() {
-            document.getElementById('signup-container').classList.add('hidden');
-            document.getElementById('login-container').classList.remove('hidden');
-        }
+CREATE POLICY "Anyone can view chat images" ON storage.objects
+  FOR SELECT USING (bucket_id = 'chat-images');
 
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const user = users.find(u => u.username === username && u.password === password);
+-- Function to handle new user signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.profiles (id, username)
+  VALUES (NEW.id, NEW.raw_user_meta_data ->> 'username');
+  RETURN NEW;
+END;
+$$;
 
-            if (user) {
-                currentUser = username;
-                loggedIn = true;
-                localStorage.setItem('currentUser', username);
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
-                loadTracks();
-                loadChat();
-            } else {
-                alert('Invalid username or password');
-            }
-        }
-
-        function signup() {
-            const username = document.getElementById('new-username').value;
-            const password = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            if (password === confirmPassword) {
-                if (users.find(u => u.username === username)) {
-                    alert('Username already taken');
-                } else {
-                    users.push({ username, password });
-                    localStorage.setItem('users', JSON.stringify(users));
-                    toggleToLogin();
-                    alert('Sign Up Successful! You can now log in.');
-                }
-            } else {
-                alert('Passwords do not match');
-            }
-        }
-
-        function loadTracks() {
-            const trackList = document.getElementById('track-list');
-            trackList.innerHTML = '';
-            tracks.forEach(track => {
-                const trackCard = document.createElement('div');
-                trackCard.classList.add('track-card');
-                trackCard.innerHTML = `
-                    <h3>${track.name}</h3>
-                    <p>${track.description}</p>
-                    <pre>${track.code}</pre>
-                `;
-                trackList.appendChild(trackCard);
-            });
-        }
-
-        function loadChat() {
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML = '';
-            chatHistory.forEach(msg => {
-                const chatMessage = document.createElement('div');
-                chatMessage.classList.add('chat-message');
-                chatMessage.innerHTML = `
-                    <p><strong>${msg.user}</strong>: ${msg.message}</p>
-                `;
-                if (msg.image) {
-                    const img = document.createElement('img');
-                    img.src = msg.image;
-                    chatMessage.appendChild(img);
-                }
-                chatContainer.appendChild(chatMessage);
-            });
-        }
-
-        function showTab(tab) {
-            document.querySelectorAll('.tab').forEach(tabElement => {
-                tabElement.classList.add('hidden');
-            });
-            document.getElementById(`${tab}-tab`).classList.remove('hidden');
-        }
-
-        function addTrack() {
-            const trackName = prompt('Enter Track Name');
-            const trackDescription = prompt('Enter Track Description');
-            const trackCode = prompt('Enter Track Code');
-            const newTrack = { name: trackName, description: trackDescription, code: trackCode };
-            tracks.push(newTrack);
-            localStorage.setItem('tracks', JSON.stringify(tracks));
-            loadTracks();
-        }
-
-        function handleChatInput(event) {
-            if (event.key === 'Enter') {
-                sendChat();
-            }
-        }
-
-        function sendChat() {
-            const chatInput = document.getElementById('chat-input');
-            const message = chatInput.value;
-            if (message) {
-                const newMessage = {
-                    user: currentUser,
-                    message: message,
-                    image: null
-                };
-                chatHistory.push(newMessage);
-                localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-                loadChat();
-                chatInput.value = '';
-            }
-        }
-
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newMessage = {
-                        user: currentUser,
-                        message: 'Image uploaded',
-                        image: e.target.result
-                    };
-                    chatHistory.push(newMessage);
-                    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-                    loadChat();
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    </script>
-</body>
-</html>
+-- Trigger for new user signup
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
