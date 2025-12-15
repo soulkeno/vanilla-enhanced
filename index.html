@@ -28,7 +28,7 @@
             width: 350px;
             background-color: #1a1a1a;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             text-align: center;
             position: relative;
@@ -43,10 +43,10 @@
 
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
             background-color: #333;
-            border: 2px solid #444;
+            border: 1px solid #444;
             border-radius: 5px;
             color: #fff;
             font-size: 16px;
@@ -55,29 +55,24 @@
         }
 
         input:focus {
-            border: 2px solid #00b3b3;
-            box-shadow: 0 0 10px rgba(0, 179, 179, 0.5);
+            border: 1px solid #00b3b3;
         }
 
         button {
             padding: 12px 20px;
-            background-color: #00b3b3;
+            background-color: #007bff;
             border: none;
             color: white;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 10px;
         }
 
         button:hover {
-            background-color: #009999;
-            box-shadow: 0 0 10px rgba(0, 179, 179, 0.8);
+            background-color: #0056b3;
             transform: scale(1.05);
-        }
-
-        .glowing {
-            text-shadow: 0 0 10px #00b3b3, 0 0 20px #00b3b3, 0 0 30px #00b3b3;
         }
 
         .switch {
@@ -131,7 +126,7 @@
 </head>
 <body>
     <div id="login-container" class="container">
-        <h1 class="title glowing">Login</h1>
+        <h1 class="title">Login</h1>
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required>
         <button onclick="login()">Login</button>
@@ -139,7 +134,7 @@
     </div>
 
     <div id="signup-container" class="container hidden">
-        <h1 class="title glowing">Sign Up</h1>
+        <h1 class="title">Sign Up</h1>
         <input type="text" id="new-username" placeholder="Username" required>
         <input type="password" id="new-password" placeholder="Password" required>
         <input type="password" id="confirm-password" placeholder="Confirm Password" required>
@@ -148,7 +143,7 @@
     </div>
 
     <div id="app-container" class="container hidden">
-        <h1 class="title glowing">Welcome</h1>
+        <h1 class="title">Welcome</h1>
         <div class="tabs">
             <button onclick="showTab('tracks')">Tracks</button>
             <button onclick="showTab('chat')">Chat</button>
@@ -263,4 +258,52 @@
         function addTrack() {
             const trackName = prompt('Enter Track Name');
             const trackDescription = prompt('Enter Track Description');
-            const
+            const trackCode = prompt('Enter Track Code');
+            const newTrack = { name: trackName, description: trackDescription, code: trackCode };
+            tracks.push(newTrack);
+            localStorage.setItem('tracks', JSON.stringify(tracks));
+            loadTracks();
+        }
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                sendChat();
+            }
+        }
+
+        function sendChat() {
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value;
+            if (message) {
+                const newMessage = {
+                    user: currentUser,
+                    message: message,
+                    image: null
+                };
+                chatHistory.push(newMessage);
+                localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+                loadChat();
+                chatInput.value = '';
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newMessage = {
+                        user: currentUser,
+                        message: 'Image uploaded',
+                        image: e.target.result
+                    };
+                    chatHistory.push(newMessage);
+                    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+                    loadChat();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>
